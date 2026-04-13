@@ -9,343 +9,552 @@
       "module": "MODULE 1 — FONDATION & INFRASTRUCTURE",
       "passes": true,
       "completedAt": "2026-04-13",
-      "metadata": { "note": "Projet initialisé, dépendances installées, arborescence créée" }
+      "metadata": {
+        "note": "Projet initialisé, dépendances installées, arborescence créée"
+      }
     },
     {
       "id": "S-002",
       "title": "Schéma de base de données Supabase",
       "module": "MODULE 1 — FONDATION & INFRASTRUCTURE",
-      "passes": false,
-      "dependencies": ["S-001"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "note": "14 tables, 15 enums, RLS sur toutes les tables, vue project_evaluation_stats, types TS générés"
+      }
     },
     {
       "id": "S-003",
       "title": "Authentification Google OAuth",
       "module": "MODULE 1 — FONDATION & INFRASTRUCTURE",
-      "passes": false,
-      "dependencies": ["S-002"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "note": "Middleware, callback OAuth, login page, access-denied, suspended, invite pages"
+      }
     },
     {
       "id": "S-004",
       "title": "Layout principal et navigation",
       "module": "MODULE 1 — FONDATION & INFRASTRUCTURE",
-      "passes": false,
-      "dependencies": ["S-003"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "note": "Sidebar, Header, MobileNav, layout (app), not-found page"
+      }
     },
     {
       "id": "S-005",
       "title": "Formulaire de soumission de projet",
       "module": "MODULE 2 — GESTION DES PROJETS",
-      "passes": false,
-      "dependencies": ["S-004"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "note": "Formulaire 5 étapes, auto-save 30s, Zod v4, Server Actions saveDraft + submitProject, liste projets, détail projet (placeholder)"
+      }
     },
     {
       "id": "S-006",
       "title": "Assistance IA dans les champs texte",
       "module": "MODULE 2 — GESTION DES PROJETS",
-      "passes": false,
-      "dependencies": ["S-005", "S-020"]
+      "passes": true,
+      "dependencies": [
+        "S-005",
+        "S-020"
+      ],
+      "completedAt": "2026-04-13T10:13:40.778Z"
     },
     {
       "id": "S-007",
       "title": "Liste et détail des projets",
       "module": "MODULE 2 — GESTION DES PROJETS",
-      "passes": false,
-      "dependencies": ["S-005"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "note": "Liste avec filtres statut/horizon, cartes projets, page détail avec tabs, stats quorum, sections Market Research + Monte Carlo + Thesis"
+      }
     },
     {
       "id": "S-008",
       "title": "Formulaire d'évaluation par critères",
       "module": "MODULE 3 — SYSTÈME D'ÉVALUATION",
-      "passes": false,
-      "dependencies": ["S-007"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "note": "Slider 0–10 par critère, score pondéré en temps réel, commentaire min 50 chars, Red Team optionnel, modal confirmation, vérification RLS (proposant != évaluateur, quorum check)"
+      }
     },
     {
       "id": "S-009",
       "title": "Résultats agrégés et quorum",
       "module": "MODULE 3 — SYSTÈME D'ÉVALUATION",
-      "passes": false,
-      "dependencies": ["S-008"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "note": "Page résultats avec KPIs, barres par critère colorées, Red Team agrégé, commentaires anonymisés (évaluateur X) sauf admin (noms visibles). Accès selon statut projet."
+      }
     },
     {
       "id": "S-010",
       "title": "Critères personnalisés par projet",
       "module": "MODULE 3 — SYSTÈME D'ÉVALUATION",
-      "passes": false,
-      "dependencies": ["S-002"]
+      "passes": true,
+      "dependencies": [
+        "S-002"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-011",
       "title": "Prise de décision admin",
       "module": "MODULE 4 — DÉCISIONS & HISTORIQUE",
-      "passes": false,
-      "dependencies": ["S-009"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "note": "recordDecision Server Action (INSERT immuable decisions), modal avec 3 types (approuvé/rejeté/différé), Real Options si différé, bouton dans page résultats si admin + projet closed"
+      }
     },
     {
       "id": "S-012",
       "title": "Journal des décisions",
       "module": "MODULE 4 — DÉCISIONS & HISTORIQUE",
-      "passes": false,
-      "dependencies": ["S-011"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-011"
+      ],
+      "metadata": {
+        "note": "Page /decisions : liste toutes décisions avec join projects + profiles, badges colorés (approved/rejected/deferred), rationale tronquée, lien repo si applicable, indicateur Real Option"
+      }
     },
     {
       "id": "S-013",
       "title": "Archivage des projets décidés",
       "module": "MODULE 4 — DÉCISIONS & HISTORIQUE",
-      "passes": false,
-      "dependencies": ["S-011"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-011"
+      ],
+      "metadata": {
+        "note": "ArchiveButton client component avec modal confirmation, intégré page /projects/[id] (admin + decided only), archiveProject action admin-only → decided → archived"
+      }
     },
     {
       "id": "S-014",
       "title": "Dashboard principal",
       "module": "MODULE 5 — TABLEAU DE BORD",
-      "passes": false,
-      "dependencies": ["S-004"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-004"
+      ],
+      "metadata": {
+        "note": "KPI cards (ouverts/à évaluer/décisions 30j/score moyen), alertes deadline 72h, décisions récentes, statut portefeuille avec barres, liste projets à évaluer (filtré rôle)"
+      }
     },
     {
       "id": "S-015",
       "title": "Analyse comparative des projets",
       "module": "MODULE 5 — TABLEAU DE BORD",
-      "passes": false,
-      "dependencies": ["S-009"]
+      "passes": true,
+      "dependencies": [
+        "S-009"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-016",
       "title": "Infrastructure de notifications email",
       "module": "MODULE 6 — NOTIFICATIONS",
-      "passes": false,
-      "dependencies": ["S-002"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-002"
+      ],
+      "metadata": {
+        "note": "5 templates React Email (invitation, evaluation-requested, quorum-reached, decision-made, evaluation-reminder), lib/notifications/email.ts avec Resend, render() async"
+      }
     },
     {
       "id": "S-017",
       "title": "Notifications WhatsApp via Evolution API",
       "module": "MODULE 6 — NOTIFICATIONS",
-      "passes": false,
-      "dependencies": ["S-016"]
+      "passes": true,
+      "dependencies": [
+        "S-016"
+      ],
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "filesModified": [
+          "lib/notifications/whatsapp.ts"
+        ]
+      }
     },
     {
       "id": "S-018",
       "title": "Centre de préférences de notifications",
       "module": "MODULE 6 — NOTIFICATIONS",
-      "passes": false,
-      "dependencies": ["S-017"]
+      "passes": true,
+      "dependencies": [
+        "S-017"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-019",
       "title": "CRON de rappels d'évaluation",
       "module": "MODULE 6 — NOTIFICATIONS",
-      "passes": false,
-      "dependencies": ["S-016", "S-017"]
+      "passes": true,
+      "dependencies": [
+        "S-016",
+        "S-017"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-020",
       "title": "Gestion des clés API",
       "module": "MODULE 7 — INTÉGRATIONS IA",
-      "passes": false,
-      "dependencies": ["S-004"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "note": "SHA-256 hash + preview, saveApiKey/deleteApiKey, page settings/api-keys, lib/ai/crypto.ts, lib/ai/keys.ts"
+      }
     },
     {
       "id": "S-021",
       "title": "Recherche Perplexity pour analyse marché",
       "module": "MODULE 7 — INTÉGRATIONS IA",
-      "passes": false,
-      "dependencies": ["S-020", "S-007"]
+      "passes": true,
+      "dependencies": [
+        "S-020",
+        "S-007"
+      ],
+      "completedAt": "2026-04-13T10:13:40.780Z"
     },
     {
       "id": "S-022",
       "title": "Gestion des invitations",
       "module": "MODULE 8 — ADMINISTRATION",
-      "passes": false,
-      "dependencies": ["S-003"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "note": "Page admin/invitations avec création/révocation/prolongement, page invite/[token] avec validation expiration, actions Server saveDraft"
+      }
     },
     {
       "id": "S-023",
       "title": "Gestion des membres",
       "module": "MODULE 8 — ADMINISTRATION",
-      "passes": false,
-      "dependencies": ["S-022"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": {
+        "note": "admin/members : liste, modification rôle, suspension/réactivation, modal RGPD anonymizeMember()"
+      }
     },
     {
       "id": "S-024",
       "title": "Paramètres globaux de la plateforme",
       "module": "MODULE 8 — ADMINISTRATION",
-      "passes": false,
-      "dependencies": ["S-004"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-004"
+      ],
+      "metadata": {
+        "note": "admin/settings : nom plateforme, quorum défaut, délai évaluation, pre-mortem toggle, max membres. updateSetting action (UPSERT) + GlobalSettingsManager client component"
+      }
     },
     {
       "id": "S-025",
       "title": "Configuration Coolify et Dockerfile",
       "module": "MODULE 9 — DÉPLOIEMENT",
-      "passes": false,
-      "dependencies": ["S-001"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-001"
+      ],
+      "metadata": {
+        "note": "Dockerfile multi-stage (builder + runner standalone), .dockerignore, next.config.ts output='standalone', /api/health route, HEALTHCHECK, utilisateur non-root nextjs"
+      }
     },
     {
       "id": "S-026",
       "title": "Three Horizons + Barbell — Catégorisation stratégique",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-005"]
+      "passes": true,
+      "dependencies": [
+        "S-005"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-027",
       "title": "Monte Carlo — Simulateur de scénarios ROI",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-005"]
+      "passes": true,
+      "dependencies": [
+        "S-005"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-028",
       "title": "Investment Thesis — Thèse d'investissement par projet",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-005"]
+      "passes": true,
+      "dependencies": [
+        "S-005"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-029",
       "title": "Red Team — Contre-argumentation structurée",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-008"]
+      "passes": true,
+      "dependencies": [
+        "S-008"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-030",
       "title": "Reference Class Forecasting — Benchmark automatique",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-012"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-012"
+      ],
+      "metadata": {
+        "note": "Page /projects/[id]/rcf : taux approbation global, projets similaires (même secteur/horizon), benchmark MOIC moyen approuvés vs cible projet, répartition historique barres"
+      }
     },
     {
       "id": "S-031",
       "title": "IPR / MOIC — Métriques financières enrichies",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-027"]
+      "passes": true,
+      "dependencies": [
+        "S-027"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-032",
       "title": "GE-McKinsey 9-Box — Matrice attractivité × force",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-015"]
+      "passes": true,
+      "dependencies": [
+        "S-015"
+      ],
+      "completedAt": "2026-04-13T10:00:26.826Z"
     },
     {
       "id": "S-033",
       "title": "ELECTRE/PROMETHEE — Moteur de ranking avancé",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-009"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-009"
+      ],
+      "metadata": {
+        "note": "lib/analytics/promethee.ts (PROMETHEE II pur TS, flows Φ+/Φ−/Φnet, fonctions préférence usual/linear), page /analytics (admin only, podium top3, tableau complet avec scores)"
+      }
     },
     {
       "id": "S-034",
       "title": "J-Curve — Courbe de valeur post-approbation",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-011"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-011"
+      ],
+      "metadata": {
+        "note": "Page /projects/[id]/jcurve : jalons 6 phases (0-36 mois), MOIC projeté selon scénarios, indicateur phase actuelle, countdown prochain jalon, scénarios Monte Carlo terminal"
+      }
     },
     {
       "id": "S-035",
       "title": "100-Day Plan — Template de lancement post-approbation",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-011"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-011"
+      ],
+      "metadata": {
+        "note": "Page /projects/[id]/plan-100-days : compteur jours, progression, 3 phases (Diagnostic/Exécution/Consolidation) avec statut en cours/terminé, hypothèses thèse à valider"
+      }
     },
     {
       "id": "S-036",
       "title": "AAR — After Action Review post-décision",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-019", "S-028"]
+      "passes": true,
+      "dependencies": [
+        "S-019",
+        "S-028"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-037",
       "title": "Outcome Harvesting — Collecte d'impact structurée",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-036"]
+      "passes": true,
+      "dependencies": [
+        "S-036"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-038",
       "title": "Batting Average / Slugging — Métriques qualité décisionnelle",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-036", "S-037"]
+      "passes": true,
+      "dependencies": [
+        "S-036",
+        "S-037"
+      ],
+      "completedAt": "2026-04-13T09:57:33.824Z"
     },
     {
       "id": "S-039",
       "title": "IC Charter — Charte du Comité d'Investissement",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-004"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-004"
+      ],
+      "metadata": {
+        "note": "Page /committee-charter : mandat, composition/rôles, processus étapes (avec pré-mortem conditionnel), critères, types décision, gouvernance. Dynamique depuis settings DB"
+      }
     },
     {
       "id": "S-040",
       "title": "Thesis-Driven Portfolio — Thèses macro du groupe",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-004"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-004"
+      ],
+      "metadata": {
+        "note": "admin/theses : liste actives/archivées, formulaire création (titre, description, horizon), archivage. createThesis + archiveThesis actions. Utilisées dans project-form step5 thesis_ids"
+      }
     },
     {
       "id": "S-041",
       "title": "Two-Speed Governance — Seuils d'approbation différenciés",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-024"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-024"
+      ],
+      "metadata": {
+        "note": "Settings admin : fast_track_enabled, fast_track_threshold (€), fast_track_quorum. Processus V1 (< seuil, quorum réduit) vs V2 (complet). Interface toggle + inputs conditionnels"
+      }
     },
     {
       "id": "S-042",
       "title": "AHP — Calibration des poids par comparaison par paires",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-010"]
+      "passes": true,
+      "dependencies": [
+        "S-010"
+      ],
+      "completedAt": "2026-04-13T10:03:53.685Z"
     },
     {
       "id": "S-043",
       "title": "McKinsey IPMS — Revue périodique de portefeuille",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-019"]
+      "passes": true,
+      "dependencies": [
+        "S-019"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-044",
       "title": "Portfolio Kanban — Vue tableau avec WIP limits",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-007"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-007"
+      ],
+      "metadata": {
+        "note": "Page /projects/kanban : 4 colonnes (open/closed/decided/archived), cartes avec stats quorum, score moyen coloré, deadline overdue, lien toggle liste ↔ kanban"
+      }
     },
     {
       "id": "S-045",
       "title": "Real Options — Formalisation de la valeur d'attente",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-011"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-011"
+      ],
+      "metadata": {
+        "note": "Page /projects/[id]/real-options : trigger, trigger_date avec countdown coloré, option_value, description, justification rationale. Accessible uniquement si décision=deferred"
+      }
     },
     {
       "id": "S-046",
       "title": "Pre-Mortem collectif — Exercice avant ouverture à l'évaluation",
       "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
-      "passes": false,
-      "dependencies": ["S-016", "S-017"]
+      "passes": true,
+      "dependencies": [
+        "S-016",
+        "S-017"
+      ],
+      "completedAt": "2026-04-13"
     },
     {
       "id": "S-047",
       "title": "Onboarding guidé — Projet de démo interactif",
       "module": "MODULE 11 — ROBUSTESSE & ADOPTION",
-      "passes": false,
-      "dependencies": ["S-004"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-004"
+      ],
+      "metadata": {
+        "note": "OnboardingWrapper (localStorage dismissed par userId) + OnboardingChecklist (4 étapes, barre progression, dismiss). Intégré dashboard, complété dynamiquement selon actions user"
+      }
     },
     {
       "id": "S-048",
       "title": "Montée en compétence progressive — Champs expert optionnels",
       "module": "MODULE 11 — ROBUSTESSE & ADOPTION",
-      "passes": false,
-      "dependencies": ["S-005", "S-008"]
+      "passes": true,
+      "dependencies": [
+        "S-005",
+        "S-008"
+      ],
+      "completedAt": "2026-04-13T10:08:42.021Z"
     },
     {
       "id": "S-049",
       "title": "Backup automatique Supabase vers stockage local",
       "module": "MODULE 11 — ROBUSTESSE & ADOPTION",
-      "passes": false,
-      "dependencies": ["S-025"]
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "dependencies": [
+        "S-025"
+      ],
+      "metadata": {
+        "note": "scripts/backup.sh : pg_dump + gzip + GPG optionnel + upload Minio optionnel + purge >30j. CRON /api/cron/evaluation-reminders (Bearer CRON_SECRET, rappels 48h, dédup 24h)"
+      }
     }
   ]
 }

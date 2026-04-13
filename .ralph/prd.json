@@ -1,0 +1,351 @@
+{
+  "project": "Portfolio Decision Platform — Veille Élite",
+  "version": "0.1.0",
+  "stack": "Next.js 15 + Supabase + Tailwind + shadcn/ui + TypeScript",
+  "stories": [
+    {
+      "id": "S-001",
+      "title": "Initialisation du projet Next.js",
+      "module": "MODULE 1 — FONDATION & INFRASTRUCTURE",
+      "passes": true,
+      "completedAt": "2026-04-13",
+      "metadata": { "note": "Projet initialisé, dépendances installées, arborescence créée" }
+    },
+    {
+      "id": "S-002",
+      "title": "Schéma de base de données Supabase",
+      "module": "MODULE 1 — FONDATION & INFRASTRUCTURE",
+      "passes": false,
+      "dependencies": ["S-001"]
+    },
+    {
+      "id": "S-003",
+      "title": "Authentification Google OAuth",
+      "module": "MODULE 1 — FONDATION & INFRASTRUCTURE",
+      "passes": false,
+      "dependencies": ["S-002"]
+    },
+    {
+      "id": "S-004",
+      "title": "Layout principal et navigation",
+      "module": "MODULE 1 — FONDATION & INFRASTRUCTURE",
+      "passes": false,
+      "dependencies": ["S-003"]
+    },
+    {
+      "id": "S-005",
+      "title": "Formulaire de soumission de projet",
+      "module": "MODULE 2 — GESTION DES PROJETS",
+      "passes": false,
+      "dependencies": ["S-004"]
+    },
+    {
+      "id": "S-006",
+      "title": "Assistance IA dans les champs texte",
+      "module": "MODULE 2 — GESTION DES PROJETS",
+      "passes": false,
+      "dependencies": ["S-005", "S-020"]
+    },
+    {
+      "id": "S-007",
+      "title": "Liste et détail des projets",
+      "module": "MODULE 2 — GESTION DES PROJETS",
+      "passes": false,
+      "dependencies": ["S-005"]
+    },
+    {
+      "id": "S-008",
+      "title": "Formulaire d'évaluation par critères",
+      "module": "MODULE 3 — SYSTÈME D'ÉVALUATION",
+      "passes": false,
+      "dependencies": ["S-007"]
+    },
+    {
+      "id": "S-009",
+      "title": "Résultats agrégés et quorum",
+      "module": "MODULE 3 — SYSTÈME D'ÉVALUATION",
+      "passes": false,
+      "dependencies": ["S-008"]
+    },
+    {
+      "id": "S-010",
+      "title": "Critères personnalisés par projet",
+      "module": "MODULE 3 — SYSTÈME D'ÉVALUATION",
+      "passes": false,
+      "dependencies": ["S-002"]
+    },
+    {
+      "id": "S-011",
+      "title": "Prise de décision admin",
+      "module": "MODULE 4 — DÉCISIONS & HISTORIQUE",
+      "passes": false,
+      "dependencies": ["S-009"]
+    },
+    {
+      "id": "S-012",
+      "title": "Journal des décisions",
+      "module": "MODULE 4 — DÉCISIONS & HISTORIQUE",
+      "passes": false,
+      "dependencies": ["S-011"]
+    },
+    {
+      "id": "S-013",
+      "title": "Archivage des projets décidés",
+      "module": "MODULE 4 — DÉCISIONS & HISTORIQUE",
+      "passes": false,
+      "dependencies": ["S-011"]
+    },
+    {
+      "id": "S-014",
+      "title": "Dashboard principal",
+      "module": "MODULE 5 — TABLEAU DE BORD",
+      "passes": false,
+      "dependencies": ["S-004"]
+    },
+    {
+      "id": "S-015",
+      "title": "Analyse comparative des projets",
+      "module": "MODULE 5 — TABLEAU DE BORD",
+      "passes": false,
+      "dependencies": ["S-009"]
+    },
+    {
+      "id": "S-016",
+      "title": "Infrastructure de notifications email",
+      "module": "MODULE 6 — NOTIFICATIONS",
+      "passes": false,
+      "dependencies": ["S-002"]
+    },
+    {
+      "id": "S-017",
+      "title": "Notifications WhatsApp via Evolution API",
+      "module": "MODULE 6 — NOTIFICATIONS",
+      "passes": false,
+      "dependencies": ["S-016"]
+    },
+    {
+      "id": "S-018",
+      "title": "Centre de préférences de notifications",
+      "module": "MODULE 6 — NOTIFICATIONS",
+      "passes": false,
+      "dependencies": ["S-017"]
+    },
+    {
+      "id": "S-019",
+      "title": "CRON de rappels d'évaluation",
+      "module": "MODULE 6 — NOTIFICATIONS",
+      "passes": false,
+      "dependencies": ["S-016", "S-017"]
+    },
+    {
+      "id": "S-020",
+      "title": "Gestion des clés API",
+      "module": "MODULE 7 — INTÉGRATIONS IA",
+      "passes": false,
+      "dependencies": ["S-004"]
+    },
+    {
+      "id": "S-021",
+      "title": "Recherche Perplexity pour analyse marché",
+      "module": "MODULE 7 — INTÉGRATIONS IA",
+      "passes": false,
+      "dependencies": ["S-020", "S-007"]
+    },
+    {
+      "id": "S-022",
+      "title": "Gestion des invitations",
+      "module": "MODULE 8 — ADMINISTRATION",
+      "passes": false,
+      "dependencies": ["S-003"]
+    },
+    {
+      "id": "S-023",
+      "title": "Gestion des membres",
+      "module": "MODULE 8 — ADMINISTRATION",
+      "passes": false,
+      "dependencies": ["S-022"]
+    },
+    {
+      "id": "S-024",
+      "title": "Paramètres globaux de la plateforme",
+      "module": "MODULE 8 — ADMINISTRATION",
+      "passes": false,
+      "dependencies": ["S-004"]
+    },
+    {
+      "id": "S-025",
+      "title": "Configuration Coolify et Dockerfile",
+      "module": "MODULE 9 — DÉPLOIEMENT",
+      "passes": false,
+      "dependencies": ["S-001"]
+    },
+    {
+      "id": "S-026",
+      "title": "Three Horizons + Barbell — Catégorisation stratégique",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-005"]
+    },
+    {
+      "id": "S-027",
+      "title": "Monte Carlo — Simulateur de scénarios ROI",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-005"]
+    },
+    {
+      "id": "S-028",
+      "title": "Investment Thesis — Thèse d'investissement par projet",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-005"]
+    },
+    {
+      "id": "S-029",
+      "title": "Red Team — Contre-argumentation structurée",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-008"]
+    },
+    {
+      "id": "S-030",
+      "title": "Reference Class Forecasting — Benchmark automatique",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-012"]
+    },
+    {
+      "id": "S-031",
+      "title": "IPR / MOIC — Métriques financières enrichies",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-027"]
+    },
+    {
+      "id": "S-032",
+      "title": "GE-McKinsey 9-Box — Matrice attractivité × force",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-015"]
+    },
+    {
+      "id": "S-033",
+      "title": "ELECTRE/PROMETHEE — Moteur de ranking avancé",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-009"]
+    },
+    {
+      "id": "S-034",
+      "title": "J-Curve — Courbe de valeur post-approbation",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-011"]
+    },
+    {
+      "id": "S-035",
+      "title": "100-Day Plan — Template de lancement post-approbation",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-011"]
+    },
+    {
+      "id": "S-036",
+      "title": "AAR — After Action Review post-décision",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-019", "S-028"]
+    },
+    {
+      "id": "S-037",
+      "title": "Outcome Harvesting — Collecte d'impact structurée",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-036"]
+    },
+    {
+      "id": "S-038",
+      "title": "Batting Average / Slugging — Métriques qualité décisionnelle",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-036", "S-037"]
+    },
+    {
+      "id": "S-039",
+      "title": "IC Charter — Charte du Comité d'Investissement",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-004"]
+    },
+    {
+      "id": "S-040",
+      "title": "Thesis-Driven Portfolio — Thèses macro du groupe",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-004"]
+    },
+    {
+      "id": "S-041",
+      "title": "Two-Speed Governance — Seuils d'approbation différenciés",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-024"]
+    },
+    {
+      "id": "S-042",
+      "title": "AHP — Calibration des poids par comparaison par paires",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-010"]
+    },
+    {
+      "id": "S-043",
+      "title": "McKinsey IPMS — Revue périodique de portefeuille",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-019"]
+    },
+    {
+      "id": "S-044",
+      "title": "Portfolio Kanban — Vue tableau avec WIP limits",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-007"]
+    },
+    {
+      "id": "S-045",
+      "title": "Real Options — Formalisation de la valeur d'attente",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-011"]
+    },
+    {
+      "id": "S-046",
+      "title": "Pre-Mortem collectif — Exercice avant ouverture à l'évaluation",
+      "module": "MODULE 10 — FRAMEWORKS STRATÉGIQUES C-LEVEL",
+      "passes": false,
+      "dependencies": ["S-016", "S-017"]
+    },
+    {
+      "id": "S-047",
+      "title": "Onboarding guidé — Projet de démo interactif",
+      "module": "MODULE 11 — ROBUSTESSE & ADOPTION",
+      "passes": false,
+      "dependencies": ["S-004"]
+    },
+    {
+      "id": "S-048",
+      "title": "Montée en compétence progressive — Champs expert optionnels",
+      "module": "MODULE 11 — ROBUSTESSE & ADOPTION",
+      "passes": false,
+      "dependencies": ["S-005", "S-008"]
+    },
+    {
+      "id": "S-049",
+      "title": "Backup automatique Supabase vers stockage local",
+      "module": "MODULE 11 — ROBUSTESSE & ADOPTION",
+      "passes": false,
+      "dependencies": ["S-025"]
+    }
+  ]
+}

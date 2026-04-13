@@ -47,3 +47,14 @@
 - `.ralph/prd.json` initialisé avec 49 stories
 - **Learnings :** `toast` shadcn deprecated → utiliser `sonner` à la place
 - **BLOQUANT :** clés Supabase partagées en clair dans le chat → rotation requise avant S-002
+
+### 2026-04-13 — S-002 : Schéma DB Supabase
+- 14 tables créées, 15 enums, RLS sur toutes les tables, vue `project_evaluation_stats`
+- Migration appliquée via `supabase db push`
+- Types TypeScript générés via `supabase gen types typescript`
+- **Learning :** après chaque migration → régénérer `types/database.ts` obligatoirement
+
+### 2026-04-13 — S-003 : Auth Google OAuth
+- Middleware protège `/app/*` et `/admin/*`, vérifie rôle + statut
+- Callback gère : invitation valide → rôle affecté, email non invité → /access-denied
+- **Learning critique :** le Button shadcn utilise `@base-ui/react` dans cette version — pas de prop `asChild`. Utiliser `<Link>` stylisé directement pour les boutons-liens.

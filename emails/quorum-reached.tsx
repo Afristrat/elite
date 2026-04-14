@@ -20,7 +20,7 @@ export function QuorumReachedEmail({
   projectTitle,
   resultsUrl,
   evaluationCount,
-  platformName = 'Veille Élite',
+  platformName = 'Projets Elite',
 }: QuorumReachedEmailProps): React.JSX.Element {
   return (
     <Html>

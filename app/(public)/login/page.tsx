@@ -16,7 +16,7 @@ export default async function LoginPage(): Promise<React.JSX.Element> {
           <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-blue-600 mb-4">
             <span className="text-white font-bold text-2xl">V</span>
           </div>
-          <h1 className="text-2xl font-bold text-white">Veille Élite</h1>
+          <h1 className="text-2xl font-bold text-white">Projets Elite</h1>
           <p className="text-gray-400 text-sm">
             Plateforme de décision stratégique
           </p>

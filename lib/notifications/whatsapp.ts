@@ -57,7 +57,7 @@ export async function sendInvitationWhatsApp(params: {
   role: string
 }): Promise<SendResult> {
   const roleLabel = params.role === 'evaluateur' ? 'Évaluateur' : params.role === 'admin' ? 'Administrateur' : 'Contributeur'
-  const text = `🎯 *Veille Élite* — Invitation\n\nVous êtes invité(e) à rejoindre la plateforme en tant que *${roleLabel}*.\n\n👉 ${params.inviteUrl}\n\n_Ce lien est valable 7 jours._`
+  const text = `🎯 *Projets Elite* — Invitation\n\nVous êtes invité(e) à rejoindre la plateforme en tant que *${roleLabel}*.\n\n👉 ${params.inviteUrl}\n\n_Ce lien est valable 7 jours._`
   return sendWhatsAppText(params.to, text)
 }
 
@@ -68,7 +68,7 @@ export async function sendEvaluationRequestedWhatsApp(params: {
   deadline?: string
 }): Promise<SendResult> {
   const deadlineLine = params.deadline ? `\n⏰ Date limite : *${params.deadline}*` : ''
-  const text = `📊 *Veille Élite* — Nouveau projet à évaluer\n\n*${params.projectTitle}*${deadlineLine}\n\n👉 ${params.projectUrl}`
+  const text = `📊 *Projets Elite* — Nouveau projet à évaluer\n\n*${params.projectTitle}*${deadlineLine}\n\n👉 ${params.projectUrl}`
   return sendWhatsAppText(params.to, text)
 }
 
@@ -78,7 +78,7 @@ export async function sendQuorumReachedWhatsApp(params: {
   resultsUrl: string
   evaluationCount: number
 }): Promise<SendResult> {
-  const text = `✅ *Veille Élite* — Quorum atteint\n\n*${params.projectTitle}* a reçu ${params.evaluationCount} évaluation${params.evaluationCount > 1 ? 's' : ''}. Les résultats sont disponibles.\n\n👉 ${params.resultsUrl}`
+  const text = `✅ *Projets Elite* — Quorum atteint\n\n*${params.projectTitle}* a reçu ${params.evaluationCount} évaluation${params.evaluationCount > 1 ? 's' : ''}. Les résultats sont disponibles.\n\n👉 ${params.resultsUrl}`
   return sendWhatsAppText(params.to, text)
 }
 
@@ -90,7 +90,7 @@ export async function sendDecisionMadeWhatsApp(params: {
 }): Promise<SendResult> {
   const icons = { approved: '✅', rejected: '❌', deferred: '⏸️' }
   const labels = { approved: 'APPROUVÉ', rejected: 'REJETÉ', deferred: 'DIFFÉRÉ' }
-  const text = `${icons[params.decision]} *Veille Élite* — Décision\n\n*${params.projectTitle}* : *${labels[params.decision]}*\n\n👉 ${params.projectUrl}`
+  const text = `${icons[params.decision]} *Projets Elite* — Décision\n\n*${params.projectTitle}* : *${labels[params.decision]}*\n\n👉 ${params.projectUrl}`
   return sendWhatsAppText(params.to, text)
 }
 
@@ -100,6 +100,6 @@ export async function sendEvaluationReminderWhatsApp(params: {
   projectUrl: string
   hoursLeft: number
 }): Promise<SendResult> {
-  const text = `⚠️ *Veille Élite* — Rappel\n\n*${params.projectTitle}* — il reste *${params.hoursLeft}h* pour évaluer.\n\n👉 ${params.projectUrl}`
+  const text = `⚠️ *Projets Elite* — Rappel\n\n*${params.projectTitle}* — il reste *${params.hoursLeft}h* pour évaluer.\n\n👉 ${params.projectUrl}`
   return sendWhatsAppText(params.to, text)
 }

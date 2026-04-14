@@ -20,7 +20,7 @@ export function EvaluationRequestedEmail({
   projectTitle,
   projectUrl,
   deadline,
-  platformName = 'Veille Élite',
+  platformName = 'Projets Elite',
 }: EvaluationRequestedEmailProps): React.JSX.Element {
   return (
     <Html>

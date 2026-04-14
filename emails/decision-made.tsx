@@ -44,7 +44,7 @@ export function DecisionMadeEmail({
   rationale,
   projectUrl,
   repoUrl,
-  platformName = 'Veille Élite',
+  platformName = 'Projets Elite',
 }: DecisionMadeEmailProps): React.JSX.Element {
   return (
     <Html>

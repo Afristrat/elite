@@ -1,7 +1,9 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
+import { TourWidget } from '@/components/tour/tour-widget'
 import type { Database } from '@/types/database'
+import type { TourStep } from '@/components/tour/tour-segment'
 
 type ProjectStatus = Database['public']['Enums']['project_status']
 type ProjectHorizon = Database['public']['Enums']['project_horizon']
@@ -10,6 +12,9 @@ type BarbellCat = Database['public']['Enums']['barbell_cat']
 type SearchParams = {
   status?: ProjectStatus
   horizon?: ProjectHorizon
+  tour?: string
+  open?: string
+  decided?: string
 }
 
 type ProjectsPageProps = {
@@ -96,8 +101,47 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps):
     params.horizon ?? null,
   ].filter(Boolean)
 
+  // ── Tour guidé — segment 2 (Projets) ──────────────────────────────────────
+  const isTour2 = params.tour === '2'
+  const tourOpen = params.open ?? ''
+  const tourDecided = params.decided ?? ''
+  const tourParams = `open=${tourOpen}&decided=${tourDecided}`
+
+  const tour2Steps: TourStep[] = [
+    {
+      element: '[data-tour="new-project-btn"]',
+      popover: {
+        title: '✍️ Soumettre un projet',
+        description:
+          'Le formulaire guide en 5 étapes structurées : identité du projet, description du problème et de la solution, finances et simulation Monte Carlo, thèse d\'investissement, finalisation. L\'IA assiste chaque champ. Durée typique : 20–30 min pour un dossier complet.',
+        side: 'bottom',
+        align: 'end',
+      },
+    },
+    {
+      element: '[data-tour="projects-grid"]',
+      popover: {
+        title: '📁 Le pipeline de décision',
+        description:
+          'Chaque carte est un projet dans le pipeline. Les couleurs indiquent le statut : Bleu = ouvert à l\'évaluation, Jaune = quorum atteint (en attente de décision), Vert = décision prise. Cliquez sur le prochain écran pour explorer un projet ouvert en détail.',
+        side: 'top',
+        align: 'start',
+      },
+    },
+  ]
+
   return (
     <div className="space-y-6">
+      {/* Tour guidé — segment 2 */}
+      {isTour2 && tourOpen && (
+        <TourWidget
+          steps={tour2Steps}
+          nextUrl={`/projects/${tourOpen}?tour=3&${tourParams}`}
+          currentSegment={2}
+          totalSegments={8}
+        />
+      )}
+
       {/* En-tête */}
       <div className="flex items-center justify-between gap-4">
         <div>
@@ -111,6 +155,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps):
         {!isContributeur && (
           <Link
             href="/projects/new"
+            data-tour="new-project-btn"
             className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors shrink-0"
           >
             + Soumettre un projet
@@ -163,7 +208,7 @@ export default async function ProjectsPage({ searchParams }: ProjectsPageProps):
       {!projects?.length ? (
         <EmptyState isContributeur={isContributeur} hasFilters={activeFilters.length > 0} />
       ) : (
-        <div className="grid gap-3">
+        <div className="grid gap-3" data-tour="projects-grid">
           {projects.map((project) => (
             <ProjectCard key={project.id} project={project} />
           ))}

@@ -46,7 +46,7 @@ export async function submitEvaluation(
     return { success: false, error: 'Ce projet n\'est plus ouvert à l\'évaluation' }
   }
 
-  if (project.proposant_id === user.id) {
+  if (project.proposant_id === user.id && profile?.role !== 'admin') {
     return {
       success: false,
       error: 'Vous ne pouvez pas évaluer votre propre projet (règle d\'indépendance)',

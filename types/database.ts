@@ -65,10 +65,12 @@ export type Database = {
           created_at: string
           id: string
           is_global: boolean
+          key_encrypted: string | null
           key_hash: string
           key_preview: string
           label: string
           last_used_at: string | null
+          model: string | null
           owner_id: string
           provider: Database["public"]["Enums"]["api_provider"]
         }
@@ -76,10 +78,12 @@ export type Database = {
           created_at?: string
           id?: string
           is_global?: boolean
+          key_encrypted?: string | null
           key_hash: string
           key_preview: string
           label: string
           last_used_at?: string | null
+          model?: string | null
           owner_id: string
           provider: Database["public"]["Enums"]["api_provider"]
         }
@@ -87,10 +91,12 @@ export type Database = {
           created_at?: string
           id?: string
           is_global?: boolean
+          key_encrypted?: string | null
           key_hash?: string
           key_preview?: string
           label?: string
           last_used_at?: string | null
+          model?: string | null
           owner_id?: string
           provider?: Database["public"]["Enums"]["api_provider"]
         }
@@ -714,7 +720,7 @@ export type Database = {
       }
     }
     Enums: {
-      api_provider: "openai" | "anthropic" | "perplexity" | "other"
+      api_provider: "openai" | "anthropic" | "google" | "mistral" | "groq" | "cohere" | "perplexity" | "xai" | "together" | "fireworks" | "kimi" | "deepseek" | "qwen" | "zhipu" | "doubao" | "yi" | "minimax" | "baichuan" | "stepfun" | "siliconflow" | "hunyuan" | "spark" | "other"
       barbell_cat: "core" | "growth" | "moonshot"
       decision_type: "approved" | "rejected" | "deferred"
       governance_speed: "V1" | "V2"
@@ -861,7 +867,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      api_provider: ["openai", "anthropic", "perplexity", "other"],
+      api_provider: ["openai", "anthropic", "google", "mistral", "groq", "cohere", "perplexity", "xai", "together", "fireworks", "kimi", "deepseek", "qwen", "zhipu", "doubao", "yi", "minimax", "baichuan", "stepfun", "siliconflow", "hunyuan", "spark", "other"],
       barbell_cat: ["core", "growth", "moonshot"],
       decision_type: ["approved", "rejected", "deferred"],
       governance_speed: ["V1", "V2"],

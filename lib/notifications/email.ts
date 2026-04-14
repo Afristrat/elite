@@ -6,7 +6,7 @@ import { QuorumReachedEmail } from '@/emails/quorum-reached'
 import { DecisionMadeEmail } from '@/emails/decision-made'
 import { EvaluationReminderEmail } from '@/emails/evaluation-reminder'
 
-const FROM_ADDRESS = 'Veille Élite <noreply@veille-elite.fr>'
+const FROM_ADDRESS = 'Projets Elite <noreply@projets-elite.fr>'
 
 function getResend(): Resend {
   const key = process.env.RESEND_API_KEY
@@ -29,7 +29,7 @@ export async function sendInvitationEmail(params: {
     await resend.emails.send({
       from: FROM_ADDRESS,
       to: params.to,
-      subject: 'Vous êtes invité à rejoindre Veille Élite',
+      subject: 'Vous êtes invité à rejoindre Projets Elite',
       html,
     })
     return { success: true }

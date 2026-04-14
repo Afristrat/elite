@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import { cn } from '@/lib/utils'
 import { submitEvaluation } from '@/actions/evaluations'
 import { useExpertMode } from '@/hooks/useExpertMode'
+import { AITextArea } from '@/components/ui/ai-textarea'
 
 type Criterion = {
   id: string
@@ -100,7 +101,7 @@ export function EvaluationForm({ projectId, criteria }: EvaluationFormProps): Re
         )}
 
         {/* Critères */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-5">
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-5" data-tour="evaluation-criteria">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-semibold text-gray-200">Critères d&apos;évaluation</h2>
             {weightedAvg !== null && (
@@ -140,18 +141,18 @@ export function EvaluationForm({ projectId, criteria }: EvaluationFormProps): Re
               {commentary.trim().length}/50 min {commentaryOk && '✓'}
             </span>
           </div>
-          <textarea
+          <AITextArea
             value={commentary}
-            onChange={(e) => setCommentary(e.target.value)}
+            onChange={setCommentary}
+            field="commentary"
             rows={5}
             placeholder="Expliquez votre notation en détail. Justifiez les scores extrêmes. Identifiez les forces et faiblesses du projet. Votre commentaire est précieux pour l'équipe…"
-            className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 transition-colors resize-none"
             maxLength={2000}
           />
         </div>
 
         {/* Red Team (optionnel — affiché par défaut en mode expert) */}
-        <div className={cn(
+        <div data-tour="red-team-section" className={cn(
           'rounded-xl p-5 space-y-3',
           isExpert || showRedTeam
             ? 'bg-red-950/10 border border-red-900/40'
@@ -327,12 +328,12 @@ function RedTeamField({
           {value.trim().length}/{minLength} {ok && '✓'}
         </span>
       </div>
-      <textarea
+      <AITextArea
         value={value}
-        onChange={(e) => onChange(e.target.value)}
+        onChange={onChange}
+        field="red_team"
         rows={3}
         placeholder={placeholder}
-        className="w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-red-500 transition-colors resize-none"
       />
     </div>
   )

@@ -1,5 +1,4 @@
 import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { AARForm } from './aar-form'
 import type { AARResponseData } from '@/actions/aar'
@@ -55,19 +54,13 @@ export default async function AARPage({ params }: AARPageProps): Promise<React.J
     : null
 
   return (
-    <div className="space-y-6 max-w-3xl">
-      <div>
-        <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
-          ← Retour au projet
-        </Link>
-        <h1 className="text-xl font-bold text-white mt-2">After Action Review</h1>
-        <p className="text-gray-400 text-sm mt-1">
-          Revue post-décision de <span className="text-white font-medium">{project.title}</span>
-          {daysSinceDecision !== null && (
-            <span className="text-gray-500"> · J+{daysSinceDecision}</span>
-          )}
-        </p>
-      </div>
+    <div className="space-y-6">
+      <p className="text-gray-400 text-sm">
+        After Action Review de <span className="text-white font-medium">{project.title}</span>
+        {daysSinceDecision !== null && (
+          <span className="text-gray-500"> · J+{daysSinceDecision}</span>
+        )}
+      </p>
 
       {!canSubmit ? (
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">

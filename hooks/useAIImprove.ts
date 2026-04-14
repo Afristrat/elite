@@ -2,25 +2,27 @@
 
 import { useState } from 'react'
 
+type AIMode = 'improve' | 'generate'
 type ImproveState = 'idle' | 'loading' | 'error'
 
 type UseAIImproveReturn = {
-  improve: (content: string, field?: string) => Promise<string | null>
+  run: (content: string, field?: string, mode?: AIMode) => Promise<string | null>
   state: ImproveState
   error: string | null
 }
 
 /**
- * Hook pour appeler /api/ai/improve et obtenir une version améliorée d'un texte.
- * Retourne le texte amélioré ou null en cas d'erreur.
+ * Hook pour appeler /api/ai/improve en mode "improve" ou "generate".
+ * - generate : produit un texte complet à partir d'un hint court
+ * - improve  : améliore un texte existant
  */
 export function useAIImprove(): UseAIImproveReturn {
   const [state, setState] = useState<ImproveState>('idle')
   const [error, setError] = useState<string | null>(null)
 
-  async function improve(content: string, field = 'default'): Promise<string | null> {
-    if (content.trim().length < 10) {
-      setError('Le texte est trop court pour être amélioré (min 10 caractères)')
+  async function run(content: string, field = 'default', mode: AIMode = 'improve'): Promise<string | null> {
+    if (content.trim().length < 3) {
+      setError('Ajoutez quelques mots pour que l\'IA puisse générer du contenu')
       return null
     }
 
@@ -31,7 +33,7 @@ export function useAIImprove(): UseAIImproveReturn {
       const res = await fetch('/api/ai/improve', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ field, content }),
+        body: JSON.stringify({ field, content, mode }),
       })
 
       if (!res.ok) {
@@ -39,7 +41,6 @@ export function useAIImprove(): UseAIImproveReturn {
         throw new Error(errData.error ?? `Erreur ${res.status}`)
       }
 
-      // Lire le stream text
       const reader = res.body?.getReader()
       if (!reader) throw new Error('Stream indisponible')
 
@@ -62,5 +63,5 @@ export function useAIImprove(): UseAIImproveReturn {
     }
   }
 
-  return { improve, state, error }
+  return { run, state, error }
 }

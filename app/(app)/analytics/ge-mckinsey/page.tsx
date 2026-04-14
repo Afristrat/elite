@@ -297,7 +297,7 @@ export default async function GEMcKinseyPage(): Promise<React.JSX.Element> {
           <p className="text-xs text-gray-600">
             <span className="text-gray-500 font-medium">Attractivité</span> — potentiel de rendement (MOIC cible).{' '}
             <span className="text-gray-500 font-medium">Force compétitive</span> — qualité perçue du deal (score comité moyen).{' '}
-            Adapté du modèle GE-McKinsey pour le comité d&apos;investissement Veille Élite.
+            Adapté du modèle GE-McKinsey pour le comité d&apos;investissement Projets Elite.
           </p>
         </div>
       )}

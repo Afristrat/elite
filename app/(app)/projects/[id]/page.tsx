@@ -1,40 +1,14 @@
-import { notFound } from 'next/navigation'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
-import { ArchiveButton } from '@/components/projects/archive-button'
+import { TourWidget } from '@/components/tour/tour-widget'
 import type { Database } from '@/types/database'
+import type { TourStep } from '@/components/tour/tour-segment'
 
-type ProjectStatus = Database['public']['Enums']['project_status']
-type ProjectHorizon = Database['public']['Enums']['project_horizon']
 type BarbellCat = Database['public']['Enums']['barbell_cat']
 
 type ProjectDetailPageProps = {
   params: Promise<{ id: string }>
-}
-
-const STATUS_LABELS: Record<ProjectStatus, string> = {
-  draft: 'Brouillon',
-  'pre-mortem': 'Pré-mortem',
-  open: 'Ouvert à l\'évaluation',
-  closed: 'Évaluation fermée',
-  decided: 'Décision prise',
-  archived: 'Archivé',
-}
-
-const STATUS_COLORS: Record<ProjectStatus, string> = {
-  draft: 'bg-gray-700/60 text-gray-300',
-  'pre-mortem': 'bg-purple-600/20 text-purple-300',
-  open: 'bg-blue-600/20 text-blue-300',
-  closed: 'bg-yellow-600/20 text-yellow-300',
-  decided: 'bg-green-600/20 text-green-300',
-  archived: 'bg-gray-800 text-gray-500',
-}
-
-const HORIZON_LABELS: Record<ProjectHorizon, string> = {
-  H1: 'H1 — Court terme (0–18 mois)',
-  H2: 'H2 — Moyen terme (18 mois – 3 ans)',
-  H3: 'H3 — Long terme (3 ans et +)',
+  searchParams: Promise<{ tour?: string; open?: string; decided?: string }>
 }
 
 const BARBELL_LABELS: Record<BarbellCat, string> = {
@@ -70,8 +44,9 @@ type InvestmentThesis = {
   hypotheses?: [string, string, string]
 }
 
-export default async function ProjectDetailPage({ params }: ProjectDetailPageProps): Promise<React.JSX.Element> {
+export default async function ProjectDetailPage({ params, searchParams }: ProjectDetailPageProps): Promise<React.JSX.Element> {
   const { id } = await params
+  const sp = await searchParams
   const supabase = await createClient()
 
   const {
@@ -80,7 +55,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
 
   const { data: profile } = await supabase
     .from('profiles')
-    .select('role, id')
+    .select('role')
     .eq('id', user!.id)
     .single()
 
@@ -90,29 +65,19 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
     .eq('id', id)
     .single()
 
-  if (!project) notFound()
-
-  // Les contributeurs ne peuvent pas voir les drafts
-  if (profile?.role === 'contributeur' && project.status === 'draft') notFound()
-
-  const isProposant = project.proposant_id === user!.id
-  const canEvaluate =
-    !isProposant &&
-    project.status === 'open' &&
-    profile?.role !== 'contributeur'
+  // Le layout gère notFound() — ici on retourne vide par sécurité
+  if (!project) return <></>
 
   const marketResearch = project.market_research as MarketResearch | null
   const scenarios = project.scenarios as Scenarios | null
   const thesis = project.investment_thesis as InvestmentThesis | null
 
-  // Récupérer les statistiques d'évaluation (vue)
   const { data: stats } = await supabase
     .from('project_evaluation_stats')
     .select('*')
     .eq('project_id', id)
     .single()
 
-  // Récupérer les thèses macro associées
   const { data: theses } = project.thesis_ids?.length
     ? await supabase
         .from('portfolio_theses')
@@ -120,72 +85,95 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         .in('id', project.thesis_ids)
     : { data: null }
 
+  // ── Tour guidé — segments 3 et 5 ─────────────────────────────────────────
+  const tourNum = sp.tour
+  const tourOpen = sp.open ?? ''
+  const tourDecided = sp.decided ?? ''
+  const tourParams = `open=${tourOpen}&decided=${tourDecided}`
+  const isAdmin = profile?.role === 'admin'
+
+  const tour3Steps: TourStep[] = [
+    {
+      element: '[data-tour="project-header"]',
+      popover: {
+        title: '📋 Le dossier complet',
+        description:
+          'Chaque projet expose son problème de marché, la solution proposée, la thèse d\'investissement et les scénarios financiers (pessimiste / réaliste / optimiste). Vous avez l\'intégralité du contexte avant de voter. Aucune décision à l\'aveugle.',
+        side: 'bottom',
+        align: 'start',
+      },
+    },
+    {
+      element: '[data-tour="evaluate-btn"]',
+      popover: {
+        title: '🗳 Le vote aveugle',
+        description:
+          'Ce bouton mène au formulaire d\'évaluation. Vote aveugle : vous ne verrez pas les scores des autres membres avant que le quorum soit atteint. C\'est la règle fondamentale qui élimine le biais de conformité — votre avis est indépendant.',
+        side: 'bottom',
+        align: 'end',
+      },
+    },
+  ]
+
+  const tour5Steps: TourStep[] = [
+    {
+      element: '[data-tour="project-header"]',
+      popover: {
+        title: '✅ Décision prise — immuable',
+        description:
+          'Ce projet a atteint le quorum, les évaluations ont été agrégées, et l\'admin a enregistré la décision avec une justification formelle. La décision est maintenant immuable — ni modifiable ni supprimable. C\'est votre audit trail d\'investissement.',
+        side: 'bottom',
+        align: 'start',
+      },
+    },
+    {
+      element: '[data-tour="stats-section"]',
+      popover: {
+        title: '📊 Scores agrégés anonymes',
+        description:
+          'Une fois le quorum atteint, les scores sont agrégés. L\'admin voit les scores individuels ; les autres membres voient uniquement les agrégats. Ce n\'est pas une configuration — c\'est une règle RLS au niveau de la base de données.',
+        side: 'bottom',
+        align: 'start',
+      },
+    },
+  ]
+
+  const tourWidget =
+    tourNum === '3' && isAdmin ? (
+      <TourWidget
+        steps={tour3Steps}
+        nextUrl={`/projects/${id}/evaluate?tour=4&${tourParams}`}
+        currentSegment={3}
+        totalSegments={8}
+      />
+    ) : tourNum === '3' ? (
+      <TourWidget
+        steps={tour3Steps}
+        nextUrl={
+          tourDecided
+            ? `/projects/${tourDecided}?tour=5&${tourParams}`
+            : `/decisions?tour=6&${tourParams}`
+        }
+        currentSegment={3}
+        totalSegments={8}
+      />
+    ) : tourNum === '5' ? (
+      <TourWidget
+        steps={tour5Steps}
+        nextUrl={`/decisions?tour=6&${tourParams}`}
+        currentSegment={5}
+        totalSegments={8}
+      />
+    ) : null
+
   return (
-    <div className="space-y-6 max-w-4xl">
-      {/* En-tête */}
-      <div className="flex items-start justify-between gap-4">
-        <div className="space-y-2">
-          <Link
-            href="/projects"
-            className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
-          >
-            ← Retour aux projets
-          </Link>
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className={cn('text-sm px-2.5 py-1 rounded-full font-medium', STATUS_COLORS[project.status])}>
-              {STATUS_LABELS[project.status]}
-            </span>
-            {project.horizon && (
-              <span className="text-xs text-gray-400">{HORIZON_LABELS[project.horizon]}</span>
-            )}
-          </div>
-          <h1 className="text-2xl font-bold text-white">{project.title}</h1>
-          {project.sector && (
-            <p className="text-gray-400 text-sm">{project.sector}</p>
-          )}
-        </div>
+    <>
+      {/* Tour guidé */}
+      {tourWidget}
 
-        <div className="flex items-center gap-3 shrink-0">
-          {canEvaluate && (
-            <Link
-              href={`/projects/${id}/evaluate`}
-              className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors"
-            >
-              Évaluer ce projet
-            </Link>
-          )}
-          {profile?.role === 'admin' && project.status === 'decided' && (
-            <ArchiveButton projectId={id} projectTitle={project.title} />
-          )}
-        </div>
-      </div>
-
-      {/* Tabs navigation */}
-      <div className="flex gap-1 border-b border-gray-800 pb-0">
-        {[
-          { label: 'Aperçu', href: `/projects/${id}`, active: true },
-          { label: 'Évaluation', href: `/projects/${id}/evaluate`, active: false },
-          { label: 'Résultats', href: `/projects/${id}/results`, active: false },
-          { label: 'AAR', href: `/projects/${id}/aar`, active: false },
-        ].map((tab) => (
-          <Link
-            key={tab.label}
-            href={tab.href}
-            className={cn(
-              'px-4 py-2 text-sm font-medium border-b-2 -mb-px transition-colors',
-              tab.active
-                ? 'border-blue-500 text-blue-400'
-                : 'border-transparent text-gray-500 hover:text-gray-300',
-            )}
-          >
-            {tab.label}
-          </Link>
-        ))}
-      </div>
-
-      {/* Statistiques */}
+      {/* Statistiques d'évaluation */}
       {stats && project.status !== 'draft' && (
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-3 gap-4" data-tour="stats-section">
           <StatCard
             label="Évaluations"
             value={`${stats.evaluation_count ?? 0} / ${stats.quorum_required ?? '?'}`}
@@ -224,7 +212,10 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
               <p className="text-xs text-gray-500 mb-1.5">Thèses macro associées</p>
               <div className="flex flex-wrap gap-2">
                 {theses.map((t) => (
-                  <span key={t.id} className="text-xs px-2.5 py-1 bg-blue-600/10 text-blue-300 rounded-full border border-blue-800">
+                  <span
+                    key={t.id}
+                    className="text-xs px-2.5 py-1 bg-blue-600/10 text-blue-300 rounded-full border border-blue-800"
+                  >
                     {t.title}
                   </span>
                 ))}
@@ -365,7 +356,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
         </Section>
       )}
 
-      {/* Soumis le */}
+      {/* Pied de page */}
       <p className="text-xs text-gray-600">
         Soumis le{' '}
         {new Date(project.created_at).toLocaleDateString('fr-FR', {
@@ -374,7 +365,7 @@ export default async function ProjectDetailPage({ params }: ProjectDetailPagePro
           year: 'numeric',
         })}
       </p>
-    </div>
+    </>
   )
 }
 
@@ -429,9 +420,16 @@ function StatCard({
   highlight?: boolean
 }): React.JSX.Element {
   return (
-    <div className={cn('bg-gray-900 border rounded-xl p-4', highlight ? 'border-green-800' : 'border-gray-800')}>
+    <div
+      className={cn(
+        'bg-gray-900 border rounded-xl p-4',
+        highlight ? 'border-green-800' : 'border-gray-800',
+      )}
+    >
       <p className="text-xs text-gray-500">{label}</p>
-      <p className={cn('text-lg font-bold mt-1', highlight ? 'text-green-400' : 'text-white')}>{value}</p>
+      <p className={cn('text-lg font-bold mt-1', highlight ? 'text-green-400' : 'text-white')}>
+        {value}
+      </p>
     </div>
   )
 }

@@ -3,9 +3,16 @@ import { notFound } from 'next/navigation'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 import { runPrometheeII } from '@/lib/analytics/promethee'
+import { TourWidget } from '@/components/tour/tour-widget'
 import type { Project as PrometheePrjoject, Criterion } from '@/lib/analytics/promethee'
+import type { TourStep } from '@/components/tour/tour-segment'
 
-export default async function AnalyticsPage(): Promise<React.JSX.Element> {
+type AnalyticsPageProps = {
+  searchParams: Promise<{ tour?: string; open?: string; decided?: string }>
+}
+
+export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps): Promise<React.JSX.Element> {
+  const sp = await searchParams
   const supabase = await createClient()
 
   const {
@@ -109,8 +116,37 @@ export default async function AnalyticsPage(): Promise<React.JSX.Element> {
     ? runPrometheeII(prometheProjects, criteria)
     : null
 
+  // ── Tour guidé — segment 7 (Analytics) ────────────────────────────────────
+  const isTour7 = sp.tour === '7'
+  const tourOpen = sp.open ?? ''
+  const tourDecided = sp.decided ?? ''
+  const tourParams = `open=${tourOpen}&decided=${tourDecided}`
+
+  const tour7Steps: TourStep[] = [
+    {
+      element: '[data-tour="promethee-ranking"]',
+      popover: {
+        title: '🧮 PROMETHEE II — Ranking multi-critères',
+        description:
+          'PROMETHEE II compare les projets deux à deux sur chaque critère et calcule un flux net Φ = Φ+ (force) − Φ− (faiblesse). Le classement reflète la cohérence collective de toutes les évaluations, pondérée par les critères AHP. C\'est une décision quantitative, pas une intuition.',
+        side: 'top',
+        align: 'start',
+      },
+    },
+  ]
+
   return (
     <div className="space-y-6">
+      {/* Tour guidé — segment 7 */}
+      {isTour7 && (
+        <TourWidget
+          steps={tour7Steps}
+          nextUrl={`/admin/members?tour=8&${tourParams}`}
+          currentSegment={7}
+          totalSegments={8}
+        />
+      )}
+
       <div>
         <h1 className="text-2xl font-bold text-white">Analytics — PROMETHEE II</h1>
         <p className="text-gray-400 text-sm mt-1">
@@ -127,7 +163,7 @@ export default async function AnalyticsPage(): Promise<React.JSX.Element> {
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4" data-tour="promethee-ranking">
           {/* Podium top 3 */}
           {ranking.length >= 3 && (
             <div className="grid grid-cols-3 gap-4">

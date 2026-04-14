@@ -10,7 +10,7 @@ export default function PreferencesPage(): React.JSX.Element {
         </Link>
         <h1 className="text-xl font-bold text-white mt-2">Préférences</h1>
         <p className="text-gray-400 text-sm mt-1">
-          Personnalisez votre expérience sur la plateforme Veille Élite
+          Personnalisez votre expérience sur la plateforme Projets Elite
         </p>
       </div>
 

@@ -20,7 +20,7 @@ export function EvaluationReminderEmail({
   projectTitle,
   projectUrl,
   hoursLeft,
-  platformName = 'Veille Élite',
+  platformName = 'Projets Elite',
 }: EvaluationReminderEmailProps): React.JSX.Element {
   return (
     <Html>

@@ -73,7 +73,7 @@ export default async function InvitePage({ params }: InvitePageProps): Promise<R
         <div className="space-y-2">
           <h1 className="text-2xl font-bold text-white">Vous êtes invité</h1>
           <p className="text-gray-400 text-sm">
-            Rejoignez <strong className="text-white">Veille Élite</strong> en tant que{' '}
+            Rejoignez <strong className="text-white">Projets Elite</strong> en tant que{' '}
             <strong className="text-blue-400">{ROLE_LABELS[invitation.role] ?? invitation.role}</strong>
           </p>
         </div>

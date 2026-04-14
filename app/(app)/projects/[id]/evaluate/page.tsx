@@ -1,14 +1,17 @@
 import { notFound, redirect } from 'next/navigation'
-import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { EvaluationForm } from '@/components/evaluations/evaluation-form'
+import { TourWidget } from '@/components/tour/tour-widget'
+import type { TourStep } from '@/components/tour/tour-segment'
 
 type EvaluatepageProps = {
   params: Promise<{ id: string }>
+  searchParams: Promise<{ tour?: string; open?: string; decided?: string }>
 }
 
-export default async function EvaluatePage({ params }: EvaluatepageProps): Promise<React.JSX.Element> {
+export default async function EvaluatePage({ params, searchParams }: EvaluatepageProps): Promise<React.JSX.Element> {
   const { id } = await params
+  const sp = await searchParams
   const supabase = await createClient()
 
   const {
@@ -35,8 +38,8 @@ export default async function EvaluatePage({ params }: EvaluatepageProps): Promi
   // Projet pas ouvert → redirect vers la page projet
   if (project.status !== 'open') redirect(`/projects/${id}`)
 
-  // Proposant → ne peut pas évaluer son propre projet
-  if (project.proposant_id === user!.id) redirect(`/projects/${id}`)
+  // Proposant → ne peut pas évaluer son propre projet (sauf admin pour démo / supervision)
+  if (project.proposant_id === user!.id && profile?.role !== 'admin') redirect(`/projects/${id}`)
 
   // Vérifier si déjà évalué
   const { data: existing } = await supabase
@@ -67,30 +70,62 @@ export default async function EvaluatePage({ params }: EvaluatepageProps): Promi
 
   if (criteria.length === 0) {
     return (
-      <div className="space-y-4">
-        <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
-          ← Retour au projet
-        </Link>
-        <div className="bg-yellow-950/30 border border-yellow-900 rounded-xl p-6">
-          <p className="text-yellow-300 text-sm">
-            Aucun critère d&apos;évaluation configuré. Contactez l&apos;administrateur.
-          </p>
-        </div>
+      <div className="bg-yellow-950/30 border border-yellow-900 rounded-xl p-6">
+        <p className="text-yellow-300 text-sm">
+          Aucun critère d&apos;évaluation configuré. Contactez l&apos;administrateur.
+        </p>
       </div>
     )
   }
 
+  // ── Tour guidé — segment 4 (Évaluation) ────────────────────────────────────
+  const isTour4 = sp.tour === '4'
+  const tourDecided = sp.decided ?? ''
+  const tourOpen = sp.open ?? ''
+  const tourParams = `open=${tourOpen}&decided=${tourDecided}`
+
+  const tour4Steps: TourStep[] = [
+    {
+      element: '[data-tour="evaluation-criteria"]',
+      popover: {
+        title: '📏 5 critères pondérés',
+        description:
+          'Chaque projet est noté sur 5 critères définis par l\'admin et pondérés via la méthode AHP (Analytic Hierarchy Process). Les poids garantissent que les critères les plus stratégiques ont le plus d\'impact sur la décision finale. Notez de 0 à 10.',
+        side: 'top',
+        align: 'start',
+      },
+    },
+    {
+      element: '[data-tour="red-team-section"]',
+      popover: {
+        title: '⚔️ Red Team — L\'avocat du diable',
+        description:
+          'Le Red Team vous force à challenger activement la thèse d\'investissement. Trouvez les failles, les hypothèses non validées, les risques ignorés. C\'est l\'exercice le plus difficile — et le plus précieux pour éviter les biais optimistes et les investissements récupérables.',
+        side: 'top',
+        align: 'start',
+      },
+    },
+  ]
+
+  const tour4NextUrl = tourDecided
+    ? `/projects/${tourDecided}?tour=5&${tourParams}`
+    : `/decisions?tour=6&${tourParams}`
+
   return (
-    <div className="space-y-6 max-w-3xl">
-      <div>
-        <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
-          ← Retour au projet
-        </Link>
-        <h1 className="text-xl font-bold text-white mt-2">Évaluer — {project.title}</h1>
-        <p className="text-gray-400 text-sm mt-1">
-          Votre évaluation est anonyme jusqu&apos;au quorum. Soyez exhaustif et impartial.
-        </p>
-      </div>
+    <div className="space-y-6">
+      {/* Tour guidé — segment 4 */}
+      {isTour4 && (
+        <TourWidget
+          steps={tour4Steps}
+          nextUrl={tour4NextUrl}
+          currentSegment={4}
+          totalSegments={8}
+        />
+      )}
+
+      <p className="text-gray-400 text-sm">
+        Votre évaluation est anonyme jusqu&apos;au quorum. Soyez exhaustif et impartial.
+      </p>
 
       <EvaluationForm projectId={id} criteria={criteria} />
     </div>

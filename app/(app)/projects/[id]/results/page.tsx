@@ -55,18 +55,13 @@ export default async function ResultsPage({ params }: ResultsPageProps): Promise
 
   if (!canSeeResults[project.status]) {
     return (
-      <div className="space-y-4">
-        <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
-          ← Retour au projet
-        </Link>
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center space-y-2">
-          <p className="text-gray-300 font-medium">Résultats non disponibles</p>
-          <p className="text-gray-500 text-sm">
-            {project.status === 'open'
-              ? 'Les résultats seront visibles une fois le quorum atteint'
-              : 'Ce projet n\'est pas encore en phase de résultats'}
-          </p>
-        </div>
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center space-y-2">
+        <p className="text-gray-300 font-medium">Résultats non disponibles</p>
+        <p className="text-gray-500 text-sm">
+          {project.status === 'open'
+            ? 'Les résultats seront visibles une fois le quorum atteint'
+            : 'Ce projet n\'est pas encore en phase de résultats'}
+        </p>
       </div>
     )
   }
@@ -116,13 +111,8 @@ export default async function ResultsPage({ params }: ResultsPageProps): Promise
 
   if (!evaluations?.length) {
     return (
-      <div className="space-y-4">
-        <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
-          ← Retour au projet
-        </Link>
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-          <p className="text-gray-500 text-sm">Aucune évaluation soumise pour l&apos;instant</p>
-        </div>
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
+        <p className="text-gray-500 text-sm">Aucune évaluation soumise pour l&apos;instant</p>
       </div>
     )
   }

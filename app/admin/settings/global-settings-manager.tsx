@@ -36,7 +36,7 @@ export function GlobalSettingsManager({ settings }: GlobalSettingsManagerProps):
   const [quorumDefault, setQuorumDefault] = useState(getNum('quorum_default', 3))
   const [deadlineDays, setDeadlineDays] = useState(getNum('evaluation_deadline_days', 7))
   const [maxMembers, setMaxMembers] = useState(getNum('max_members', 50))
-  const [platformName, setPlatformName] = useState(getStr('platform_name', 'Veille Élite'))
+  const [platformName, setPlatformName] = useState(getStr('platform_name', 'Projets Elite'))
   // Two-Speed Governance
   const [fastTrackEnabled, setFastTrackEnabled] = useState(getBool('fast_track_enabled', false))
   const [fastTrackThreshold, setFastTrackThreshold] = useState(getNum('fast_track_threshold', 50000))

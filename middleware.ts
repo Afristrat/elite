@@ -32,7 +32,7 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
   // Routes publiques — pas de vérification
-  const publicPaths = ['/login', '/auth/callback', '/access-denied', '/suspended', '/invite']
+  const publicPaths = ['/login', '/auth/callback', '/access-denied', '/suspended', '/invite', '/api/health', '/api/cron']
   const isPublic = publicPaths.some((p) => pathname.startsWith(p))
 
   if (isPublic) return supabaseResponse

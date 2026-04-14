@@ -2,9 +2,21 @@ import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
 import { OnboardingWrapper } from '@/components/onboarding/onboarding-wrapper'
+import { TourWidget } from '@/components/tour/tour-widget'
 import type { Database } from '@/types/database'
+import type { TourStep } from '@/components/tour/tour-segment'
 
 type DecisionType = Database['public']['Enums']['decision_type']
+
+type DashboardSearchParams = {
+  tour?: string
+  open?: string
+  decided?: string
+}
+
+type DashboardPageProps = {
+  searchParams: Promise<DashboardSearchParams>
+}
 
 const DECISION_LABELS: Record<DecisionType, string> = {
   approved: 'Approuvé',
@@ -18,8 +30,9 @@ const DECISION_COLORS: Record<DecisionType, string> = {
   deferred: 'text-yellow-400',
 }
 
-export default async function DashboardPage(): Promise<React.JSX.Element> {
+export default async function DashboardPage({ searchParams }: DashboardPageProps): Promise<React.JSX.Element> {
   const supabase = await createClient()
+  const sp = await searchParams
 
   const {
     data: { user },
@@ -145,15 +158,54 @@ export default async function DashboardPage(): Promise<React.JSX.Element> {
     },
   ]
 
+  // ── Tour guidé — segment 1 (Dashboard) ────────────────────────────────────
+  const isTour1 = sp.tour === '1'
+  const tourOpen = sp.open ?? ''
+  const tourDecided = sp.decided ?? ''
+  const tourParams = `open=${tourOpen}&decided=${tourDecided}`
+
+  const tour1Steps: TourStep[] = [
+    {
+      element: '[data-tour="dashboard-kpis"]',
+      popover: {
+        title: '📊 Votre portefeuille en temps réel',
+        description:
+          'Ces 4 indicateurs centralisent l\'état de vos projets d\'investissement. Combien sont ouverts à l\'évaluation, combien attendent votre vote, et le score moyen global. Zéro WhatsApp — tout est ici, auditable et structuré.',
+        side: 'bottom',
+        align: 'start',
+      },
+    },
+    {
+      element: '[data-tour="to-evaluate"]',
+      popover: {
+        title: '⭐ Votre file d\'évaluation',
+        description:
+          'Ces projets attendent votre évaluation. Le vote est aveugle — vous ne verrez pas les scores des autres membres avant que le quorum soit atteint. C\'est ce qui élimine le biais de conformité dans la décision collective.',
+        side: 'top',
+        align: 'start',
+      },
+    },
+  ]
+
   return (
     <div className="space-y-6">
+      {/* Tour guidé — segment 1 */}
+      {isTour1 && (
+        <TourWidget
+          steps={tour1Steps}
+          nextUrl={`/projects?tour=2&${tourParams}`}
+          currentSegment={1}
+          totalSegments={8}
+        />
+      )}
+
       {/* En-tête */}
       <div>
         <h1 className="text-2xl font-bold text-white">
           Bonjour{firstName ? `, ${firstName}` : ''}
         </h1>
         <p className="text-gray-400 text-sm mt-1">
-          Tableau de bord du portefeuille Veille Élite
+          Tableau de bord du portefeuille Projets Elite
         </p>
       </div>
 
@@ -161,7 +213,7 @@ export default async function DashboardPage(): Promise<React.JSX.Element> {
       <OnboardingWrapper steps={onboardingSteps} userId={user!.id} />
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4" data-tour="dashboard-kpis">
         <KPICard
           label="Projets ouverts"
           value={openProjects.length}
@@ -292,7 +344,7 @@ export default async function DashboardPage(): Promise<React.JSX.Element> {
 
       {/* Mes évaluations en attente */}
       {toEvaluate.length > 0 && profile?.role !== 'contributeur' && (
-        <div className="bg-gray-900 border border-blue-900/40 rounded-xl p-5 space-y-3">
+        <div className="bg-gray-900 border border-blue-900/40 rounded-xl p-5 space-y-3" data-tour="to-evaluate">
           <h2 className="text-sm font-semibold text-gray-200">
             Projets en attente de mon évaluation ({toEvaluate.length})
           </h2>

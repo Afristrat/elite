@@ -16,7 +16,7 @@ export default async function ApiKeysPage(): Promise<React.JSX.Element> {
 
   const { data: apiKeys } = await supabase
     .from('api_keys')
-    .select('id, provider, label, key_preview, is_global, last_used_at, created_at')
+    .select('id, provider, label, key_preview, is_global, last_used_at, created_at, model')
     .eq('owner_id', user!.id)
     .order('created_at', { ascending: false })
 

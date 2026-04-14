@@ -4,6 +4,7 @@ import { revalidatePath } from 'next/cache'
 import { createClient } from '@/lib/supabase/server'
 import { createCrypto } from '@/lib/ai/crypto'
 import { buildKeyPreview } from '@/lib/ai/keys'
+import { encryptApiKey } from '@/lib/ai/encrypt'
 import type { Database } from '@/types/database'
 
 type ApiProvider = Database['public']['Enums']['api_provider']
@@ -21,6 +22,7 @@ export async function saveApiKey(
   provider: ApiProvider,
   label: string,
   isGlobal: boolean,
+  model?: string,
 ): Promise<ActionResult<{ preview: string }>> {
   const supabase = await createClient()
 
@@ -51,6 +53,7 @@ export async function saveApiKey(
   const crypto = createCrypto()
   const keyHash = await crypto.sha256(trimmedKey)
   const keyPreview = buildKeyPreview(trimmedKey)
+  const keyEncrypted = await encryptApiKey(trimmedKey)
 
   // Vérifier si une clé existe déjà pour ce provider + user + is_global
   const { data: existing } = await supabase
@@ -68,7 +71,9 @@ export async function saveApiKey(
       .update({
         key_hash: keyHash,
         key_preview: keyPreview,
+        key_encrypted: keyEncrypted,
         label: label.trim() || provider,
+        model: model?.trim() || null,
       })
       .eq('id', existing.id)
 
@@ -83,7 +88,9 @@ export async function saveApiKey(
       label: label.trim() || provider,
       key_hash: keyHash,
       key_preview: keyPreview,
+      key_encrypted: keyEncrypted,
       is_global: isGlobal,
+      model: model?.trim() || null,
     })
 
     if (error) {

@@ -17,7 +17,7 @@ export default async function CommitteeCharterPage(): Promise<React.JSX.Element>
 
   const s = Object.fromEntries((settings ?? []).map((r) => [r.key, r.value]))
 
-  const platformName = typeof s.platform_name === 'string' ? s.platform_name : 'Veille Élite'
+  const platformName = typeof s.platform_name === 'string' ? s.platform_name : 'Projets Elite'
   const quorumDefault = typeof s.quorum_default === 'number' ? s.quorum_default : 3
   const deadlineDays = typeof s.evaluation_deadline_days === 'number' ? s.evaluation_deadline_days : 7
   const maxMembers = typeof s.max_members === 'number' ? s.max_members : 50

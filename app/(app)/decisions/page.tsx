@@ -1,7 +1,9 @@
 import Link from 'next/link'
 import { createClient } from '@/lib/supabase/server'
 import { cn } from '@/lib/utils'
+import { TourWidget } from '@/components/tour/tour-widget'
 import type { Database } from '@/types/database'
+import type { TourStep } from '@/components/tour/tour-segment'
 
 type DecisionType = Database['public']['Enums']['decision_type']
 
@@ -23,7 +25,12 @@ const DECISION_ICONS: Record<DecisionType, string> = {
   deferred: '⏸',
 }
 
-export default async function DecisionsPage(): Promise<React.JSX.Element> {
+type DecisionsPageProps = {
+  searchParams: Promise<{ tour?: string; open?: string; decided?: string }>
+}
+
+export default async function DecisionsPage({ searchParams }: DecisionsPageProps): Promise<React.JSX.Element> {
+  const sp = await searchParams
   const supabase = await createClient()
 
   const { data: decisions } = await supabase
@@ -41,8 +48,52 @@ export default async function DecisionsPage(): Promise<React.JSX.Element> {
     `)
     .order('created_at', { ascending: false })
 
+  // ── Tour guidé — segment 6 (Décisions) ────────────────────────────────────
+  // On lit le profil pour savoir si admin (pour définir nextUrl)
+  const {
+    data: { user: tourUser },
+  } = await supabase.auth.getUser()
+  const { data: tourProfile } = await supabase
+    .from('profiles')
+    .select('role')
+    .eq('id', tourUser!.id)
+    .single()
+
+  const isTour6 = sp.tour === '6'
+  const tourOpen = sp.open ?? ''
+  const tourDecided = sp.decided ?? ''
+  const tourParams = `open=${tourOpen}&decided=${tourDecided}`
+  const isAdminUser = tourProfile?.role === 'admin'
+
+  const tour6Steps: TourStep[] = [
+    {
+      element: '[data-tour="decisions-list"]',
+      popover: {
+        title: '⚖️ Journal des décisions immuables',
+        description:
+          'Chaque décision — approuvée, rejetée ou différée — est inscrite de façon permanente avec sa justification et le nom du décideur. Ni l\'admin ni personne ne peut la modifier ou la supprimer. C\'est votre audit trail légal et la mémoire institutionnelle du groupe.',
+        side: 'top',
+        align: 'start',
+      },
+    },
+  ]
+
+  const tour6NextUrl = isAdminUser
+    ? `/analytics?tour=7&${tourParams}`
+    : null
+
   return (
     <div className="space-y-6">
+      {/* Tour guidé — segment 6 */}
+      {isTour6 && (
+        <TourWidget
+          steps={tour6Steps}
+          nextUrl={tour6NextUrl}
+          currentSegment={6}
+          totalSegments={isAdminUser ? 8 : 6}
+        />
+      )}
+
       <div>
         <h1 className="text-2xl font-bold text-white">Journal des décisions</h1>
         <p className="text-gray-400 text-sm mt-1">
@@ -58,7 +109,7 @@ export default async function DecisionsPage(): Promise<React.JSX.Element> {
           </p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-4" data-tour="decisions-list">
           {decisions.map((d) => {
             const project = d.projects as {
               title: string

@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 
-const STORAGE_KEY = 'veille-elite:expert-mode'
+const STORAGE_KEY = 'projets-elite:expert-mode'
 
 function readStoredValue(): boolean {
   if (typeof window === 'undefined') return false

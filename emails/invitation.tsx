@@ -19,7 +19,7 @@ type InvitationEmailProps = {
 export function InvitationEmail({
   inviteUrl,
   role,
-  platformName = 'Veille Élite',
+  platformName = 'Projets Elite',
 }: InvitationEmailProps): React.JSX.Element {
   const roleLabel = role === 'admin' ? 'Administrateur' : role === 'evaluateur' ? 'Évaluateur' : 'Contributeur'
 

@@ -12,21 +12,26 @@ type NavItem = {
   label: string
   icon: string
   roles: UserRole[]
+  tourId?: string
 }
 
 const NAV_ITEMS: NavItem[] = [
   { href: '/dashboard',           label: 'Dashboard',    icon: '◉', roles: ['admin', 'evaluateur', 'contributeur'] },
-  { href: '/projects',            label: 'Projets',      icon: '◈', roles: ['admin', 'evaluateur', 'contributeur'] },
-  { href: '/decisions',           label: 'Décisions',    icon: '◆', roles: ['admin', 'evaluateur', 'contributeur'] },
-  { href: '/committee-charter',   label: 'Charte',       icon: '◎', roles: ['admin', 'evaluateur', 'contributeur'] },
-  { href: '/analytics',           label: 'Analytics',    icon: '◑', roles: ['admin'] },
+  { href: '/projects',            label: 'Projets',      icon: '◈', roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-projects' },
+  { href: '/decisions',           label: 'Décisions',    icon: '◆', roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-decisions' },
+  { href: '/committee-charter',   label: 'Charte',       icon: '◎', roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-charter' },
+  { href: '/analytics',           label: 'Analytics',    icon: '◑', roles: ['admin'], tourId: 'nav-analytics' },
 ]
 
 const ADMIN_ITEMS: NavItem[] = [
-  { href: '/admin/members',     label: 'Membres',      icon: '◐', roles: ['admin'] },
+  { href: '/admin/members',     label: 'Membres',      icon: '◐', roles: ['admin'], tourId: 'nav-admin-members' },
   { href: '/admin/invitations', label: 'Invitations',  icon: '◒', roles: ['admin'] },
   { href: '/admin/theses',      label: 'Thèses',       icon: '◓', roles: ['admin'] },
   { href: '/admin/settings',    label: 'Paramètres',   icon: '◔', roles: ['admin'] },
+]
+
+const SETTINGS_ITEMS: NavItem[] = [
+  { href: '/settings/api-keys', label: 'Clés API', icon: '⚿', roles: ['admin', 'evaluateur', 'contributeur'] },
 ]
 
 type SidebarProps = {
@@ -38,6 +43,7 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
 
   const visibleNav = NAV_ITEMS.filter((item) => item.roles.includes(role))
   const visibleAdmin = ADMIN_ITEMS.filter((item) => item.roles.includes(role))
+  const visibleSettings = SETTINGS_ITEMS.filter((item) => item.roles.includes(role))
 
   return (
     <aside className="hidden md:flex flex-col w-60 min-h-screen bg-gray-900 border-r border-gray-800 px-3 py-4">
@@ -46,7 +52,7 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
         <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
           <span className="text-white font-bold text-sm">V</span>
         </div>
-        <span className="text-white font-semibold text-sm">Veille Élite</span>
+        <span className="text-white font-semibold text-sm">Projets Elite</span>
       </div>
 
       {/* Navigation principale */}
@@ -55,6 +61,7 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
           <Link
             key={item.href}
             href={item.href}
+            {...(item.tourId ? { 'data-tour': item.tourId } : {})}
             className={cn(
               'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
               pathname.startsWith(item.href)
@@ -74,6 +81,31 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
               Administration
             </p>
             {visibleAdmin.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                {...(item.tourId ? { 'data-tour': item.tourId } : {})}
+                className={cn(
+                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+                  pathname.startsWith(item.href)
+                    ? 'bg-blue-600/20 text-blue-400 font-medium'
+                    : 'text-gray-400 hover:bg-gray-800 hover:text-gray-100'
+                )}
+              >
+                <span className="text-xs">{item.icon}</span>
+                {item.label}
+              </Link>
+            ))}
+          </div>
+        )}
+
+        {/* Section paramètres */}
+        {visibleSettings.length > 0 && (
+          <div className="pt-4">
+            <p className="px-3 text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+              Paramètres
+            </p>
+            {visibleSettings.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}

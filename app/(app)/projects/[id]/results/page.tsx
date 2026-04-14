@@ -55,9 +55,9 @@ export default async function ResultsPage({ params }: ResultsPageProps): Promise
 
   if (!canSeeResults[project.status]) {
     return (
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center space-y-2">
-        <p className="text-gray-300 font-medium">Résultats non disponibles</p>
-        <p className="text-gray-500 text-sm">
+      <div className="bg-surface-container border border-border/10 rounded-xl p-8 text-center space-y-2">
+        <p className="text-on-surface font-medium">Résultats non disponibles</p>
+        <p className="text-on-surface-variant text-sm">
           {project.status === 'open'
             ? 'Les résultats seront visibles une fois le quorum atteint'
             : 'Ce projet n\'est pas encore en phase de résultats'}
@@ -111,8 +111,8 @@ export default async function ResultsPage({ params }: ResultsPageProps): Promise
 
   if (!evaluations?.length) {
     return (
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-        <p className="text-gray-500 text-sm">Aucune évaluation soumise pour l&apos;instant</p>
+      <div className="bg-surface-container border border-border/10 rounded-xl p-8 text-center">
+        <p className="text-on-surface-variant text-sm">Aucune évaluation soumise pour l&apos;instant</p>
       </div>
     )
   }
@@ -146,13 +146,26 @@ export default async function ResultsPage({ params }: ResultsPageProps): Promise
   const quorumReached = stats?.quorum_reached ?? false
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <div className="flex items-start justify-between gap-4">
+    <div className="space-y-8 max-w-4xl">
+      {/* En-tête */}
+      <div className="flex justify-between items-end">
         <div>
-          <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
-            ← Retour au projet
+          <Link
+            href={`/projects/${id}`}
+            className="text-on-surface-variant text-xs hover:text-na-primary transition-colors flex items-center gap-1 mb-2"
+          >
+            ← {project.title}
           </Link>
-          <h1 className="text-xl font-bold text-white mt-2">Résultats — {project.title}</h1>
+          <div className="flex items-center gap-3">
+            <h1 className="text-3xl font-bold text-on-surface tracking-tight">
+              Résultats de l&apos;Évaluation
+            </h1>
+            {quorumReached && (
+              <span className="px-3 py-1 bg-na-tertiary-container/10 text-na-tertiary-dim font-semibold text-xs rounded-full border border-na-tertiary-dim/20 flex items-center gap-1">
+                ✓ Quorum atteint
+              </span>
+            )}
+          </div>
         </div>
 
         {isAdmin && project.status === 'closed' && (
@@ -165,130 +178,196 @@ export default async function ResultsPage({ params }: ResultsPageProps): Promise
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-3 gap-4">
-        <StatCard
-          label="Score global"
-          value={globalScore !== null ? `${globalScore.toFixed(2)} / 10` : '—'}
-          highlight
-        />
-        <StatCard
-          label="Évaluations"
-          value={`${evaluations.length} / ${project.quorum_required}`}
-        />
-        <StatCard
-          label="Quorum"
-          value={quorumReached ? 'Atteint ✓' : 'En cours…'}
-          highlight={quorumReached}
-        />
+      <div className="grid grid-cols-3 gap-6">
+        <div className="bg-surface-container border border-na-primary/20 p-6 rounded-xl relative overflow-hidden group">
+          <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl group-hover:bg-primary/10 transition-colors" />
+          <p className="text-on-surface-variant text-[10px] font-bold tracking-widest uppercase mb-2">
+            Score global
+          </p>
+          <div className="flex items-baseline gap-2">
+            <span className="text-4xl font-bold text-on-surface">
+              {globalScore !== null ? globalScore.toFixed(2) : '—'}
+            </span>
+            <span className="text-on-surface-variant font-medium">/ 10</span>
+          </div>
+        </div>
+        <div className={cn(
+          'bg-surface-container p-6 rounded-xl border',
+          quorumReached ? 'border-na-tertiary-dim/20' : 'border-border/10',
+        )}>
+          <p className="text-on-surface-variant text-[10px] font-bold tracking-widest uppercase mb-2">
+            Évaluations
+          </p>
+          <div className="flex items-center gap-2">
+            <span className={cn('text-4xl font-bold', quorumReached ? 'text-na-tertiary-dim' : 'text-on-surface')}>
+              {evaluations.length}
+            </span>
+            <span className="text-on-surface-variant font-medium">/ {project.quorum_required} reçues</span>
+          </div>
+        </div>
+        <div className={cn(
+          'bg-surface-container p-6 rounded-xl border',
+          quorumReached ? 'border-na-tertiary-dim/20' : 'border-border/10',
+        )}>
+          <p className="text-on-surface-variant text-[10px] font-bold tracking-widest uppercase mb-2">
+            Quorum
+          </p>
+          <div className="flex items-center gap-2">
+            <span className={cn(
+              'font-bold',
+              quorumReached ? 'text-4xl text-na-tertiary-dim' : 'text-2xl text-na-secondary italic font-semibold',
+            )}>
+              {quorumReached ? 'Atteint' : 'En cours…'}
+            </span>
+            {quorumReached && <span className="text-na-tertiary-dim text-3xl">✓</span>}
+          </div>
+        </div>
       </div>
 
-      {/* Scores par critère */}
-      {criteria.length > 0 && (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-          <h2 className="text-sm font-semibold text-gray-200">Scores par critère</h2>
-
-          <div className="space-y-3">
-            {criteriaAverages.map((criterion) => (
-              <div key={criterion.id} className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <span className="text-gray-300 font-medium">{criterion.label}</span>
-                  <div className="flex items-center gap-3">
-                    <span className="text-gray-500">Poids : {criterion.weight}%</span>
-                    <span className={cn('font-bold', getScoreColor(criterion.avg))}>
-                      {criterion.avg !== null ? criterion.avg.toFixed(1) : '—'} / 10
-                    </span>
-                  </div>
-                </div>
-                {criterion.avg !== null && (
-                  <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
-                    <div
-                      className={cn('h-full rounded-full transition-all', getScoreBarColor(criterion.avg))}
-                      style={{ width: `${(criterion.avg / 10) * 100}%` }}
-                    />
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Red Team agrégé */}
-      {redTeamResponses.length > 0 && (
-        <div className="bg-red-950/20 border border-red-900/50 rounded-xl p-5 space-y-4">
-          <h2 className="text-sm font-semibold text-red-300">
-            🔴 Red Team — {redTeamResponses.length} contribution{redTeamResponses.length > 1 ? 's' : ''}
-          </h2>
-
-          <div className="space-y-4">
-            {redTeamResponses.map((rt, i) => (
-              <div key={i} className="border-t border-red-900/30 pt-4 space-y-2 first:border-0 first:pt-0">
-                {rt.strongest_argument_against && (
-                  <div>
-                    <p className="text-xs text-red-400 font-medium mb-1">Argument contre</p>
-                    <p className="text-sm text-gray-300">{rt.strongest_argument_against}</p>
-                  </div>
-                )}
-                {rt.blind_spots && (
-                  <div>
-                    <p className="text-xs text-orange-400 font-medium mb-1">Angles morts</p>
-                    <p className="text-sm text-gray-300">{rt.blind_spots}</p>
-                  </div>
-                )}
-                {rt.conditions_for_success && (
-                  <div>
-                    <p className="text-xs text-yellow-400 font-medium mb-1">Conditions de succès</p>
-                    <p className="text-sm text-gray-300">{rt.conditions_for_success}</p>
-                  </div>
-                )}
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Commentaires (anonymisés ou avec noms si admin) */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-        <h2 className="text-sm font-semibold text-gray-200">
-          Commentaires ({evaluations.length})
-        </h2>
-
-        <div className="space-y-4">
-          {evaluations.map((evaluation, i) => {
-            const scoreRecord = evaluation.scores as ScoresRecord
-            const evalGlobalScore = criteria.length > 0
-              ? criteria.reduce((acc, c) => {
-                  const s = scoreRecord[c.id]
-                  return acc + (s !== undefined ? s * (c.weight / 100) : 0)
-                }, 0)
-              : null
-
-            const evaluatorProfile = isAdmin
-              ? evaluatorProfiles.find((p) => p.id === evaluation.evaluateur_id)
-              : null
-            const evaluatorName = evaluatorProfile
-              ? (evaluatorProfile.full_name ?? evaluatorProfile.email)
-              : `Évaluateur ${i + 1}`
-
-            return (
-              <div key={evaluation.id} className="border-t border-gray-800 pt-4 first:border-0 first:pt-0 space-y-2">
-                <div className="flex items-center justify-between gap-2">
-                  <span className="text-sm font-medium text-gray-300">{evaluatorName}</span>
-                  <div className="flex items-center gap-2">
-                    {evalGlobalScore !== null && (
-                      <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full', getScoreBadge(evalGlobalScore))}>
-                        {evalGlobalScore.toFixed(1)} / 10
+      {/* Grille principale */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        {/* Scores par critère */}
+        <div className="lg:col-span-2 space-y-8">
+          {criteria.length > 0 && (
+            <section className="bg-surface-container-low border border-border/10 rounded-xl p-8">
+              <h2 className="text-lg font-semibold mb-8 flex items-center gap-2 text-on-surface">
+                <span className="text-na-primary">◆</span>
+                Détails de la notation par critère
+              </h2>
+              <div className="space-y-8">
+                {criteriaAverages.map((criterion) => (
+                  <div key={criterion.id}>
+                    <div className="flex justify-between items-end mb-3">
+                      <div>
+                        <span className="text-on-surface font-semibold">{criterion.label}</span>
+                        <span className="text-[10px] text-on-surface-variant ml-2 uppercase tracking-wider">
+                          Pondération {criterion.weight}%
+                        </span>
+                      </div>
+                      <span className={cn('font-bold text-lg', getScoreColor(criterion.avg))}>
+                        {criterion.avg !== null ? criterion.avg.toFixed(1) : '—'}
+                        <span className="text-xs text-on-surface-variant font-normal">/10</span>
                       </span>
+                    </div>
+                    {criterion.avg !== null && (
+                      <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                        <div
+                          className={cn('h-full rounded-full transition-all', getScoreBarColor(criterion.avg))}
+                          style={{ width: `${(criterion.avg / 10) * 100}%` }}
+                        />
+                      </div>
                     )}
-                    <span className="text-xs text-gray-600">
-                      {new Date(evaluation.submitted_at).toLocaleDateString('fr-FR')}
-                    </span>
                   </div>
-                </div>
-                <p className="text-sm text-gray-400 leading-relaxed">{evaluation.commentary}</p>
+                ))}
               </div>
-            )
-          })}
+              <div className="pt-6 mt-6 border-t border-border/10 flex justify-between items-center">
+                <span className="text-on-surface-variant font-semibold tracking-wide uppercase text-sm">
+                  Score final pondéré
+                </span>
+                <span className="text-2xl font-bold text-na-primary tracking-tight">
+                  {globalScore !== null ? `${globalScore.toFixed(2)} / 10` : '—'}
+                </span>
+              </div>
+            </section>
+          )}
+
+          {/* Red Team agrégé */}
+          {redTeamResponses.length > 0 && (
+            <section className="bg-na-error-container/10 border border-na-error-container/40 rounded-xl p-8">
+              <h2 className="text-lg font-semibold text-na-error mb-4 flex items-center gap-2">
+                <span>⚠</span>
+                Points de vigilance (Red Team) — {redTeamResponses.length} contribution{redTeamResponses.length > 1 ? 's' : ''}
+              </h2>
+              <ul className="space-y-4 text-on-surface/80 text-sm">
+                {redTeamResponses.map((rt, i) => (
+                  <li key={i} className="space-y-3 border-t border-na-error/10 pt-4 first:border-0 first:pt-0">
+                    {rt.strongest_argument_against && (
+                      <div className="flex gap-3">
+                        <span className="text-na-error mt-0.5 shrink-0">•</span>
+                        <p>
+                          <span className="font-bold text-on-surface">Argument contre :</span>{' '}
+                          {rt.strongest_argument_against}
+                        </p>
+                      </div>
+                    )}
+                    {rt.blind_spots && (
+                      <div className="flex gap-3">
+                        <span className="text-na-error mt-0.5 shrink-0">•</span>
+                        <p>
+                          <span className="font-bold text-on-surface">Angles morts :</span>{' '}
+                          {rt.blind_spots}
+                        </p>
+                      </div>
+                    )}
+                    {rt.conditions_for_success && (
+                      <div className="flex gap-3">
+                        <span className="text-na-error mt-0.5 shrink-0">•</span>
+                        <p>
+                          <span className="font-bold text-on-surface">Conditions de succès :</span>{' '}
+                          {rt.conditions_for_success}
+                        </p>
+                      </div>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
+        </div>
+
+        {/* Commentaires */}
+        <div className="space-y-4">
+          <h2 className="text-lg font-semibold flex items-center gap-2 px-2 text-on-surface">
+            <span className="text-on-surface-variant">💬</span>
+            Commentaires ({evaluations.length})
+          </h2>
+          <div className="space-y-4">
+            {evaluations.map((evaluation, i) => {
+              const scoreRecord = evaluation.scores as ScoresRecord
+              const evalGlobalScore = criteria.length > 0
+                ? criteria.reduce((acc, c) => {
+                    const s = scoreRecord[c.id]
+                    return acc + (s !== undefined ? s * (c.weight / 100) : 0)
+                  }, 0)
+                : null
+
+              const evaluatorProfile = isAdmin
+                ? evaluatorProfiles.find((p) => p.id === evaluation.evaluateur_id)
+                : null
+              const evaluatorName = evaluatorProfile
+                ? (evaluatorProfile.full_name ?? evaluatorProfile.email)
+                : `Évaluateur ${i + 1}`
+
+              return (
+                <div
+                  key={evaluation.id}
+                  className="bg-surface-container-low/50 p-6 rounded-xl border border-border/10"
+                >
+                  <div className="flex justify-between items-start mb-3">
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-surface-container-highest flex items-center justify-center text-[10px] font-bold text-na-primary">
+                        #{i + 1}
+                      </div>
+                      <span className="text-xs text-on-surface-variant">{evaluatorName}</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {evalGlobalScore !== null && (
+                        <span className={cn('text-xs font-bold px-2 py-0.5 rounded-full', getScoreBadge(evalGlobalScore))}>
+                          {evalGlobalScore.toFixed(1)} / 10
+                        </span>
+                      )}
+                      <span className="text-[10px] text-on-surface-variant uppercase tracking-widest">
+                        {new Date(evaluation.submitted_at).toLocaleDateString('fr-FR')}
+                      </span>
+                    </div>
+                  </div>
+                  <p className="text-sm text-on-surface/90 leading-relaxed italic">
+                    &ldquo;{evaluation.commentary}&rdquo;
+                  </p>
+                </div>
+              )
+            })}
+          </div>
         </div>
       </div>
     </div>
@@ -298,42 +377,25 @@ export default async function ResultsPage({ params }: ResultsPageProps): Promise
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function getScoreColor(score: number | null): string {
-  if (score === null) return 'text-gray-500'
-  if (score >= 8) return 'text-green-400'
-  if (score >= 6) return 'text-blue-400'
-  if (score >= 4) return 'text-yellow-400'
-  return 'text-red-400'
+  if (score === null) return 'text-on-surface-variant'
+  if (score >= 8) return 'text-na-tertiary-dim'
+  if (score >= 6) return 'text-na-primary'
+  if (score >= 4) return 'text-na-secondary'
+  return 'text-na-error'
 }
 
 function getScoreBarColor(score: number): string {
-  if (score >= 8) return 'bg-green-500'
-  if (score >= 6) return 'bg-blue-500'
-  if (score >= 4) return 'bg-yellow-500'
-  return 'bg-red-500'
+  if (score >= 8) return 'bg-na-tertiary-dim'
+  if (score >= 6) return 'bg-na-primary'
+  if (score >= 4) return 'bg-na-secondary'
+  return 'bg-na-error'
 }
 
 function getScoreBadge(score: number): string {
-  if (score >= 8) return 'bg-green-600/20 text-green-300'
-  if (score >= 6) return 'bg-blue-600/20 text-blue-300'
-  if (score >= 4) return 'bg-yellow-600/20 text-yellow-300'
-  return 'bg-red-600/20 text-red-300'
-}
-
-function StatCard({
-  label,
-  value,
-  highlight = false,
-}: {
-  label: string
-  value: string
-  highlight?: boolean
-}): React.JSX.Element {
-  return (
-    <div className={cn('bg-gray-900 border rounded-xl p-4', highlight ? 'border-blue-800' : 'border-gray-800')}>
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className={cn('text-lg font-bold mt-1', highlight ? 'text-blue-400' : 'text-white')}>{value}</p>
-    </div>
-  )
+  if (score >= 8) return 'bg-na-tertiary-container/20 text-na-tertiary-dim'
+  if (score >= 6) return 'bg-primary-container/20 text-na-primary'
+  if (score >= 4) return 'bg-na-secondary-container/20 text-na-secondary'
+  return 'bg-na-error-container/20 text-na-error'
 }
 
 // Type pour le rôle — non utilisé directement mais nécessaire pour la type-safety

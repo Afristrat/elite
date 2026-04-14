@@ -401,60 +401,56 @@ export function ProjectForm({ theses, initialProjectId, initialData }: ProjectFo
   // ─── Indicateur de sauvegarde ────────────────────────────────────────────
 
   const SaveIndicator = () => (
-    <span className="text-xs text-gray-500">
-      {saveStatus === 'saving' && '⟳ Sauvegarde…'}
+    <span className="text-xs text-on-surface-variant flex items-center gap-1">
+      {saveStatus === 'saving' && <><span>⟳</span> Sauvegarde…</>}
       {saveStatus === 'saved' && lastSaved && (
-        <>✓ Sauvegardé à {lastSaved.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</>
+        <><span>💾</span> Sauvegardé à {lastSaved.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}</>
       )}
-      {saveStatus === 'error' && <span className="text-red-400">⚠ Erreur de sauvegarde</span>}
+      {saveStatus === 'error' && <span className="text-na-error">⚠ Erreur de sauvegarde</span>}
     </span>
   )
 
   // ─── Rendu ───────────────────────────────────────────────────────────────
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6">
+    <div className="max-w-3xl mx-auto space-y-8">
       {/* Stepper */}
-      <div className="flex items-center gap-0">
-        {STEPS.map((s, i) => (
-          <div key={s.id} className="flex items-center flex-1">
+      <div className="relative flex justify-between items-center">
+        {/* Ligne de fond */}
+        <div className="absolute top-1/2 left-0 w-full h-[2px] bg-surface-container-high -translate-y-1/2 z-0" />
+        {/* Ligne active */}
+        <div
+          className="absolute top-1/2 h-[2px] bg-na-primary -translate-y-1/2 z-0 transition-all"
+          style={{ width: `${((step - 1) / (STEPS.length - 1)) * 100}%` }}
+        />
+        {STEPS.map((s) => (
+          <div key={s.id} className="z-10 flex flex-col items-center gap-2">
             <button
               type="button"
               onClick={() => { if (s.id < step) setStep(s.id) }}
               disabled={s.id > step}
-              className={cn(
-                'flex flex-col items-center gap-1 flex-shrink-0 group disabled:cursor-not-allowed',
-                s.id < step && 'cursor-pointer',
-              )}
+              className="disabled:cursor-not-allowed"
             >
               <div
                 className={cn(
-                  'w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold transition-colors',
-                  s.id === step && 'bg-blue-600 text-white',
-                  s.id < step && 'bg-green-600 text-white',
-                  s.id > step && 'bg-gray-800 text-gray-500',
+                  'w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all',
+                  s.id === step && 'bg-na-primary text-on-primary shadow-[0_0_15px_rgba(164,201,255,0.4)]',
+                  s.id < step && 'bg-na-tertiary-dim text-on-surface',
+                  s.id > step && 'bg-surface-container-high text-on-surface-variant',
                 )}
               >
                 {s.id < step ? '✓' : s.id}
               </div>
-              <span
-                className={cn(
-                  'text-xs hidden md:block',
-                  s.id === step && 'text-white font-medium',
-                  s.id !== step && 'text-gray-500',
-                )}
-              >
-                {s.label}
-              </span>
             </button>
-            {i < STEPS.length - 1 && (
-              <div
-                className={cn(
-                  'h-px flex-1 mx-2 transition-colors',
-                  i < step - 1 ? 'bg-green-600' : 'bg-gray-700',
-                )}
-              />
-            )}
+            <span
+              className={cn(
+                'text-[10px] font-semibold uppercase tracking-widest hidden md:block',
+                s.id === step && 'text-na-primary',
+                s.id !== step && 'text-on-surface-variant',
+              )}
+            >
+              {s.label}
+            </span>
           </div>
         ))}
       </div>
@@ -462,16 +458,16 @@ export function ProjectForm({ theses, initialProjectId, initialData }: ProjectFo
       {/* En-tête étape */}
       <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-white">
+          <h2 className="text-lg font-semibold text-on-surface">
             Étape {step} — {STEPS[step - 1]?.label}
           </h2>
-          <p className="text-sm text-gray-400">{STEPS[step - 1]?.description}</p>
+          <p className="text-sm text-on-surface-variant mt-0.5">{STEPS[step - 1]?.description}</p>
         </div>
         <SaveIndicator />
       </div>
 
       {/* Contenu de l'étape */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-5">
+      <div className="bg-surface-container border border-border/15 rounded-xl p-10 shadow-2xl shadow-black/40 space-y-10">
         {step === 1 && <Step1 form={form} tagInput={tagInput} setTagInput={setTagInput} onAddTag={addTag} onRemoveTag={removeTag} />}
         {step === 2 && <Step2 form={form} />}
         {step === 3 && <Step3 form={form} />}
@@ -485,7 +481,7 @@ export function ProjectForm({ theses, initialProjectId, initialData }: ProjectFo
           type="button"
           onClick={handleBack}
           disabled={step === 1}
-          className="px-4 py-2 text-sm text-gray-400 hover:text-gray-200 disabled:opacity-40 disabled:cursor-not-allowed border border-gray-700 rounded-lg hover:border-gray-600 transition-colors"
+          className="px-5 py-2.5 text-sm text-on-surface-variant hover:text-on-surface disabled:opacity-40 disabled:cursor-not-allowed border border-border/10 rounded-xl hover:border-border/30 transition-colors"
         >
           ← Retour
         </button>
@@ -494,7 +490,7 @@ export function ProjectForm({ theses, initialProjectId, initialData }: ProjectFo
           <button
             type="button"
             onClick={handleNext}
-            className="px-6 py-2 text-sm font-medium bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors disabled:opacity-50"
+            className="px-6 py-2.5 text-sm font-semibold bg-primary-container text-on-primary-container hover:bg-na-primary hover:text-on-primary rounded-xl transition-all disabled:opacity-50"
           >
             Suivant →
           </button>
@@ -503,7 +499,7 @@ export function ProjectForm({ theses, initialProjectId, initialData }: ProjectFo
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="px-6 py-2 text-sm font-medium bg-green-600 hover:bg-green-500 text-white rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-2.5 text-sm font-semibold bg-na-tertiary-container/20 text-na-tertiary-dim border border-na-tertiary-dim/30 hover:bg-na-tertiary-dim hover:text-on-tertiary rounded-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Soumission en cours…' : 'Soumettre pour évaluation'}
           </button>
@@ -591,7 +587,7 @@ function Step1({
               type="button"
               onClick={onAddTag}
               disabled={tags.length >= 10 || !tagInput.trim()}
-              className="px-3 py-2 text-sm bg-gray-700 hover:bg-gray-600 text-gray-200 rounded-lg disabled:opacity-40 transition-colors"
+              className="px-3 py-2 text-sm bg-surface-container-high hover:bg-surface-container-highest text-on-surface rounded-lg disabled:opacity-40 transition-colors"
             >
               +
             </button>
@@ -600,13 +596,13 @@ function Step1({
           {/* Tags recommandés */}
           {availableSuggestions.length > 0 && tags.length < 10 && (
             <div className="flex flex-wrap gap-1.5">
-              <span className="text-xs text-gray-600 self-center">Suggestions :</span>
+              <span className="text-xs text-on-surface-variant/50 self-center">Suggestions :</span>
               {availableSuggestions.slice(0, 6).map((tag) => (
                 <button
                   key={tag}
                   type="button"
                   onClick={() => addSuggestedTag(tag)}
-                  className="text-xs px-2 py-0.5 bg-gray-800 hover:bg-gray-700 border border-gray-700 hover:border-gray-500 text-gray-400 hover:text-gray-200 rounded-full transition-colors"
+                  className="text-xs px-2 py-0.5 bg-surface-container-highest hover:bg-surface-container-high border border-border/10 hover:border-primary/20 text-on-surface-variant hover:text-on-surface rounded-full transition-colors"
                 >
                   + {tag}
                 </button>
@@ -619,13 +615,13 @@ function Step1({
               {tags.map((tag) => (
                 <span
                   key={tag}
-                  className="inline-flex items-center gap-1 px-2 py-1 bg-blue-600/20 text-blue-300 text-xs rounded-full"
+                  className="inline-flex items-center gap-1 px-2 py-1 bg-primary-container/20 text-na-primary text-xs rounded-full"
                 >
                   {tag}
                   <button
                     type="button"
                     onClick={() => onRemoveTag(tag)}
-                    className="hover:text-white transition-colors"
+                    className="hover:text-on-surface transition-colors"
                     aria-label={`Supprimer ${tag}`}
                   >
                     ×
@@ -821,24 +817,24 @@ function Step3({
 
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <label className="text-sm font-medium text-gray-300">Scénarios Monte Carlo *</label>
-          <span className={cn('text-xs font-mono', probError ? 'text-red-400' : 'text-green-400')}>
+          <label className="block text-on-surface-variant text-[11px] font-semibold uppercase tracking-widest">Scénarios Monte Carlo *</label>
+          <span className={cn('text-xs font-mono', probError ? 'text-na-error' : 'text-na-tertiary-dim')}>
             Total : {totalProb.toFixed(0)}% {!probError && '✓'}
           </span>
         </div>
         {probError && (
-          <p className="text-xs text-red-400">Les probabilités doivent totaliser 100%</p>
+          <p className="text-xs text-na-error">Les probabilités doivent totaliser 100%</p>
         )}
 
         <div className="space-y-3">
           {(
             [
-              { key: 'pessimistic', label: 'Pessimiste', color: 'border-red-800' },
-              { key: 'realistic', label: 'Réaliste', color: 'border-yellow-800' },
-              { key: 'optimistic', label: 'Optimiste', color: 'border-green-800' },
+              { key: 'pessimistic', label: 'Pessimiste', color: 'border-na-error/30 bg-na-error-container/5' },
+              { key: 'realistic', label: 'Réaliste', color: 'border-na-secondary/30 bg-na-secondary-container/10' },
+              { key: 'optimistic', label: 'Optimiste', color: 'border-na-tertiary-dim/30 bg-na-tertiary-container/5' },
             ] as const
           ).map(({ key, label, color }) => (
-            <div key={key} className={cn('border rounded-lg p-4 space-y-3', color, 'bg-gray-800/50')}>
+            <div key={key} className={cn('border rounded-xl p-6 space-y-4', color)}>
               <h4 className="text-sm font-medium text-gray-200">{label}</h4>
               <div className="grid grid-cols-2 gap-3">
                 <Field label="Probabilité (%)" error={errors.scenarios?.[key]?.probability?.message}>
@@ -916,10 +912,10 @@ function Step4({
       </Field>
 
       <div className="space-y-3">
-        <label className="text-sm font-medium text-gray-300 block">
+        <label className="block text-on-surface-variant text-[11px] font-semibold uppercase tracking-widest">
           3 Hypothèses vérifiables *
         </label>
-        <p className="text-xs text-gray-500">
+        <p className="text-xs text-on-surface-variant/60">
           Formulations falsifiables — comment saurez-vous que vous aviez tort ou raison ?
         </p>
         {([0, 1, 2] as const).map((i) => (
@@ -1047,15 +1043,15 @@ function Step5({
                 type="button"
                 onClick={() => toggleThesis(thesis.id)}
                 className={cn(
-                  'w-full text-left p-3 rounded-lg border transition-colors',
+                  'w-full text-left p-4 rounded-lg border transition-all',
                   selectedTheses.includes(thesis.id)
-                    ? 'border-blue-600 bg-blue-600/10 text-blue-300'
-                    : 'border-gray-700 bg-gray-800 text-gray-300 hover:border-gray-600',
+                    ? 'border-primary/40 bg-primary-container/20 text-na-primary'
+                    : 'border-border/10 bg-surface-container-lowest text-on-surface-variant hover:border-primary/20 hover:text-on-surface',
                 )}
               >
                 <div className="text-sm font-medium">{thesis.title}</div>
                 {thesis.description && (
-                  <div className="text-xs text-gray-500 mt-0.5">{thesis.description}</div>
+                  <div className="text-xs text-on-surface-variant/60 mt-0.5">{thesis.description}</div>
                 )}
               </button>
             ))}
@@ -1063,9 +1059,9 @@ function Step5({
         </Field>
       )}
 
-      <div className="bg-blue-950/30 border border-blue-900 rounded-lg p-4 space-y-2">
-        <h4 className="text-sm font-medium text-blue-300">Ce qui se passera après la soumission</h4>
-        <ul className="text-xs text-gray-400 space-y-1">
+      <div className="bg-primary-container/10 border border-primary-container/30 rounded-xl p-5 space-y-2">
+        <h4 className="text-sm font-semibold text-na-primary">Ce qui se passera après la soumission</h4>
+        <ul className="text-xs text-on-surface-variant space-y-1">
           <li>• L&apos;équipe sera notifiée (email + WhatsApp) qu&apos;un nouveau projet est disponible</li>
           <li>• Vous ne pourrez plus modifier le projet une fois soumis</li>
           <li>• Vous ne pourrez pas évaluer votre propre projet (règle d&apos;indépendance)</li>
@@ -1090,11 +1086,11 @@ function Field({
   children: React.ReactNode
 }): React.JSX.Element {
   return (
-    <div className="space-y-1.5">
-      <label className="text-sm font-medium text-gray-300 block">{label}</label>
-      {description && <p className="text-xs text-gray-500">{description}</p>}
+    <div className="space-y-3">
+      <label className="block text-on-surface-variant text-[11px] font-semibold uppercase tracking-widest">{label}</label>
+      {description && <p className="text-xs text-on-surface-variant/60">{description}</p>}
       {children}
-      {error && <p className="text-xs text-red-400">{error}</p>}
+      {error && <p className="text-xs text-na-error">{error}</p>}
     </div>
   )
 }
@@ -1115,13 +1111,13 @@ function SelectCard({
       type="button"
       onClick={onClick}
       className={cn(
-        'p-3 rounded-lg border text-left transition-colors w-full',
+        'p-4 rounded-lg border text-left transition-all w-full',
         selected
-          ? 'border-blue-500 bg-blue-600/10 text-blue-300'
-          : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600 hover:text-gray-300',
+          ? 'border-primary/40 bg-primary-container/20 text-na-primary'
+          : 'border-border/10 bg-surface-container-lowest text-on-surface-variant hover:border-primary/20 hover:text-on-surface',
       )}
     >
-      <div className="text-sm font-medium">{label}</div>
+      <div className="text-sm font-semibold">{label}</div>
       <div className="text-xs mt-0.5 opacity-70">{description}</div>
     </button>
   )
@@ -1130,4 +1126,4 @@ function SelectCard({
 // ─── Classes utilitaires ──────────────────────────────────────────────────────
 
 const inputClass =
-  'w-full bg-gray-800 border border-gray-700 rounded-lg px-3 py-2 text-sm text-gray-100 placeholder-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 transition-colors'
+  'w-full bg-surface-container-lowest border border-border/10 rounded-lg px-5 py-4 focus:border-primary/40 focus:ring-0 focus:outline-none transition-all placeholder:text-outline/50 text-on-surface'

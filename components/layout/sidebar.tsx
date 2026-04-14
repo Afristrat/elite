@@ -16,22 +16,22 @@ type NavItem = {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { href: '/dashboard',           label: 'Dashboard',    icon: '◉', roles: ['admin', 'evaluateur', 'contributeur'] },
-  { href: '/projects',            label: 'Projets',      icon: '◈', roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-projects' },
-  { href: '/decisions',           label: 'Décisions',    icon: '◆', roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-decisions' },
-  { href: '/committee-charter',   label: 'Charte',       icon: '◎', roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-charter' },
-  { href: '/analytics',           label: 'Analytics',    icon: '◑', roles: ['admin'], tourId: 'nav-analytics' },
+  { href: '/dashboard',           label: 'Tableau de bord', icon: 'dashboard',         roles: ['admin', 'evaluateur', 'contributeur'] },
+  { href: '/projects',            label: 'Projets',          icon: 'folder_special',    roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-projects' },
+  { href: '/decisions',           label: 'Décisions',        icon: 'gavel',             roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-decisions' },
+  { href: '/committee-charter',   label: 'Charte',           icon: 'menu_book',         roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-charter' },
+  { href: '/analytics',           label: 'Analytiques',      icon: 'analytics',         roles: ['admin'], tourId: 'nav-analytics' },
 ]
 
 const ADMIN_ITEMS: NavItem[] = [
-  { href: '/admin/members',     label: 'Membres',      icon: '◐', roles: ['admin'], tourId: 'nav-admin-members' },
-  { href: '/admin/invitations', label: 'Invitations',  icon: '◒', roles: ['admin'] },
-  { href: '/admin/theses',      label: 'Thèses',       icon: '◓', roles: ['admin'] },
-  { href: '/admin/settings',    label: 'Paramètres',   icon: '◔', roles: ['admin'] },
+  { href: '/admin/members',     label: 'Membres',      icon: 'group',               roles: ['admin'], tourId: 'nav-admin-members' },
+  { href: '/admin/invitations', label: 'Invitations',  icon: 'mail',                roles: ['admin'] },
+  { href: '/admin/theses',      label: 'Thèses',       icon: 'lightbulb',           roles: ['admin'] },
+  { href: '/admin/settings',    label: 'Paramètres',   icon: 'settings',            roles: ['admin'] },
 ]
 
 const SETTINGS_ITEMS: NavItem[] = [
-  { href: '/settings/api-keys', label: 'Clés API', icon: '⚿', roles: ['admin', 'evaluateur', 'contributeur'] },
+  { href: '/settings/api-keys', label: 'Clés API', icon: 'key', roles: ['admin', 'evaluateur', 'contributeur'] },
 ]
 
 type SidebarProps = {
@@ -46,13 +46,13 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
   const visibleSettings = SETTINGS_ITEMS.filter((item) => item.roles.includes(role))
 
   return (
-    <aside className="hidden md:flex flex-col w-60 min-h-screen bg-gray-900 border-r border-gray-800 px-3 py-4">
+    <aside className="hidden md:flex flex-col w-[240px] min-h-screen bg-surface-container-low border-r border-border/10 py-6 px-4 z-50">
       {/* Logo */}
-      <div className="flex items-center gap-3 px-3 py-2 mb-6">
-        <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center shrink-0">
-          <span className="text-white font-bold text-sm">V</span>
-        </div>
-        <span className="text-white font-semibold text-sm">Projets Elite</span>
+      <div className="mb-8 px-2">
+        <h1 className="text-xl font-bold tracking-[0.05em] text-on-surface">Veille Élite</h1>
+        <p className="text-[0.6875rem] uppercase tracking-widest text-on-surface-variant mt-1 opacity-60">
+          Comité d&apos;Investissement
+        </p>
       </div>
 
       {/* Navigation principale */}
@@ -63,13 +63,13 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
             href={item.href}
             {...(item.tourId ? { 'data-tour': item.tourId } : {})}
             className={cn(
-              'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
               pathname.startsWith(item.href)
-                ? 'bg-blue-600/20 text-blue-400 font-medium'
-                : 'text-gray-400 hover:bg-gray-800 hover:text-gray-100'
+                ? 'bg-surface-container-highest text-na-primary font-semibold'
+                : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
             )}
           >
-            <span className="text-xs">{item.icon}</span>
+            <span className="material-symbols-outlined text-[1.25rem] leading-none">{item.icon}</span>
             {item.label}
           </Link>
         ))}
@@ -77,7 +77,7 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
         {/* Section admin */}
         {visibleAdmin.length > 0 && (
           <div className="pt-4">
-            <p className="px-3 text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+            <p className="px-3 text-[0.6rem] font-bold text-on-surface-variant uppercase tracking-widest mb-1 opacity-60">
               Administration
             </p>
             {visibleAdmin.map((item) => (
@@ -86,13 +86,13 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
                 href={item.href}
                 {...(item.tourId ? { 'data-tour': item.tourId } : {})}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
                   pathname.startsWith(item.href)
-                    ? 'bg-blue-600/20 text-blue-400 font-medium'
-                    : 'text-gray-400 hover:bg-gray-800 hover:text-gray-100'
+                    ? 'bg-surface-container-highest text-na-primary font-semibold'
+                    : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
                 )}
               >
-                <span className="text-xs">{item.icon}</span>
+                <span className="material-symbols-outlined text-[1.25rem] leading-none">{item.icon}</span>
                 {item.label}
               </Link>
             ))}
@@ -102,7 +102,7 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
         {/* Section paramètres */}
         {visibleSettings.length > 0 && (
           <div className="pt-4">
-            <p className="px-3 text-xs font-medium text-gray-500 uppercase tracking-wider mb-1">
+            <p className="px-3 text-[0.6rem] font-bold text-on-surface-variant uppercase tracking-widest mb-1 opacity-60">
               Paramètres
             </p>
             {visibleSettings.map((item) => (
@@ -110,19 +110,32 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  'flex items-center gap-3 px-3 py-2 rounded-lg text-sm transition-colors',
+                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
                   pathname.startsWith(item.href)
-                    ? 'bg-blue-600/20 text-blue-400 font-medium'
-                    : 'text-gray-400 hover:bg-gray-800 hover:text-gray-100'
+                    ? 'bg-surface-container-highest text-na-primary font-semibold'
+                    : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
                 )}
               >
-                <span className="text-xs">{item.icon}</span>
+                <span className="material-symbols-outlined text-[1.25rem] leading-none">{item.icon}</span>
                 {item.label}
               </Link>
             ))}
           </div>
         )}
       </nav>
+
+      {/* Pied de sidebar */}
+      <div className="mt-auto pt-4 border-t border-border/10">
+        <div className="space-y-1">
+          <Link
+            href="/help"
+            className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface text-xs transition-all rounded-lg"
+          >
+            <span className="material-symbols-outlined text-sm leading-none">help</span>
+            Aide
+          </Link>
+        </div>
+      </div>
     </aside>
   )
 }

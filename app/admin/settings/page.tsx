@@ -13,8 +13,8 @@ export default async function AdminSettingsPage(): Promise<React.JSX.Element> {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Paramètres globaux</h1>
-        <p className="text-gray-400 text-sm mt-1">
+        <h1 className="text-2xl font-bold text-on-surface">Paramètres globaux</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
           Configuration générale de la plateforme Projets Elite
         </p>
       </div>

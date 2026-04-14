@@ -59,8 +59,8 @@ export default async function AdminMembersPage({ searchParams }: AdminMembersPag
       )}
 
       <div>
-        <h1 className="text-2xl font-bold text-white">Membres</h1>
-        <p className="text-gray-400 text-sm mt-1">
+        <h1 className="text-2xl font-bold text-on-surface">Membres</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
           {members?.length ?? 0} membre{(members?.length ?? 0) > 1 ? 's' : ''} dans le groupe
         </p>
       </div>

@@ -57,22 +57,22 @@ export default async function PreMortemPage({ params }: PreMortemPageProps): Pro
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+        <Link href={`/projects/${id}`} className="text-xs text-on-surface-variant hover:text-on-surface transition-colors">
           ← Retour au projet
         </Link>
-        <h1 className="text-xl font-bold text-white mt-2">Pre-Mortem collectif</h1>
-        <p className="text-gray-400 text-sm mt-1">
-          Exercice de prospective pour <span className="text-white font-medium">{project.title}</span>
+        <h1 className="text-xl font-bold text-on-surface mt-2">Pre-Mortem collectif</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
+          Exercice de prospective pour <span className="text-on-surface font-medium">{project.title}</span>
         </p>
       </div>
 
       {/* Explication */}
-      <div className="bg-red-950/15 border border-red-900/30 rounded-xl p-4">
+      <div className="bg-na-error-container/10 border border-na-error/20 rounded-xl p-4">
         <div className="flex items-start gap-3">
           <span className="text-2xl mt-0.5">🪦</span>
           <div>
-            <p className="text-sm font-semibold text-red-300">Méthode Pre-Mortem (Gary Klein, 1989)</p>
-            <p className="text-sm text-gray-400 mt-1">
+            <p className="text-sm font-semibold text-na-error">Méthode Pre-Mortem (Gary Klein, 1989)</p>
+            <p className="text-sm text-on-surface-variant mt-1">
               Imaginez que nous sommes dans 18 mois et que ce projet a échoué.
               Raisonnez à rebours : décrivez comment l&apos;échec s&apos;est produit et quels risques ont été sous-estimés.
               Chaque contribution est anonyme et agrégée.
@@ -84,19 +84,19 @@ export default async function PreMortemPage({ params }: PreMortemPageProps): Pro
       {/* Stats */}
       {(responses.length > 0 || isClosed) && (
         <div className="grid grid-cols-3 gap-4">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-            <p className="text-xs text-gray-500">Contributions</p>
-            <p className="text-xl font-bold text-white mt-1">{responses.length}</p>
+          <div className="bg-surface-container border border-border/10 rounded-xl p-4">
+            <p className="text-xs text-on-surface-variant">Contributions</p>
+            <p className="text-xl font-bold text-on-surface mt-1">{responses.length}</p>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-            <p className="text-xs text-gray-500">Statut</p>
-            <p className={`text-sm font-bold mt-1 ${isClosed ? 'text-green-400' : 'text-orange-400'}`}>
+          <div className="bg-surface-container border border-border/10 rounded-xl p-4">
+            <p className="text-xs text-on-surface-variant">Statut</p>
+            <p className={`text-sm font-bold mt-1 ${isClosed ? 'text-na-tertiary-dim' : 'text-na-secondary'}`}>
               {isClosed ? 'Clôturé' : 'En cours'}
             </p>
           </div>
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-            <p className="text-xs text-gray-500">Scénarios récoltés</p>
-            <p className="text-xl font-bold text-white mt-1">
+          <div className="bg-surface-container border border-border/10 rounded-xl p-4">
+            <p className="text-xs text-on-surface-variant">Scénarios récoltés</p>
+            <p className="text-xl font-bold text-on-surface mt-1">
               {responses.filter((r) => r.failure_scenario).length}
             </p>
           </div>
@@ -119,16 +119,16 @@ export default async function PreMortemPage({ params }: PreMortemPageProps): Pro
         <div className="space-y-4">
           {/* Scénarios d'échec */}
           {(aggregation?.failure_scenarios ?? responses.map((r) => r.failure_scenario)).some(Boolean) && (
-            <div className="bg-red-950/10 border border-red-900/20 rounded-xl p-5">
-              <h2 className="text-sm font-semibold text-red-300 mb-3">
+            <div className="bg-na-error-container/10 border border-na-error/20 rounded-xl p-5">
+              <h2 className="text-sm font-semibold text-na-error mb-3">
                 🪦 Scénarios d&apos;échec ({responses.filter((r) => r.failure_scenario).length})
               </h2>
               <div className="space-y-3">
                 {(aggregation?.failure_scenarios ?? responses.map((r) => r.failure_scenario))
                   .filter(Boolean)
                   .map((scenario, i) => (
-                    <div key={i} className="pl-3 border-l-2 border-red-800/50">
-                      <p className="text-sm text-gray-300 leading-relaxed">{scenario}</p>
+                    <div key={i} className="pl-3 border-l-2 border-na-error/40">
+                      <p className="text-sm text-on-surface-variant leading-relaxed">{scenario}</p>
                     </div>
                   ))}
               </div>
@@ -137,16 +137,16 @@ export default async function PreMortemPage({ params }: PreMortemPageProps): Pro
 
           {/* Risques majeurs */}
           {(aggregation?.major_risks ?? responses.map((r) => r.major_risks)).some(Boolean) && (
-            <div className="bg-orange-950/10 border border-orange-900/20 rounded-xl p-5">
-              <h2 className="text-sm font-semibold text-orange-300 mb-3">
+            <div className="bg-na-secondary-container/20 border border-na-secondary/20 rounded-xl p-5">
+              <h2 className="text-sm font-semibold text-na-secondary mb-3">
                 ⚠️ Risques majeurs identifiés ({responses.filter((r) => r.major_risks).length})
               </h2>
               <div className="space-y-3">
                 {(aggregation?.major_risks ?? responses.map((r) => r.major_risks))
                   .filter(Boolean)
                   .map((risk, i) => (
-                    <div key={i} className="pl-3 border-l-2 border-orange-800/50">
-                      <p className="text-sm text-gray-300 leading-relaxed">{risk}</p>
+                    <div key={i} className="pl-3 border-l-2 border-na-secondary/40">
+                      <p className="text-sm text-on-surface-variant leading-relaxed">{risk}</p>
                     </div>
                   ))}
               </div>
@@ -155,9 +155,9 @@ export default async function PreMortemPage({ params }: PreMortemPageProps): Pro
         </div>
       )}
 
-      <div className="bg-gray-900/50 border border-gray-800/50 rounded-xl p-4">
-        <p className="text-xs text-gray-600">
-          <span className="text-gray-500 font-medium">Pre-Mortem</span> — Gary Klein (1989).
+      <div className="bg-surface-container-low border border-border/10 rounded-xl p-4">
+        <p className="text-xs text-on-surface-variant/50">
+          <span className="text-on-surface-variant font-medium">Pre-Mortem</span> — Gary Klein (1989).
           Contrairement au post-mortem, le pre-mortem projette l&apos;échec dans le futur pour lever les biais de confirmation avant la décision.
           Toutes les réponses sont anonymisées.
         </p>

@@ -87,75 +87,100 @@ export default async function BattingAveragePage(): Promise<React.JSX.Element> {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Batting Average & Slugging</h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-on-surface">Batting Average &amp; Slugging</h1>
+          <p className="text-on-surface-variant text-sm mt-1">
             Métriques de qualité décisionnelle — analogie baseball appliquée au comité d&apos;investissement
           </p>
         </div>
-        <Link href="/analytics" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">← Analytics</Link>
+        <Link href="/analytics" className="text-xs text-primary hover:text-primary/80 transition-colors">← Analytics</Link>
       </div>
 
       {all.length === 0 ? (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-          <p className="text-gray-500 text-sm">Aucune décision disponible</p>
+        <div className="bg-surface-container border border-border/10 rounded-xl p-8 text-center">
+          <p className="text-muted-foreground text-sm">Aucune décision disponible</p>
         </div>
       ) : (
         <div className="space-y-5">
           {/* KPIs principaux */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-              <p className="text-xs text-gray-500">Batting Average</p>
-              <p className={cn('text-2xl font-bold mt-1', battingAverage !== null ? (battingAverage >= 60 ? 'text-green-400' : battingAverage >= 40 ? 'text-yellow-400' : 'text-red-400') : 'text-gray-400')}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-surface-container border border-border/10 rounded-xl p-6 hover:bg-surface-container-high transition-colors">
+              <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Batting Average</p>
+              <p className={cn('text-4xl font-bold tracking-tighter mt-4', battingAverage !== null ? (battingAverage >= 60 ? 'text-na-tertiary-dim' : battingAverage >= 40 ? 'text-yellow-400' : 'text-destructive') : 'text-on-surface-variant')}>
                 {battingAverage !== null ? `${battingAverage.toFixed(0)}%` : '—'}
               </p>
-              <p className="text-xs text-gray-600 mt-0.5">Approbations / Total</p>
+              {battingAverage !== null && (
+                <div className="mt-4 h-1 w-full bg-surface-container-low rounded-full overflow-hidden">
+                  <div className="h-full bg-primary rounded-full" style={{ width: `${battingAverage}%` }} />
+                </div>
+              )}
+              <p className="text-[10px] text-on-surface-variant mt-2">Approbations / Total</p>
             </div>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-              <p className="text-xs text-gray-500">Slugging (MOIC moyen)</p>
-              <p className={cn('text-2xl font-bold mt-1', avgMoic !== null ? (avgMoic >= 3 ? 'text-green-400' : 'text-yellow-400') : 'text-gray-400')}>
+            <div className="bg-surface-container border border-border/10 rounded-xl p-6 hover:bg-surface-container-high transition-colors">
+              <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Slugging (MOIC moyen)</p>
+              <p className={cn('text-4xl font-bold tracking-tighter mt-4', avgMoic !== null ? (avgMoic >= 3 ? 'text-na-tertiary-dim' : 'text-yellow-400') : 'text-on-surface-variant')}>
                 {avgMoic !== null ? `${avgMoic.toFixed(1)}×` : '—'}
               </p>
-              <p className="text-xs text-gray-600 mt-0.5">Projets approuvés</p>
+              <p className="text-[10px] text-on-surface-variant italic mt-2">Multiplicateur moyen pondéré</p>
             </div>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-              <p className="text-xs text-gray-500">Score comité moyen</p>
-              <p className={cn('text-2xl font-bold mt-1', avgApprovedScore !== null ? (avgApprovedScore >= 7 ? 'text-green-400' : 'text-yellow-400') : 'text-gray-400')}>
-                {avgApprovedScore !== null ? `${avgApprovedScore.toFixed(1)} / 10` : '—'}
+            <div className="bg-surface-container border border-border/10 rounded-xl p-6 hover:bg-surface-container-high transition-colors">
+              <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">Score comité</p>
+              <p className={cn('text-4xl font-bold tracking-tighter mt-4', avgApprovedScore !== null ? (avgApprovedScore >= 7 ? 'text-primary' : 'text-yellow-400') : 'text-on-surface-variant')}>
+                {avgApprovedScore !== null ? `${avgApprovedScore.toFixed(1)}/10` : '—'}
               </p>
-              <p className="text-xs text-gray-600 mt-0.5">Évaluations pré-approbation</p>
+              <p className="text-[10px] text-on-surface-variant italic mt-2">Indice de confiance interne</p>
             </div>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-              <p className="text-xs text-gray-500">OPS Score</p>
-              <p className={cn('text-2xl font-bold mt-1', opsScore !== null ? 'text-blue-400' : 'text-gray-400')}>
+            <div className="bg-surface-container border border-border/10 rounded-xl p-6 hover:bg-surface-container-high transition-colors">
+              <p className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider">OPS Score</p>
+              <p className={cn('text-4xl font-bold tracking-tighter mt-4', opsScore !== null ? 'text-on-surface' : 'text-on-surface-variant')}>
                 {opsScore ?? '—'}
               </p>
-              <p className="text-xs text-gray-600 mt-0.5">BA + Slugging composite</p>
+              <p className="text-[10px] text-on-surface-variant mt-2">Performances agrégées</p>
             </div>
           </div>
 
           {/* Activité récente */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <KPICard label="Décisions 90j" value={String(last90days.length)} sub="dernier trimestre" />
-            <KPICard label="Approuvés" value={String(approved.length)} color="text-green-400" />
-            <KPICard label="Rejetés" value={String(rejected.length)} color="text-red-400" />
-            <KPICard label="Différés" value={String(deferred.length)} color="text-yellow-400" />
+          <div className="flex flex-wrap items-center gap-6 py-3 border-y border-border/10">
+            <div className="flex items-center gap-2 px-2">
+              <span className="text-lg font-bold text-on-surface">{last90days.length}</span>
+              <span className="text-on-surface-variant text-xs font-medium uppercase tracking-wide">décisions 90j</span>
+            </div>
+            <div className="h-4 w-px bg-border/20 hidden md:block" />
+            <div className="flex items-center gap-2 bg-na-tertiary-container/10 px-3 py-1 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-na-tertiary-dim" />
+              <span className="text-na-tertiary-dim text-xs font-bold">{approved.length} Approuvés</span>
+            </div>
+            <div className="flex items-center gap-2 bg-destructive/10 px-3 py-1 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-destructive" />
+              <span className="text-destructive text-xs font-bold">{rejected.length} Rejetés</span>
+            </div>
+            <div className="flex items-center gap-2 bg-surface-container-high px-3 py-1 rounded-full">
+              <span className="w-1.5 h-1.5 rounded-full bg-on-surface-variant" />
+              <span className="text-on-surface-variant text-xs font-bold">{deferred.length} Différés</span>
+            </div>
           </div>
 
           {/* Distribution MOIC */}
           {moicValues.length > 0 && (
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
-              <h2 className="text-sm font-semibold text-gray-200">Distribution MOIC cible — Projets approuvés</h2>
-              <div className="space-y-2">
-                {moicBuckets.map(({ label, filter }) => {
+            <div className="bg-surface-container-low border border-border/10 rounded-xl p-6 space-y-4">
+              <h2 className="text-on-surface text-lg font-semibold">Distribution des Multiples (MOIC)</h2>
+              <div className="grid grid-cols-5 items-end gap-4 h-40 px-4">
+                {moicBuckets.map(({ label, filter }, idx) => {
                   const count = moicValues.filter(filter).length
                   const pct = moicValues.length > 0 ? Math.round((count / moicValues.length) * 100) : 0
+                  const barColors = [
+                    'bg-destructive/40 hover:bg-destructive/60',
+                    'bg-on-surface-variant/40 hover:bg-on-surface-variant/60',
+                    'bg-primary/40 hover:bg-primary/60',
+                    'bg-na-tertiary-dim/40 hover:bg-na-tertiary-dim/60',
+                    'border-2 border-dashed border-border/30',
+                  ]
                   return (
-                    <div key={label} className="flex items-center gap-3">
-                      <span className="text-xs text-gray-500 w-14">{label}</span>
-                      <div className="flex-1 h-2 bg-gray-800 rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-600 rounded-full" style={{ width: `${pct}%` }} />
-                      </div>
-                      <span className="text-xs text-gray-500 w-16 text-right">{count} ({pct}%)</span>
+                    <div key={label} className="flex flex-col items-center gap-3 h-full justify-end group">
+                      <div
+                        className={cn('w-full rounded-t-lg transition-colors', barColors[idx])}
+                        style={{ height: `${Math.max(pct, 0)}%` }}
+                      />
+                      <span className={cn('text-[10px] font-bold', idx === 2 ? 'text-primary tracking-widest' : 'text-on-surface-variant')}>{label}</span>
                     </div>
                   )
                 })}
@@ -164,56 +189,58 @@ export default async function BattingAveragePage(): Promise<React.JSX.Element> {
           )}
 
           {/* Historique des décisions */}
-          <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
-            <div className="px-5 py-4 border-b border-gray-800">
-              <h2 className="text-sm font-semibold text-gray-200">Historique ({all.length} décisions)</h2>
+          <div className="bg-surface-container border border-border/10 rounded-xl overflow-hidden">
+            <div className="px-6 py-4 border-b border-border/10 bg-surface-container-high/30 flex items-center justify-between">
+              <h2 className="text-on-surface font-semibold text-sm">Décisions récentes ({all.length})</h2>
             </div>
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-800">
-                  <th className="text-left text-xs text-gray-500 px-4 py-3">Projet</th>
-                  <th className="text-left text-xs text-gray-500 px-4 py-3">Décision</th>
-                  <th className="text-right text-xs text-gray-500 px-4 py-3">MOIC cible</th>
-                  <th className="text-right text-xs text-gray-500 px-4 py-3">Date</th>
-                </tr>
-              </thead>
-              <tbody>
-                {all.slice(0, 20).map((d) => {
-                  const p = d.projects as { title?: string; moic_target?: number | null } | null
-                  const dColors: Record<DecisionType, string> = {
-                    approved: 'text-green-400',
-                    rejected: 'text-red-400',
-                    deferred: 'text-yellow-400',
-                  }
-                  return (
-                    <tr key={d.id} className="border-b border-gray-800/50 hover:bg-gray-800/20">
-                      <td className="px-4 py-3">
-                        <Link href={`/projects/${d.project_id}`} className="text-sm text-white hover:text-blue-300 transition-colors">
-                          {p?.title ?? d.project_id}
-                        </Link>
-                      </td>
-                      <td className="px-4 py-3">
-                        <span className={cn('text-xs font-semibold', dColors[d.decision])}>
-                          {d.decision}
-                        </span>
-                      </td>
-                      <td className="px-4 py-3 text-right text-xs text-gray-400">
-                        {p?.moic_target ? `${p.moic_target}×` : '—'}
-                      </td>
-                      <td className="px-4 py-3 text-right text-xs text-gray-500">
-                        {new Date(d.created_at).toLocaleDateString('fr-FR')}
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+              <table className="w-full text-left">
+                <thead>
+                  <tr className="text-on-surface-variant text-[10px] font-bold uppercase tracking-widest">
+                    <th className="px-6 py-4">Projet</th>
+                    <th className="px-6 py-4">Date</th>
+                    <th className="px-6 py-4">Verdict</th>
+                    <th className="px-6 py-4 text-right">MOIC cible</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-border/10">
+                  {all.slice(0, 20).map((d) => {
+                    const p = d.projects as { title?: string; moic_target?: number | null } | null
+                    const dColors: Record<DecisionType, string> = {
+                      approved: 'bg-na-tertiary-container/10 text-na-tertiary-dim',
+                      rejected: 'bg-destructive/10 text-destructive',
+                      deferred: 'bg-surface-container-highest text-on-surface-variant',
+                    }
+                    return (
+                      <tr key={d.id} className="hover:bg-surface-container-high/20 transition-colors">
+                        <td className="px-6 py-5">
+                          <Link href={`/projects/${d.project_id}`} className="text-sm font-medium text-on-surface hover:text-primary transition-colors">
+                            {p?.title ?? d.project_id}
+                          </Link>
+                        </td>
+                        <td className="px-6 py-5 text-on-surface-variant text-sm">
+                          {new Date(d.created_at).toLocaleDateString('fr-FR')}
+                        </td>
+                        <td className="px-6 py-5">
+                          <span className={cn('text-[10px] font-bold px-2 py-1 rounded uppercase tracking-tighter', dColors[d.decision])}>
+                            {d.decision === 'approved' ? 'Approuvé' : d.decision === 'rejected' ? 'Rejeté' : 'Différé'}
+                          </span>
+                        </td>
+                        <td className="px-6 py-5 text-right text-sm font-bold text-na-tertiary-dim">
+                          {p?.moic_target ? `${p.moic_target}×` : <span className="text-on-surface-variant opacity-40">—</span>}
+                        </td>
+                      </tr>
+                    )
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
 
-          <p className="text-xs text-gray-600">
-            <span className="text-gray-500 font-medium">Batting Average</span> — % d&apos;approuvals sur total décisions (cible : &gt; 60%).{' '}
-            <span className="text-gray-500 font-medium">Slugging</span> — MOIC moyen des projets approuvés (cible : &gt; 3×).{' '}
-            <span className="text-gray-500 font-medium">OPS</span> — Score composite : BA + Slugging/10.
+          <p className="text-xs text-on-surface-variant/50">
+            <span className="text-on-surface-variant font-medium">Batting Average</span> — % d&apos;approbations sur total décisions (cible : &gt; 60%).{' '}
+            <span className="text-on-surface-variant font-medium">Slugging</span> — MOIC moyen des projets approuvés (cible : &gt; 3×).{' '}
+            <span className="text-on-surface-variant font-medium">OPS</span> — Score composite : BA + Slugging/10.
           </p>
         </div>
       )}
@@ -221,12 +248,3 @@ export default async function BattingAveragePage(): Promise<React.JSX.Element> {
   )
 }
 
-function KPICard({ label, value, sub, color = 'text-white' }: { label: string; value: string; sub?: string; color?: string }): React.JSX.Element {
-  return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className={cn('text-xl font-bold mt-1', color)}>{value}</p>
-      {sub && <p className="text-xs text-gray-600 mt-0.5">{sub}</p>}
-    </div>
-  )
-}

@@ -39,12 +39,12 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-2xl font-bold text-white">Analytics — PROMETHEE II</h1>
-          <p className="text-gray-400 text-sm mt-1">Ranking multi-critères des projets</p>
+          <h1 className="text-2xl font-bold text-on-surface">Analytics — PROMETHEE II</h1>
+          <p className="text-on-surface-variant text-sm mt-1">Ranking multi-critères des projets</p>
         </div>
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-12 text-center">
-          <p className="text-gray-500 text-sm">Aucun projet avec quorum atteint</p>
-          <p className="text-gray-600 text-xs mt-1">
+        <div className="bg-surface-container border border-border/10 rounded-xl p-12 text-center">
+          <p className="text-muted-foreground text-sm">Aucun projet avec quorum atteint</p>
+          <p className="text-on-surface-variant/50 text-xs mt-1">
             Le ranking sera disponible dès que 2 projets auront atteint le quorum
           </p>
         </div>
@@ -148,15 +148,15 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
       )}
 
       <div>
-        <h1 className="text-2xl font-bold text-white">Analytics — PROMETHEE II</h1>
-        <p className="text-gray-400 text-sm mt-1">
+        <h1 className="text-2xl font-bold text-on-surface">Analytics — PROMETHEE II</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
           Ranking multi-critères de {projects.length} projet{projects.length > 1 ? 's' : ''} avec quorum
         </p>
       </div>
 
       {!ranking || ranking.length < 2 ? (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-          <p className="text-gray-500 text-sm">
+        <div className="bg-surface-container border border-border/10 rounded-xl p-8 text-center">
+          <p className="text-muted-foreground text-sm">
             {criteria.length < 2
               ? 'Critères insuffisants pour le calcul PROMETHEE (minimum 2 critères)'
               : 'Données insuffisantes — minimum 2 projets avec évaluations'}
@@ -172,21 +172,21 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
                   key={r.projectId}
                   className={cn(
                     'rounded-xl border p-4 text-center space-y-2',
-                    i === 0 ? 'border-yellow-700 bg-yellow-950/20' :
-                    i === 1 ? 'border-gray-600 bg-gray-900' :
-                    'border-orange-900 bg-orange-950/10'
+                    i === 0 ? 'border-yellow-700/50 bg-yellow-950/20' :
+                    i === 1 ? 'border-border/10 bg-surface-container' :
+                    'border-orange-900/50 bg-orange-950/10'
                   )}
                 >
                   <p className="text-2xl">{i === 0 ? '🥇' : i === 1 ? '🥈' : '🥉'}</p>
                   <Link
                     href={`/projects/${r.projectId}`}
-                    className="text-sm font-semibold text-white hover:text-blue-300 transition-colors line-clamp-2 block"
+                    className="text-sm font-semibold text-on-surface hover:text-primary transition-colors line-clamp-2 block"
                   >
                     {r.title}
                   </Link>
                   <p className={cn(
                     'text-xl font-bold',
-                    r.phi > 0 ? 'text-green-400' : r.phi < 0 ? 'text-red-400' : 'text-gray-400'
+                    r.phi > 0 ? 'text-na-tertiary-dim' : r.phi < 0 ? 'text-destructive' : 'text-on-surface-variant'
                   )}>
                     Φ = {r.phi.toFixed(3)}
                   </p>
@@ -196,29 +196,29 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
           )}
 
           {/* Tableau complet */}
-          <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+          <div className="bg-surface-container border border-border/10 rounded-xl overflow-hidden">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-800">
-                  <th className="text-left text-xs text-gray-500 font-medium px-4 py-3">Rang</th>
-                  <th className="text-left text-xs text-gray-500 font-medium px-4 py-3">Projet</th>
-                  <th className="text-right text-xs text-gray-500 font-medium px-4 py-3">Φ net</th>
-                  <th className="text-right text-xs text-gray-500 font-medium px-4 py-3">Φ+</th>
-                  <th className="text-right text-xs text-gray-500 font-medium px-4 py-3">Φ−</th>
-                  <th className="text-right text-xs text-gray-500 font-medium px-4 py-3">Score moy.</th>
+                <tr className="border-b border-border/10">
+                  <th className="text-left text-xs text-on-surface-variant font-bold uppercase tracking-widest px-4 py-3">Rang</th>
+                  <th className="text-left text-xs text-on-surface-variant font-bold uppercase tracking-widest px-4 py-3">Projet</th>
+                  <th className="text-right text-xs text-on-surface-variant font-bold uppercase tracking-widest px-4 py-3">Φ net</th>
+                  <th className="text-right text-xs text-on-surface-variant font-bold uppercase tracking-widest px-4 py-3">Φ+</th>
+                  <th className="text-right text-xs text-on-surface-variant font-bold uppercase tracking-widest px-4 py-3">Φ−</th>
+                  <th className="text-right text-xs text-on-surface-variant font-bold uppercase tracking-widest px-4 py-3">Score moy.</th>
                 </tr>
               </thead>
               <tbody>
                 {ranking.map((r) => {
                   const stats = statsMap[r.projectId]
                   return (
-                    <tr key={r.projectId} className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-colors">
+                    <tr key={r.projectId} className="border-b border-border/10 hover:bg-surface-container-high/20 transition-colors">
                       <td className="px-4 py-3">
                         <span className={cn(
                           'text-sm font-bold',
                           r.rank === 1 ? 'text-yellow-400' :
-                          r.rank === 2 ? 'text-gray-400' :
-                          r.rank === 3 ? 'text-orange-400' : 'text-gray-600'
+                          r.rank === 2 ? 'text-on-surface-variant' :
+                          r.rank === 3 ? 'text-orange-400' : 'text-muted-foreground'
                         )}>
                           #{r.rank}
                         </span>
@@ -226,25 +226,25 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
                       <td className="px-4 py-3">
                         <Link
                           href={`/projects/${r.projectId}`}
-                          className="text-sm text-white hover:text-blue-300 transition-colors"
+                          className="text-sm text-on-surface hover:text-primary transition-colors"
                         >
                           {r.title}
                         </Link>
                         {stats && (
-                          <p className="text-xs text-gray-600 mt-0.5">{stats.evaluation_count ?? 0} évaluations</p>
+                          <p className="text-xs text-on-surface-variant/50 mt-0.5">{stats.evaluation_count ?? 0} évaluations</p>
                         )}
                       </td>
                       <td className="px-4 py-3 text-right">
                         <span className={cn(
                           'text-sm font-semibold',
-                          r.phi > 0 ? 'text-green-400' : r.phi < 0 ? 'text-red-400' : 'text-gray-400'
+                          r.phi > 0 ? 'text-na-tertiary-dim' : r.phi < 0 ? 'text-destructive' : 'text-on-surface-variant'
                         )}>
                           {r.phi > 0 ? '+' : ''}{r.phi.toFixed(3)}
                         </span>
                       </td>
-                      <td className="px-4 py-3 text-right text-xs text-green-400">{r.phiPlus.toFixed(3)}</td>
-                      <td className="px-4 py-3 text-right text-xs text-red-400">{r.phiMinus.toFixed(3)}</td>
-                      <td className="px-4 py-3 text-right text-xs text-gray-400">
+                      <td className="px-4 py-3 text-right text-xs text-na-tertiary-dim">{r.phiPlus.toFixed(3)}</td>
+                      <td className="px-4 py-3 text-right text-xs text-destructive">{r.phiMinus.toFixed(3)}</td>
+                      <td className="px-4 py-3 text-right text-xs text-on-surface-variant">
                         {stats?.avg_score !== null && stats?.avg_score !== undefined
                           ? `${Number(stats.avg_score).toFixed(1)} / 10`
                           : '—'}
@@ -256,7 +256,7 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
             </table>
           </div>
 
-          <p className="text-xs text-gray-600">
+          <p className="text-xs text-on-surface-variant/50">
             PROMETHEE II — Φ net = Φ+ (force) − Φ− (faiblesse) · Critères : {criteria.map((c) => `${c.label} (${c.weight}%)`).join(', ')}
           </p>
         </div>

@@ -52,27 +52,27 @@ export default async function RedTeamPage({ params }: RedTeamPageProps): Promise
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+        <Link href={`/projects/${id}`} className="text-xs text-on-surface-variant hover:text-on-surface transition-colors">
           ← Retour au projet
         </Link>
-        <h1 className="text-xl font-bold text-white mt-2">Red Team — Contre-argumentation</h1>
-        <p className="text-gray-400 text-sm mt-1">
+        <h1 className="text-xl font-bold text-on-surface mt-2">Red Team — Contre-argumentation</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
           Analyse critique structurée de{' '}
-          <span className="text-white font-medium">{project.title}</span>
+          <span className="text-on-surface font-medium">{project.title}</span>
         </p>
       </div>
 
       {quorumNotReached ? (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-          <p className="text-gray-500 text-sm">Red Team disponible après le quorum</p>
-          <p className="text-gray-600 text-xs mt-1">
+        <div className="bg-surface-container border border-border/10 rounded-xl p-8 text-center">
+          <p className="text-muted-foreground text-sm">Red Team disponible après le quorum</p>
+          <p className="text-on-surface-variant/50 text-xs mt-1">
             Les contributions Red Team seront visibles une fois que {project.quorum_required} évaluations auront été soumises.
           </p>
         </div>
       ) : !hasData ? (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-          <p className="text-gray-500 text-sm">Aucune contribution Red Team disponible</p>
-          <p className="text-gray-600 text-xs mt-1">
+        <div className="bg-surface-container border border-border/10 rounded-xl p-8 text-center">
+          <p className="text-muted-foreground text-sm">Aucune contribution Red Team disponible</p>
+          <p className="text-on-surface-variant/50 text-xs mt-1">
             Les évaluateurs peuvent renseigner des arguments contre, angles morts et conditions de succès dans le formulaire d&apos;évaluation.
           </p>
         </div>
@@ -87,12 +87,12 @@ export default async function RedTeamPage({ params }: RedTeamPageProps): Promise
             <StatCard
               label="Arguments contre"
               value={String(redTeamResponses.filter((r) => r.strongest_argument_against).length)}
-              color="text-red-400"
+              color="text-destructive"
             />
             <StatCard
               label="Conditions de succès"
               value={String(redTeamResponses.filter((r) => r.conditions_for_success).length)}
-              color="text-yellow-400"
+              color="text-na-secondary"
             />
           </div>
 
@@ -101,16 +101,16 @@ export default async function RedTeamPage({ params }: RedTeamPageProps): Promise
             <Section
               icon="⚔️"
               title="Arguments contre"
-              color="text-red-300"
-              bg="bg-red-950/15"
-              border="border-red-900/30"
+              color="text-destructive"
+              bg="bg-na-error-container/10"
+              border="border-na-error/20"
             >
               <div className="space-y-3">
                 {redTeamResponses
                   .filter((r) => r.strongest_argument_against)
                   .map((r, i) => (
-                    <div key={i} className={cn('pl-3 border-l-2 border-red-800/60', i > 0 && 'mt-3')}>
-                      <p className="text-sm text-gray-300 leading-relaxed">{r.strongest_argument_against}</p>
+                    <div key={i} className={cn('pl-3 border-l-2 border-na-error/40', i > 0 && 'mt-3')}>
+                      <p className="text-sm text-on-surface-variant leading-relaxed">{r.strongest_argument_against}</p>
                     </div>
                   ))}
               </div>
@@ -122,16 +122,16 @@ export default async function RedTeamPage({ params }: RedTeamPageProps): Promise
             <Section
               icon="🕳️"
               title="Angles morts identifiés"
-              color="text-orange-300"
-              bg="bg-orange-950/15"
-              border="border-orange-900/30"
+              color="text-na-secondary"
+              bg="bg-na-secondary-container/20"
+              border="border-na-secondary/20"
             >
               <div className="space-y-3">
                 {redTeamResponses
                   .filter((r) => r.blind_spots)
                   .map((r, i) => (
-                    <div key={i} className={cn('pl-3 border-l-2 border-orange-800/60', i > 0 && 'mt-3')}>
-                      <p className="text-sm text-gray-300 leading-relaxed">{r.blind_spots}</p>
+                    <div key={i} className={cn('pl-3 border-l-2 border-na-secondary/40', i > 0 && 'mt-3')}>
+                      <p className="text-sm text-on-surface-variant leading-relaxed">{r.blind_spots}</p>
                     </div>
                   ))}
               </div>
@@ -143,25 +143,25 @@ export default async function RedTeamPage({ params }: RedTeamPageProps): Promise
             <Section
               icon="✅"
               title="Conditions de succès"
-              color="text-yellow-300"
-              bg="bg-yellow-950/15"
-              border="border-yellow-900/30"
+              color="text-na-tertiary-dim"
+              bg="bg-na-tertiary-container/10"
+              border="border-na-tertiary-dim/20"
             >
               <div className="space-y-3">
                 {redTeamResponses
                   .filter((r) => r.conditions_for_success)
                   .map((r, i) => (
-                    <div key={i} className={cn('pl-3 border-l-2 border-yellow-800/60', i > 0 && 'mt-3')}>
-                      <p className="text-sm text-gray-300 leading-relaxed">{r.conditions_for_success}</p>
+                    <div key={i} className={cn('pl-3 border-l-2 border-na-tertiary-dim/40', i > 0 && 'mt-3')}>
+                      <p className="text-sm text-on-surface-variant leading-relaxed">{r.conditions_for_success}</p>
                     </div>
                   ))}
               </div>
             </Section>
           )}
 
-          <div className="bg-gray-900/50 border border-gray-800/50 rounded-xl p-4">
-            <p className="text-xs text-gray-600">
-              <span className="text-gray-500 font-medium">Red Team</span> — Méthode issue du renseignement militaire US.
+          <div className="bg-surface-container-low border border-border/10 rounded-xl p-4">
+            <p className="text-xs text-on-surface-variant/50">
+              <span className="text-on-surface-variant font-medium">Red Team</span> — Méthode issue du renseignement militaire US.
               Principe : désigner un groupe chargé d&apos;attaquer activement le plan pour en révéler les vulnérabilités.
               Chaque argument est anonymisé — les contributions individuelles ne sont pas attribuées.
             </p>
@@ -193,10 +193,10 @@ function Section({
   )
 }
 
-function StatCard({ label, value, color = 'text-white' }: { label: string; value: string; color?: string }): React.JSX.Element {
+function StatCard({ label, value, color = 'text-on-surface' }: { label: string; value: string; color?: string }): React.JSX.Element {
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-      <p className="text-xs text-gray-500">{label}</p>
+    <div className="bg-surface-container border border-border/10 rounded-xl p-4">
+      <p className="text-xs text-on-surface-variant">{label}</p>
       <p className={cn('text-xl font-bold mt-1', color)}>{value}</p>
     </div>
   )

@@ -35,23 +35,23 @@ export default async function FinancialMetricsPage({ params }: FinancialMetricsP
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+        <Link href={`/projects/${id}`} className="text-xs text-on-surface-variant hover:text-on-surface transition-colors">
           ← Retour au projet
         </Link>
-        <h1 className="text-xl font-bold text-white mt-2">Métriques financières</h1>
-        <p className="text-gray-400 text-sm mt-1">
+        <h1 className="text-xl font-bold text-on-surface mt-2">Métriques financières</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
           IRR, MOIC et sensibilité pour{' '}
-          <span className="text-white font-medium">{project.title}</span>
-          {' '}· Cible : <span className="text-blue-400 font-medium">{moicTarget}×</span>
+          <span className="text-on-surface font-medium">{project.title}</span>
+          {' '}· Cible : <span className="text-primary font-medium">{moicTarget}×</span>
         </p>
       </div>
 
       <FinancialCalculator moicTarget={moicTarget} initialScenarios={scenarios} />
 
-      <div className="bg-gray-900/50 border border-gray-800/50 rounded-xl p-4">
-        <p className="text-xs text-gray-600">
-          <span className="text-gray-500 font-medium">IRR</span> (Internal Rate of Return) — taux actuariel annualisé.{' '}
-          <span className="text-gray-500 font-medium">MOIC</span> (Multiple on Invested Capital) = valeur sortie / capital investi.
+      <div className="bg-surface-container-low border border-border/10 rounded-xl p-4">
+        <p className="text-xs text-on-surface-variant/50">
+          <span className="text-on-surface-variant font-medium">IRR</span> (Internal Rate of Return) — taux actuariel annualisé.{' '}
+          <span className="text-on-surface-variant font-medium">MOIC</span> (Multiple on Invested Capital) = valeur sortie / capital investi.
           Conversion : MOIC = (1 + IRR)^n. Les probabilités sont calculées par simulation Monte Carlo ({project.scenarios ? 'scénarios du projet' : 'scénarios par défaut'}).
         </p>
       </div>

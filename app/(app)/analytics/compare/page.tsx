@@ -102,17 +102,17 @@ export default async function ComparePage({ searchParams }: ComparePageProps): P
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Analyse comparative</h1>
-          <p className="text-gray-400 text-sm mt-1">Comparez jusqu&apos;à 4 projets avec quorum côte à côte</p>
+          <h1 className="text-2xl font-bold text-on-surface">Analyse comparative</h1>
+          <p className="text-on-surface-variant text-sm mt-1">Comparez jusqu&apos;à 4 projets avec quorum côte à côte</p>
         </div>
-        <Link href="/analytics" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+        <Link href="/analytics" className="text-xs text-primary hover:text-primary/80 transition-colors">
           ← PROMETHEE II
         </Link>
       </div>
 
       {/* Sélection des projets */}
-      <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
-        <h2 className="text-sm font-semibold text-gray-200">Sélectionner les projets à comparer</h2>
+      <div className="bg-surface-container-low border border-border/10 rounded-xl p-5 space-y-3">
+        <h2 className="text-sm font-semibold text-on-surface">Sélectionner les projets à comparer</h2>
         <div className="flex flex-wrap gap-2">
           {(allProjects ?? []).map((p) => {
             const isSelected = selectedIds.includes(p.id)
@@ -126,8 +126,8 @@ export default async function ComparePage({ searchParams }: ComparePageProps): P
                 className={cn(
                   'text-xs px-3 py-1.5 rounded-lg border transition-colors',
                   isSelected
-                    ? 'border-blue-600 bg-blue-950/30 text-blue-300'
-                    : 'border-gray-700 bg-gray-800 text-gray-400 hover:border-gray-600',
+                    ? 'border-primary bg-primary/10 text-primary'
+                    : 'border-border/10 bg-surface-container text-on-surface-variant hover:border-border hover:text-on-surface',
                 )}
               >
                 {isSelected ? '✓ ' : ''}{p.title}
@@ -136,13 +136,13 @@ export default async function ComparePage({ searchParams }: ComparePageProps): P
           })}
         </div>
         {selectedIds.length === 4 && (
-          <p className="text-xs text-yellow-500">Maximum 4 projets atteint</p>
+          <p className="text-xs text-yellow-400">Maximum 4 projets atteint</p>
         )}
       </div>
 
       {selectedIds.length === 0 ? (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-          <p className="text-gray-500 text-sm">Sélectionnez 2 à 4 projets pour lancer la comparaison</p>
+        <div className="bg-surface-container border border-border/10 rounded-xl p-8 text-center">
+          <p className="text-muted-foreground text-sm">Sélectionnez 2 à 4 projets pour lancer la comparaison</p>
         </div>
       ) : projects && projects.length >= 1 ? (
         <div className="space-y-4">
@@ -150,11 +150,11 @@ export default async function ComparePage({ searchParams }: ComparePageProps): P
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b border-gray-800">
-                  <th className="text-left text-xs text-gray-500 px-4 py-3 bg-gray-900/50 rounded-tl-xl">Métrique</th>
+                <tr className="border-b border-border/10">
+                  <th className="text-left text-xs text-on-surface-variant font-bold uppercase tracking-widest px-4 py-3 bg-surface-container-low/50">Métrique</th>
                   {projects.map((p) => (
-                    <th key={p.id} className="text-left text-xs font-medium px-4 py-3 bg-gray-900/50">
-                      <Link href={`/projects/${p.id}`} className="text-white hover:text-blue-300 transition-colors">
+                    <th key={p.id} className="text-left text-xs font-medium px-4 py-3 bg-surface-container-low/50">
+                      <Link href={`/projects/${p.id}`} className="text-on-surface hover:text-primary transition-colors">
                         {p.title}
                       </Link>
                     </th>
@@ -169,7 +169,7 @@ export default async function ComparePage({ searchParams }: ComparePageProps): P
                       const s = statsMap[pid]
                       const score = s?.avg_score != null ? Number(s.avg_score) : null
                       return score !== null ? (
-                        <span className={cn('font-semibold', score >= 7 ? 'text-green-400' : score >= 5 ? 'text-yellow-400' : 'text-red-400')}>
+                        <span className={cn('font-semibold', score >= 7 ? 'text-na-tertiary-dim' : score >= 5 ? 'text-yellow-400' : 'text-destructive')}>
                           {score.toFixed(2)} / 10
                         </span>
                       ) : '—'
@@ -183,35 +183,35 @@ export default async function ComparePage({ searchParams }: ComparePageProps): P
                     label: 'MOIC cible',
                     render: (pid: string) => {
                       const p = projects.find((x) => x.id === pid)
-                      return p?.moic_target ? <span className="text-blue-400 font-semibold">{p.moic_target}×</span> : '—'
+                      return p?.moic_target ? <span className="text-primary font-semibold">{p.moic_target}×</span> : '—'
                     },
                   },
                   {
                     label: 'Horizon',
                     render: (pid: string) => {
                       const p = projects.find((x) => x.id === pid)
-                      return p?.horizon ? <span className="text-xs">{HORIZON_LABELS[p.horizon]}</span> : '—'
+                      return p?.horizon ? <span className="text-xs text-on-surface-variant">{HORIZON_LABELS[p.horizon]}</span> : '—'
                     },
                   },
                   {
                     label: 'Barbell',
                     render: (pid: string) => {
                       const p = projects.find((x) => x.id === pid)
-                      return p?.barbell_category ? <span className="text-xs">{BARBELL_LABELS[p.barbell_category]}</span> : '—'
+                      return p?.barbell_category ? <span className="text-xs text-on-surface-variant">{BARBELL_LABELS[p.barbell_category]}</span> : '—'
                     },
                   },
                   {
                     label: 'Secteur',
                     render: (pid: string) => {
                       const p = projects.find((x) => x.id === pid)
-                      return <span className="text-xs text-gray-400">{p?.sector ?? '—'}</span>
+                      return <span className="text-xs text-on-surface-variant">{p?.sector ?? '—'}</span>
                     },
                   },
                 ].map(({ label, render }) => (
-                  <tr key={label} className="border-b border-gray-800/50 hover:bg-gray-800/20">
-                    <td className="px-4 py-3 text-xs text-gray-500 bg-gray-900/30">{label}</td>
+                  <tr key={label} className="border-b border-border/10 hover:bg-surface-container-high/20">
+                    <td className="px-4 py-3 text-xs text-on-surface-variant bg-surface-container-low/30">{label}</td>
                     {projects.map((p) => (
-                      <td key={p.id} className="px-4 py-3 text-sm text-gray-300">
+                      <td key={p.id} className="px-4 py-3 text-sm text-on-surface">
                         {render(p.id)}
                       </td>
                     ))}
@@ -223,17 +223,17 @@ export default async function ComparePage({ searchParams }: ComparePageProps): P
 
           {/* Scores par critère */}
           {criteria.length > 0 && (
-            <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
-              <div className="px-5 py-4 border-b border-gray-800">
-                <h2 className="text-sm font-semibold text-gray-200">Scores par critère</h2>
+            <div className="bg-surface-container border border-border/10 rounded-xl overflow-hidden">
+              <div className="px-5 py-4 border-b border-border/10">
+                <h2 className="text-sm font-semibold text-on-surface">Scores par critère</h2>
               </div>
               <div className="overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="border-b border-gray-800">
-                      <th className="text-left text-xs text-gray-500 px-4 py-3">Critère</th>
+                    <tr className="border-b border-border/10">
+                      <th className="text-left text-xs text-on-surface-variant font-bold uppercase tracking-widest px-4 py-3">Critère</th>
                       {projects.map((p) => (
-                        <th key={p.id} className="text-right text-xs text-gray-500 px-4 py-3">{p.title.substring(0, 20)}</th>
+                        <th key={p.id} className="text-right text-xs text-on-surface-variant font-bold uppercase tracking-widest px-4 py-3">{p.title.substring(0, 20)}</th>
                       ))}
                     </tr>
                   </thead>
@@ -242,8 +242,8 @@ export default async function ComparePage({ searchParams }: ComparePageProps): P
                       const scores = projects.map((p) => projectScores[p.id]?.[c.id] ?? 0)
                       const maxScore = Math.max(...scores)
                       return (
-                        <tr key={c.id} className="border-b border-gray-800/50 hover:bg-gray-800/20">
-                          <td className="px-4 py-3 text-xs text-gray-400">{c.label} <span className="text-gray-600">({c.weight}%)</span></td>
+                        <tr key={c.id} className="border-b border-border/10 hover:bg-surface-container-high/20">
+                          <td className="px-4 py-3 text-xs text-on-surface-variant">{c.label} <span className="text-on-surface-variant/40">({c.weight}%)</span></td>
                           {projects.map((p) => {
                             const score = projectScores[p.id]?.[c.id] ?? 0
                             const isMax = score === maxScore && score > 0
@@ -251,8 +251,8 @@ export default async function ComparePage({ searchParams }: ComparePageProps): P
                               <td key={p.id} className="px-4 py-3 text-right">
                                 <span className={cn(
                                   'text-sm font-semibold',
-                                  isMax ? 'text-green-400' : score >= 7 ? 'text-gray-300' : score >= 5 ? 'text-yellow-400/80' : 'text-red-400/80',
-                                  score === 0 ? 'text-gray-600' : '',
+                                  isMax ? 'text-na-tertiary-dim' : score >= 7 ? 'text-on-surface' : score >= 5 ? 'text-yellow-400/80' : 'text-destructive/80',
+                                  score === 0 ? 'text-on-surface-variant/40' : '',
                                 )}>
                                   {score > 0 ? score.toFixed(1) : '—'}
                                 </span>
@@ -269,8 +269,8 @@ export default async function ComparePage({ searchParams }: ComparePageProps): P
           )}
         </div>
       ) : (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-          <p className="text-gray-500 text-sm">Projets introuvables</p>
+        <div className="bg-surface-container border border-border/10 rounded-xl p-8 text-center">
+          <p className="text-muted-foreground text-sm">Projets introuvables</p>
         </div>
       )}
     </div>

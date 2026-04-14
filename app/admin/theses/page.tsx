@@ -12,8 +12,8 @@ export default async function AdminThesesPage(): Promise<React.JSX.Element> {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Thèses macro du portefeuille</h1>
-        <p className="text-gray-400 text-sm mt-1">
+        <h1 className="text-2xl font-bold text-on-surface">Thèses macro du portefeuille</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
           Définissez les convictions stratégiques du groupe — utilisées pour catégoriser les projets
         </p>
       </div>

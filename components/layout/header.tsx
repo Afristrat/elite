@@ -23,9 +23,9 @@ const ROLE_LABELS: Record<UserRole, string> = {
 }
 
 const ROLE_COLORS: Record<UserRole, string> = {
-  admin: 'bg-purple-600/20 text-purple-400',
-  evaluateur: 'bg-blue-600/20 text-blue-400',
-  contributeur: 'bg-green-600/20 text-green-400',
+  admin: 'bg-[#004883]/30 text-na-primary border border-na-primary/20',
+  evaluateur: 'bg-[#004883]/20 text-na-primary border border-na-primary/20',
+  contributeur: 'bg-[#006948]/20 text-na-tertiary border border-na-tertiary/20',
 }
 
 export function Header({ fullName, avatarUrl, email, role }: HeaderProps): React.JSX.Element {
@@ -39,60 +39,70 @@ export function Header({ fullName, avatarUrl, email, role }: HeaderProps): React
   }
 
   const displayName = fullName ?? email
+  const firstLetter = displayName.charAt(0).toUpperCase()
 
   return (
-    <>
-      <header className="h-14 bg-gray-950 border-b border-gray-800 flex items-center justify-between px-4 shrink-0">
-        <div className="md:hidden flex items-center gap-2">
-          <div className="w-7 h-7 rounded-md bg-blue-600 flex items-center justify-center">
-            <span className="text-white font-bold text-xs">V</span>
+    <header className="h-16 px-8 flex justify-between items-center sticky top-0 bg-background/80 backdrop-blur-md z-40 border-b border-border/10">
+      {/* Logo mobile */}
+      <div className="md:hidden flex items-center gap-2">
+        <div className="w-8 h-8 rounded-xl bg-na-primary flex items-center justify-center shrink-0">
+          <span className="text-[#004178] font-extrabold text-sm">V</span>
+        </div>
+        <span className="text-on-surface font-semibold text-sm tracking-wide">Veille Élite</span>
+      </div>
+
+      {/* Espace gauche desktop */}
+      <div className="flex-1 hidden md:block" />
+
+      {/* Zone droite */}
+      <div className="flex items-center gap-6">
+        {/* Bouton Tour guidé */}
+        <TourStarter
+          className={cn(
+            'hidden sm:flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg transition-colors',
+            'border border-border/20 text-on-surface-variant hover:text-na-primary hover:border-na-primary/30'
+          )}
+        >
+          <span className="material-symbols-outlined text-[1rem] leading-none">play_circle</span>
+          <span>Tour guidé</span>
+        </TourStarter>
+
+        {/* Badge rôle */}
+        <span className={cn('text-[0.65rem] px-2 py-0.5 rounded font-bold uppercase tracking-wider', ROLE_COLORS[role])}>
+          {ROLE_LABELS[role]}
+        </span>
+
+        {/* Avatar + nom */}
+        <div className="flex items-center gap-3 pl-6 border-l border-border/20">
+          <div className="text-right hidden sm:block">
+            <p className="text-xs font-semibold text-on-surface leading-none">{displayName}</p>
+            <p className="text-[0.65rem] text-on-surface-variant uppercase mt-1">{ROLE_LABELS[role]}</p>
           </div>
-          <span className="text-white font-semibold text-sm">Projets Elite</span>
+          {avatarUrl ? (
+            <Image
+              src={avatarUrl}
+              alt={displayName}
+              width={40}
+              height={40}
+              className="rounded-full border-2 border-surface-container-highest object-cover w-10 h-10"
+            />
+          ) : (
+            <div className="w-10 h-10 rounded-full bg-surface-container-highest border-2 border-surface-container-highest flex items-center justify-center">
+              <span className="text-on-surface-variant text-sm font-semibold">
+                {firstLetter}
+              </span>
+            </div>
+          )}
         </div>
 
-        <div className="flex-1 hidden md:block" />
-
-        <div className="flex items-center gap-3">
-          {/* Bouton Tour guidé */}
-          <TourStarter
-            className="hidden sm:flex items-center gap-1.5 text-xs px-2.5 py-1.5 rounded-lg border border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500 transition-colors"
-          >
-            <span>🗺</span>
-            <span>Tour guidé</span>
-          </TourStarter>
-
-          <span className={cn('text-xs px-2 py-1 rounded-full font-medium', ROLE_COLORS[role])}>
-            {ROLE_LABELS[role]}
-          </span>
-
-          <div className="flex items-center gap-2">
-            {avatarUrl ? (
-              <Image
-                src={avatarUrl}
-                alt={displayName}
-                width={28}
-                height={28}
-                className="rounded-full"
-              />
-            ) : (
-              <div className="w-7 h-7 rounded-full bg-gray-700 flex items-center justify-center">
-                <span className="text-gray-300 text-xs font-medium">
-                  {displayName.charAt(0).toUpperCase()}
-                </span>
-              </div>
-            )}
-            <span className="text-gray-300 text-sm hidden sm:block">{displayName}</span>
-          </div>
-
-          <button
-            onClick={() => { void handleSignOut() }}
-            className="text-gray-500 hover:text-gray-300 text-xs px-2 py-1 rounded hover:bg-gray-800 transition-colors"
-          >
-            Déconnexion
-          </button>
-        </div>
-      </header>
-
-    </>
+        {/* Déconnexion */}
+        <button
+          onClick={() => { void handleSignOut() }}
+          className="text-on-surface-variant hover:text-na-error text-xs px-2 py-1 rounded-lg hover:bg-surface-container transition-colors"
+        >
+          <span className="material-symbols-outlined text-sm leading-none align-middle">logout</span>
+        </button>
+      </div>
+    </header>
   )
 }

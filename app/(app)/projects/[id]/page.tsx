@@ -173,191 +173,267 @@ export default async function ProjectDetailPage({ params, searchParams }: Projec
 
       {/* Statistiques d'évaluation */}
       {stats && project.status !== 'draft' && (
-        <div className="grid grid-cols-3 gap-4" data-tour="stats-section">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-4" data-tour="stats-section">
           <StatCard
             label="Évaluations"
-            value={`${stats.evaluation_count ?? 0} / ${stats.quorum_required ?? '?'}`}
+            value={`${stats.evaluation_count ?? 0}`}
+            suffix={`/ ${stats.quorum_required ?? '?'}`}
           />
           <StatCard
             label="Score moyen"
-            value={stats.avg_score !== null ? `${Number(stats.avg_score).toFixed(1)} / 10` : '—'}
+            value={stats.avg_score !== null ? `${Number(stats.avg_score).toFixed(1)}` : '—'}
+            suffix="/10"
+            highlight
           />
           <StatCard
             label="Quorum"
-            value={stats.quorum_reached ? 'Atteint ✓' : 'En cours…'}
-            highlight={stats.quorum_reached ?? false}
+            value={stats.quorum_reached ? 'Atteint' : 'En cours…'}
+            quorum={stats.quorum_reached ?? false}
+            quorumProgress={stats.quorum_reached ? undefined : (stats.evaluation_count ?? 0) / (stats.quorum_required ?? 1)}
           />
         </div>
       )}
 
-      {/* Catégorisation stratégique */}
-      {(project.barbell_category ?? project.horizon) && (
-        <Section title="Catégorisation stratégique">
-          <div className="grid grid-cols-2 gap-4">
-            {project.barbell_category && (
-              <InfoItem
-                label="Barbell Strategy"
-                value={BARBELL_LABELS[project.barbell_category]}
-              />
-            )}
-            {project.moic_target && (
-              <InfoItem
-                label="MOIC cible"
-                value={`${project.moic_target}×`}
-              />
-            )}
-          </div>
-          {theses && theses.length > 0 && (
-            <div className="mt-3">
-              <p className="text-xs text-gray-500 mb-1.5">Thèses macro associées</p>
-              <div className="flex flex-wrap gap-2">
-                {theses.map((t) => (
-                  <span
-                    key={t.id}
-                    className="text-xs px-2.5 py-1 bg-blue-600/10 text-blue-300 rounded-full border border-blue-800"
-                  >
-                    {t.title}
-                  </span>
-                ))}
+      {/* Contenu principal — disposition asymétrique */}
+      <div className="flex flex-col lg:flex-row gap-12">
+        {/* Colonne gauche — contenu principal */}
+        <div className="lg:w-2/3 space-y-12">
+          {/* Analyse marché */}
+          {marketResearch && (
+            <section>
+              <SectionTitle>Analyse du marché</SectionTitle>
+              <div className="space-y-6">
+                {marketResearch.problem && (
+                  <div className="bg-surface-container-low p-8 rounded-xl">
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-na-primary mb-4">Problème</h3>
+                    <p className="text-on-surface-variant leading-relaxed whitespace-pre-wrap">{marketResearch.problem}</p>
+                  </div>
+                )}
+                {marketResearch.solution && (
+                  <div className="bg-surface-container-low p-8 rounded-xl">
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-na-primary mb-4">Solution</h3>
+                    <p className="text-on-surface-variant leading-relaxed whitespace-pre-wrap">{marketResearch.solution}</p>
+                  </div>
+                )}
+                {marketResearch.value_proposition && (
+                  <div className="bg-surface-container-low p-8 rounded-xl">
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-na-primary mb-4">Proposition de valeur</h3>
+                    <p className="text-on-surface-variant leading-relaxed whitespace-pre-wrap">{marketResearch.value_proposition}</p>
+                  </div>
+                )}
+                {marketResearch.investment_amount && (
+                  <div className="flex items-center justify-between p-8 bg-surface-container-highest/30 rounded-xl">
+                    <h3 className="text-sm font-bold uppercase tracking-widest text-on-surface">Montant recherché</h3>
+                    <span className="text-2xl font-bold text-on-surface">
+                      {marketResearch.investment_amount.toLocaleString('fr-FR')} {marketResearch.currency ?? 'EUR'}
+                    </span>
+                  </div>
+                )}
+              </div>
+            </section>
+          )}
+
+          {/* Monte Carlo */}
+          {scenarios && (
+            <section>
+              <SectionTitle>Scénarios Monte Carlo</SectionTitle>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="bg-na-error-container/10 border border-na-error/20 p-6 rounded-xl flex flex-col items-center text-center">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-na-error mb-4">Pessimiste</div>
+                  {scenarios.pessimistic?.moic !== undefined && (
+                    <div className="text-3xl font-bold text-na-error mb-1">{scenarios.pessimistic.moic}×</div>
+                  )}
+                  {scenarios.pessimistic?.probability !== undefined && (
+                    <div className="text-xs text-on-surface-variant">Probabilité : {scenarios.pessimistic.probability}%</div>
+                  )}
+                  {scenarios.pessimistic?.description && (
+                    <p className="text-xs text-on-surface-variant/60 mt-2 leading-relaxed">{scenarios.pessimistic.description}</p>
+                  )}
+                </div>
+                <div className="bg-na-secondary-container/20 border border-na-secondary/20 p-6 rounded-xl flex flex-col items-center text-center scale-105 shadow-xl shadow-black/20">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-na-secondary mb-4">Réaliste</div>
+                  {scenarios.realistic?.moic !== undefined && (
+                    <div className="text-3xl font-bold text-na-secondary mb-1">{scenarios.realistic.moic}×</div>
+                  )}
+                  {scenarios.realistic?.probability !== undefined && (
+                    <div className="text-xs text-on-surface-variant">Probabilité : {scenarios.realistic.probability}%</div>
+                  )}
+                  {scenarios.realistic?.description && (
+                    <p className="text-xs text-on-surface-variant/60 mt-2 leading-relaxed">{scenarios.realistic.description}</p>
+                  )}
+                </div>
+                <div className="bg-na-tertiary-container/10 border border-na-tertiary-dim/20 p-6 rounded-xl flex flex-col items-center text-center">
+                  <div className="text-[10px] font-black uppercase tracking-widest text-na-tertiary-dim mb-4">Optimiste</div>
+                  {scenarios.optimistic?.moic !== undefined && (
+                    <div className="text-3xl font-bold text-na-tertiary-dim mb-1">{scenarios.optimistic.moic}×</div>
+                  )}
+                  {scenarios.optimistic?.probability !== undefined && (
+                    <div className="text-xs text-on-surface-variant">Probabilité : {scenarios.optimistic.probability}%</div>
+                  )}
+                  {scenarios.optimistic?.description && (
+                    <p className="text-xs text-on-surface-variant/60 mt-2 leading-relaxed">{scenarios.optimistic.description}</p>
+                  )}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Notes libres */}
+          {project.description && (
+            <section>
+              <SectionTitle>Notes</SectionTitle>
+              <div className="bg-surface-container-low p-8 rounded-xl">
+                <p className="text-on-surface-variant leading-relaxed whitespace-pre-wrap">{project.description}</p>
+              </div>
+            </section>
+          )}
+
+          {/* Calendrier */}
+          {project.evaluation_deadline && (
+            <section>
+              <SectionTitle>Calendrier</SectionTitle>
+              <div className="bg-surface-container-low p-8 rounded-xl flex items-center justify-between">
+                <h3 className="text-sm font-bold uppercase tracking-widest text-on-surface-variant">Date limite d&apos;évaluation</h3>
+                <span className="text-on-surface font-medium">
+                  {new Date(project.evaluation_deadline).toLocaleDateString('fr-FR', {
+                    weekday: 'long',
+                    day: '2-digit',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </span>
+              </div>
+            </section>
+          )}
+        </div>
+
+        {/* Colonne droite — sidebar */}
+        <div className="lg:w-1/3 space-y-8">
+          {/* Thèse d'investissement */}
+          {thesis && (
+            <div className="bg-surface-container p-8 rounded-xl border border-border/10">
+              <h2 className="text-sm font-bold text-on-surface uppercase tracking-widest mb-6">
+                Thèse d&apos;investissement
+              </h2>
+              {thesis.statement && (
+                <div className="mb-8">
+                  <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest block mb-2">
+                    Conviction
+                  </label>
+                  <p className="text-sm text-on-surface leading-relaxed font-medium italic">
+                    &ldquo;{thesis.statement}&rdquo;
+                  </p>
+                </div>
+              )}
+              {thesis.hypotheses && (
+                <div className="space-y-4">
+                  <label className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest block">
+                    Hypothèses clés
+                  </label>
+                  {thesis.hypotheses.map((h, i) => (
+                    <div key={i} className="flex items-start gap-3">
+                      <span className="text-na-primary text-xs mt-1 font-mono">
+                        0{i + 1}.
+                      </span>
+                      <p className="text-xs text-on-surface-variant">{h}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Catégorisation stratégique */}
+          {(project.barbell_category ?? project.horizon) && (
+            <div className="bg-surface-container p-8 rounded-xl border border-border/10">
+              <h2 className="text-sm font-bold text-on-surface uppercase tracking-widest mb-6">
+                Catégorisation stratégique
+              </h2>
+              <div className="space-y-4">
+                {project.barbell_category && (
+                  <div>
+                    <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">
+                      Barbell Strategy
+                    </p>
+                    <p className="text-sm text-on-surface font-medium">
+                      {BARBELL_LABELS[project.barbell_category]}
+                    </p>
+                  </div>
+                )}
+                {project.moic_target && (
+                  <div>
+                    <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-1">
+                      MOIC cible
+                    </p>
+                    <p className="text-sm text-on-surface font-medium">{project.moic_target}×</p>
+                  </div>
+                )}
+              </div>
+              {theses && theses.length > 0 && (
+                <div className="mt-6">
+                  <p className="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest mb-3">
+                    Thèses macro associées
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {theses.map((t) => (
+                      <span
+                        key={t.id}
+                        className="text-xs px-2.5 py-1 bg-primary-container/10 text-na-primary rounded-full border border-na-primary/20"
+                      >
+                        {t.title}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Risques & Hypothèses */}
+          {marketResearch && (marketResearch.key_risks ?? marketResearch.key_hypotheses) && (
+            <div>
+              <h2 className="text-sm font-bold text-on-surface uppercase tracking-widest mb-6">
+                Risques &amp; Mitigation
+              </h2>
+              <div className="space-y-6">
+                {marketResearch.key_risks && (
+                  <div>
+                    <h4 className="text-xs font-bold text-na-error mb-2">Risques principaux</h4>
+                    <p className="text-[11px] text-on-surface-variant leading-relaxed whitespace-pre-wrap">
+                      {marketResearch.key_risks}
+                    </p>
+                  </div>
+                )}
+                {marketResearch.key_hypotheses && (
+                  <div>
+                    <h4 className="text-xs font-bold text-na-primary mb-2">Hypothèses du modèle</h4>
+                    <p className="text-[11px] text-on-surface-variant leading-relaxed whitespace-pre-wrap">
+                      {marketResearch.key_hypotheses}
+                    </p>
+                  </div>
+                )}
               </div>
             </div>
           )}
-        </Section>
-      )}
 
-      {/* Tags */}
-      {project.tags && project.tags.length > 0 && (
-        <div className="flex flex-wrap gap-2">
-          {project.tags.map((tag) => (
-            <span key={tag} className="text-xs px-2 py-0.5 bg-gray-800 text-gray-400 rounded-full">
-              {tag}
-            </span>
-          ))}
+          {/* Tags */}
+          {project.tags && project.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {project.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="text-xs px-2.5 py-1 bg-surface-container-highest text-on-surface-variant rounded-full"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          )}
         </div>
-      )}
-
-      {/* Description */}
-      {project.description && (
-        <Section title="Notes">
-          <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">{project.description}</p>
-        </Section>
-      )}
-
-      {/* Market Research */}
-      {marketResearch && (
-        <Section title="Analyse marché">
-          {marketResearch.problem && (
-            <Subsection title="Problème identifié">
-              <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">{marketResearch.problem}</p>
-            </Subsection>
-          )}
-          {marketResearch.solution && (
-            <Subsection title="Solution proposée">
-              <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">{marketResearch.solution}</p>
-            </Subsection>
-          )}
-          {marketResearch.value_proposition && (
-            <Subsection title="Proposition de valeur">
-              <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">{marketResearch.value_proposition}</p>
-            </Subsection>
-          )}
-          {marketResearch.investment_amount && (
-            <InfoItem
-              label="Montant d'investissement"
-              value={`${marketResearch.investment_amount.toLocaleString('fr-FR')} ${marketResearch.currency ?? 'EUR'}`}
-            />
-          )}
-        </Section>
-      )}
-
-      {/* Monte Carlo */}
-      {scenarios && (
-        <Section title="Scénarios Monte Carlo">
-          <div className="grid grid-cols-3 gap-4">
-            {(
-              [
-                { key: 'pessimistic', label: 'Pessimiste', color: 'border-red-900 bg-red-950/20' },
-                { key: 'realistic', label: 'Réaliste', color: 'border-yellow-900 bg-yellow-950/20' },
-                { key: 'optimistic', label: 'Optimiste', color: 'border-green-900 bg-green-950/20' },
-              ] as const
-            ).map(({ key, label, color }) => {
-              const s = scenarios[key]
-              if (!s) return null
-              return (
-                <div key={key} className={cn('rounded-lg border p-4 space-y-2', color)}>
-                  <p className="text-xs font-semibold text-gray-300">{label}</p>
-                  {s.probability !== undefined && (
-                    <p className="text-2xl font-bold text-white">{s.probability}%</p>
-                  )}
-                  {s.moic !== undefined && (
-                    <p className="text-sm text-gray-400">MOIC : {s.moic}×</p>
-                  )}
-                  {s.description && (
-                    <p className="text-xs text-gray-500 leading-relaxed">{s.description}</p>
-                  )}
-                </div>
-              )
-            })}
-          </div>
-        </Section>
-      )}
-
-      {/* Investment Thesis */}
-      {thesis && (
-        <Section title="Thèse d'investissement">
-          {thesis.statement && (
-            <Subsection title="Conviction">
-              <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">{thesis.statement}</p>
-            </Subsection>
-          )}
-          {thesis.hypotheses && (
-            <Subsection title="Hypothèses vérifiables">
-              <ul className="space-y-2">
-                {thesis.hypotheses.map((h, i) => (
-                  <li key={i} className="flex gap-3 text-sm text-gray-300">
-                    <span className="text-gray-600 font-mono shrink-0">{i + 1}.</span>
-                    <span>{h}</span>
-                  </li>
-                ))}
-              </ul>
-            </Subsection>
-          )}
-        </Section>
-      )}
-
-      {/* Risques & Hypothèses */}
-      {marketResearch && (marketResearch.key_risks ?? marketResearch.key_hypotheses) && (
-        <Section title="Risques &amp; Hypothèses clés">
-          {marketResearch.key_risks && (
-            <Subsection title="Risques principaux">
-              <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">{marketResearch.key_risks}</p>
-            </Subsection>
-          )}
-          {marketResearch.key_hypotheses && (
-            <Subsection title="Hypothèses du modèle">
-              <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-wrap">{marketResearch.key_hypotheses}</p>
-            </Subsection>
-          )}
-        </Section>
-      )}
-
-      {/* Deadline */}
-      {project.evaluation_deadline && (
-        <Section title="Calendrier">
-          <InfoItem
-            label="Date limite d'évaluation"
-            value={new Date(project.evaluation_deadline).toLocaleDateString('fr-FR', {
-              weekday: 'long',
-              day: '2-digit',
-              month: 'long',
-              year: 'numeric',
-            })}
-          />
-        </Section>
-      )}
+      </div>
 
       {/* Pied de page */}
-      <p className="text-xs text-gray-600">
+      <p className="text-xs text-on-surface-variant/30 pt-4 border-t border-border/10">
         Soumis le{' '}
         {new Date(project.created_at).toLocaleDateString('fr-FR', {
           day: '2-digit',
@@ -371,65 +447,59 @@ export default async function ProjectDetailPage({ params, searchParams }: Projec
 
 // ─── Composants utilitaires ───────────────────────────────────────────────────
 
-function Section({
-  title,
-  children,
-}: {
-  title: string
-  children: React.ReactNode
-}): React.JSX.Element {
+function SectionTitle({ children }: { children: React.ReactNode }): React.JSX.Element {
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-      <h2 className="text-sm font-semibold text-gray-200 uppercase tracking-wide">{title}</h2>
+    <h2 className="text-xl font-bold text-on-surface mb-8 flex items-center gap-3">
+      <span className="w-1 h-6 bg-na-primary rounded-full" />
       {children}
-    </div>
-  )
-}
-
-function Subsection({
-  title,
-  children,
-}: {
-  title: string
-  children: React.ReactNode
-}): React.JSX.Element {
-  return (
-    <div className="space-y-1.5">
-      <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{title}</p>
-      {children}
-    </div>
-  )
-}
-
-function InfoItem({ label, value }: { label: string; value: string }): React.JSX.Element {
-  return (
-    <div>
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className="text-sm font-medium text-gray-200 mt-0.5">{value}</p>
-    </div>
+    </h2>
   )
 }
 
 function StatCard({
   label,
   value,
+  suffix,
   highlight = false,
+  quorum,
+  quorumProgress,
 }: {
   label: string
   value: string
+  suffix?: string
   highlight?: boolean
+  quorum?: boolean
+  quorumProgress?: number
 }): React.JSX.Element {
   return (
-    <div
-      className={cn(
-        'bg-gray-900 border rounded-xl p-4',
-        highlight ? 'border-green-800' : 'border-gray-800',
+    <div className={cn(
+      'bg-surface-container p-8 rounded-xl border relative overflow-hidden',
+      highlight ? 'border-na-primary/20' : quorum !== undefined ? 'border-na-tertiary-dim/20' : 'border-border/10',
+    )}>
+      {/* Halo subtil sur le highlight */}
+      {highlight && (
+        <div className="absolute -right-4 -top-4 w-24 h-24 bg-primary/5 rounded-full blur-2xl" />
       )}
-    >
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className={cn('text-lg font-bold mt-1', highlight ? 'text-green-400' : 'text-white')}>
-        {value}
-      </p>
+      <div className="text-[0.6875rem] font-bold text-on-surface-variant uppercase tracking-widest mb-2">
+        {label}
+      </div>
+      <div className={cn('flex items-baseline gap-2', highlight && 'text-na-primary')}>
+        <span className={cn(
+          'text-4xl font-bold',
+          highlight ? 'text-na-primary' : quorum === true ? 'text-na-tertiary-dim' : quorum === false ? 'text-na-secondary italic text-2xl font-semibold' : 'text-on-surface',
+        )}>
+          {value}
+        </span>
+        {suffix && (
+          <span className="text-on-surface-variant font-medium">{suffix}</span>
+        )}
+      </div>
+      {/* Barre de progression quorum */}
+      {quorum === false && quorumProgress !== undefined && (
+        <div className="absolute bottom-0 left-0 h-1 bg-na-secondary-container rounded-b-xl transition-all"
+          style={{ width: `${Math.min(quorumProgress * 100, 100)}%` }}
+        />
+      )}
     </div>
   )
 }

@@ -27,22 +27,27 @@ export default async function NotificationsPage(): Promise<React.JSX.Element> {
   return (
     <div className="space-y-6 max-w-xl">
       <div>
-        <h1 className="text-2xl font-bold text-white">Préférences de notifications</h1>
-        <p className="text-gray-400 text-sm mt-1">
-          Choisissez les événements pour lesquels vous souhaitez être notifié(e).
+        <h1 className="text-2xl font-bold text-on-surface">Préférences de notifications</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
+          Choisissez quand être alerté par email et WhatsApp.
         </p>
       </div>
 
       {!profile?.whatsapp_number && (
-        <div className="bg-yellow-950/20 border border-yellow-800/40 rounded-xl p-4">
-          <p className="text-yellow-400 text-sm font-medium">Numéro WhatsApp non renseigné</p>
-          <p className="text-yellow-600 text-xs mt-1">
-            Les notifications WhatsApp sont désactivées. Ajoutez votre numéro dans{' '}
-            <a href="/settings" className="underline hover:text-yellow-400 transition-colors">
-              les paramètres du profil
-            </a>
-            .
-          </p>
+        <div className="p-4 bg-orange-950/20 border border-orange-900/50 rounded-xl flex items-start gap-4">
+          <div className="flex-shrink-0 w-10 h-10 rounded-lg bg-orange-900/30 flex items-center justify-center">
+            <span className="text-orange-400 text-lg">⚠</span>
+          </div>
+          <div className="flex-1">
+            <p className="text-orange-400 font-medium text-sm">Notifications WhatsApp désactivées</p>
+            <p className="text-orange-400/60 text-xs mt-0.5">
+              Renseignez votre numéro dans{' '}
+              <a href="/settings" className="underline hover:text-orange-400 transition-colors">
+                les paramètres du profil
+              </a>
+              .
+            </p>
+          </div>
         </div>
       )}
 

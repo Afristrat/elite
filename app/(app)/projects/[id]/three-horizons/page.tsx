@@ -118,19 +118,19 @@ export default async function ThreeHorizonsPage({ params }: ThreeHorizonsPagePro
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+        <Link href={`/projects/${id}`} className="text-xs text-on-surface-variant hover:text-on-surface transition-colors">
           ← Retour au projet
         </Link>
-        <h1 className="text-xl font-bold text-white mt-2">Three Horizons × Barbell</h1>
-        <p className="text-gray-400 text-sm mt-1">
-          Positionnement stratégique de <span className="text-white font-medium">{project.title}</span> dans le portefeuille
+        <h1 className="text-xl font-bold text-on-surface mt-2">Three Horizons × Barbell</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
+          Positionnement stratégique de <span className="text-on-surface font-medium">{project.title}</span> dans le portefeuille
         </p>
       </div>
 
       {!project.horizon && !project.barbell_category ? (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-          <p className="text-gray-500 text-sm">Aucune catégorisation stratégique renseignée</p>
-          <p className="text-gray-600 text-xs mt-1">
+        <div className="bg-surface-container border border-border/10 rounded-xl p-8 text-center">
+          <p className="text-muted-foreground text-sm">Aucune catégorisation stratégique renseignée</p>
+          <p className="text-on-surface-variant/50 text-xs mt-1">
             L&apos;horizon et la catégorie barbell sont définis lors de la soumission du projet.
           </p>
         </div>
@@ -143,26 +143,26 @@ export default async function ThreeHorizonsPage({ params }: ThreeHorizonsPagePro
                 <span className="text-2xl">{horizonCfg.icon}</span>
                 <div>
                   <p className={cn('text-sm font-bold', horizonCfg.color)}>{horizonCfg.label}</p>
-                  <p className="text-xs text-gray-500">{horizonCfg.duration}</p>
+                  <p className="text-xs text-on-surface-variant">{horizonCfg.duration}</p>
                 </div>
               </div>
-              <p className="text-sm text-gray-300">{horizonCfg.description}</p>
+              <p className="text-sm text-on-surface-variant">{horizonCfg.description}</p>
 
               {/* Timeline visuelle */}
               <div className="mt-3 space-y-2">
-                <p className="text-xs text-gray-500 font-medium uppercase tracking-wide">Positionnement temporel</p>
+                <p className="text-xs text-on-surface-variant font-medium uppercase tracking-wide">Positionnement temporel</p>
                 <div className="flex gap-1">
                   {(['H1', 'H2', 'H3'] as ProjectHorizon[]).map((h) => (
                     <div
                       key={h}
                       className={cn(
                         'flex-1 h-2 rounded-full transition-all',
-                        project.horizon === h ? horizonCfg.color.replace('text-', 'bg-') : 'bg-gray-800',
+                        project.horizon === h ? horizonCfg.color.replace('text-', 'bg-') : 'bg-surface-container-high',
                       )}
                     />
                   ))}
                 </div>
-                <div className="flex justify-between text-xs text-gray-600">
+                <div className="flex justify-between text-xs text-on-surface-variant/50">
                   <span>Court terme</span>
                   <span>Moyen terme</span>
                   <span>Long terme</span>
@@ -179,41 +179,41 @@ export default async function ThreeHorizonsPage({ params }: ThreeHorizonsPagePro
                   <span className="text-2xl">{barbellCfg.icon}</span>
                   <div>
                     <p className={cn('text-sm font-bold', barbellCfg.color)}>{barbellCfg.label}</p>
-                    <p className="text-xs text-gray-500">Allocation cible : {barbellCfg.allocation}</p>
+                    <p className="text-xs text-on-surface-variant">Allocation cible : {barbellCfg.allocation}</p>
                   </div>
                 </div>
                 {project.moic_target && (
                   <div className="text-right">
-                    <p className="text-xs text-gray-500">MOIC cible</p>
+                    <p className="text-xs text-on-surface-variant">MOIC cible</p>
                     <p className={cn('text-xl font-bold', barbellCfg.color)}>{project.moic_target}×</p>
                   </div>
                 )}
               </div>
-              <p className="text-sm text-gray-300">{barbellCfg.description}</p>
+              <p className="text-sm text-on-surface-variant">{barbellCfg.description}</p>
 
               {/* Barbell visuel */}
               <div className="mt-3">
-                <p className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-2">Distribution barbell</p>
+                <p className="text-xs text-on-surface-variant font-medium uppercase tracking-wide mb-2">Distribution barbell</p>
                 <div className="flex items-center gap-2">
                   <div className={cn('flex-none text-center', project.barbell_category === 'core' ? '' : 'opacity-40')}>
                     <div className="w-16 h-8 bg-green-800/60 rounded flex items-center justify-center">
                       <span className="text-xs text-green-300 font-medium">Core</span>
                     </div>
-                    <p className="text-xs text-gray-600 mt-1">80%</p>
+                    <p className="text-xs text-on-surface-variant/50 mt-1">80%</p>
                   </div>
-                  <div className="flex-1 h-1 bg-gray-700 rounded" />
+                  <div className="flex-1 h-1 bg-surface-container-high rounded" />
                   <div className={cn('flex-none text-center', project.barbell_category === 'growth' ? '' : 'opacity-40')}>
                     <div className="w-16 h-4 bg-yellow-800/60 rounded flex items-center justify-center">
                       <span className="text-xs text-yellow-300 font-medium">Growth</span>
                     </div>
-                    <p className="text-xs text-gray-600 mt-1">éviter</p>
+                    <p className="text-xs text-on-surface-variant/50 mt-1">éviter</p>
                   </div>
-                  <div className="flex-1 h-1 bg-gray-700 rounded" />
+                  <div className="flex-1 h-1 bg-surface-container-high rounded" />
                   <div className={cn('flex-none text-center', project.barbell_category === 'moonshot' ? '' : 'opacity-40')}>
                     <div className="w-16 h-8 bg-purple-800/60 rounded flex items-center justify-center">
                       <span className="text-xs text-purple-300 font-medium">Moonshot</span>
                     </div>
-                    <p className="text-xs text-gray-600 mt-1">20%</p>
+                    <p className="text-xs text-on-surface-variant/50 mt-1">20%</p>
                   </div>
                 </div>
               </div>
@@ -222,12 +222,12 @@ export default async function ThreeHorizonsPage({ params }: ThreeHorizonsPagePro
 
           {/* Contexte portefeuille */}
           {totalPortfolio > 1 && (
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-              <h2 className="text-sm font-semibold text-gray-200">Contexte portefeuille ({totalPortfolio} projets)</h2>
+            <div className="bg-surface-container border border-border/10 rounded-xl p-5 space-y-4">
+              <h2 className="text-sm font-semibold text-on-surface">Contexte portefeuille ({totalPortfolio} projets)</h2>
               <div className="grid grid-cols-2 gap-6">
                 {/* Horizons */}
                 <div className="space-y-2">
-                  <p className="text-xs text-gray-500 font-medium">Distribution horizons</p>
+                  <p className="text-xs text-on-surface-variant font-medium">Distribution horizons</p>
                   {(['H1', 'H2', 'H3'] as ProjectHorizon[]).map((h) => {
                     const count = horizonCounts[h] ?? 0
                     const pct = totalPortfolio > 0 ? Math.round((count / totalPortfolio) * 100) : 0
@@ -235,20 +235,20 @@ export default async function ThreeHorizonsPage({ params }: ThreeHorizonsPagePro
                     return (
                       <div key={h} className="flex items-center gap-2">
                         <span className={cn('text-xs w-8', cfg.color)}>{h}</span>
-                        <div className="flex-1 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                        <div className="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
                           <div
                             className={cfg.color.replace('text-', 'bg-')}
                             style={{ width: `${pct}%`, height: '100%' }}
                           />
                         </div>
-                        <span className="text-xs text-gray-600 w-8 text-right">{pct}%</span>
+                        <span className="text-xs text-on-surface-variant/50 w-8 text-right">{pct}%</span>
                       </div>
                     )
                   })}
                 </div>
                 {/* Barbell */}
                 <div className="space-y-2">
-                  <p className="text-xs text-gray-500 font-medium">Distribution barbell</p>
+                  <p className="text-xs text-on-surface-variant font-medium">Distribution barbell</p>
                   {(['core', 'growth', 'moonshot'] as BarbellCat[]).map((b) => {
                     const count = barbellCounts[b] ?? 0
                     const pct = totalPortfolio > 0 ? Math.round((count / totalPortfolio) * 100) : 0
@@ -256,13 +256,13 @@ export default async function ThreeHorizonsPage({ params }: ThreeHorizonsPagePro
                     return (
                       <div key={b} className="flex items-center gap-2">
                         <span className={cn('text-xs w-14', cfg.color)}>{b}</span>
-                        <div className="flex-1 h-1.5 bg-gray-800 rounded-full overflow-hidden">
+                        <div className="flex-1 h-1.5 bg-surface-container-high rounded-full overflow-hidden">
                           <div
                             className={cfg.color.replace('text-', 'bg-')}
                             style={{ width: `${pct}%`, height: '100%' }}
                           />
                         </div>
-                        <span className="text-xs text-gray-600 w-8 text-right">{pct}%</span>
+                        <span className="text-xs text-on-surface-variant/50 w-8 text-right">{pct}%</span>
                       </div>
                     )
                   })}
@@ -272,10 +272,10 @@ export default async function ThreeHorizonsPage({ params }: ThreeHorizonsPagePro
           )}
 
           {/* Frameworks reference */}
-          <div className="bg-gray-900/50 border border-gray-800/50 rounded-xl p-4">
-            <p className="text-xs text-gray-600">
-              <span className="text-gray-500 font-medium">Three Horizons</span> — McKinsey (1999) ·{' '}
-              <span className="text-gray-500 font-medium">Barbell Strategy</span> — Nassim Nicholas Taleb (2012, Antifragile)
+          <div className="bg-surface-container-low border border-border/10 rounded-xl p-4">
+            <p className="text-xs text-on-surface-variant/50">
+              <span className="text-on-surface-variant font-medium">Three Horizons</span> — McKinsey (1999) ·{' '}
+              <span className="text-on-surface-variant font-medium">Barbell Strategy</span> — Nassim Nicholas Taleb (2012, Antifragile)
             </p>
           </div>
         </div>

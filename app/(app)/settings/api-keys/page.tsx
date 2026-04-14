@@ -23,9 +23,9 @@ export default async function ApiKeysPage(): Promise<React.JSX.Element> {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-white">Clés API</h1>
-        <p className="text-gray-400 text-sm mt-1">
-          Gérez vos clés pour les intégrations IA (OpenAI, Anthropic, Perplexity)
+        <h1 className="text-2xl font-bold text-on-surface">Clés API</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
+          Gérez vos clés pour les intégrations IA (Kimi, Anthropic, Perplexity…)
         </p>
       </div>
 

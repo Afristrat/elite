@@ -24,10 +24,13 @@ const DECISION_LABELS: Record<DecisionType, string> = {
   deferred: 'Différé',
 }
 
-const DECISION_COLORS: Record<DecisionType, string> = {
-  approved: 'text-green-400',
-  rejected: 'text-red-400',
-  deferred: 'text-yellow-400',
+const DECISION_BADGE_CLASSES: Record<DecisionType, string> = {
+  approved:
+    'bg-[color:var(--color-na-tertiary-container)]/10 text-[color:var(--color-na-tertiary-dim)] border border-[color:var(--color-na-tertiary-container)]/30',
+  rejected:
+    'bg-destructive/10 text-[color:var(--color-na-error-dim)] border border-destructive/30',
+  deferred:
+    'bg-secondary-container/50 text-secondary-fixed-dim border border-outline-variant/30',
 }
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps): Promise<React.JSX.Element> {
@@ -120,8 +123,6 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     return deadline > now && deadline <= in72h
   })
 
-  const firstName = profile?.full_name?.split(' ')[0] ?? null
-
   // Étapes onboarding : complétées si l'utilisateur a déjà effectué l'action
   const hasSubmittedProject = (ownProjects ?? []).length > 0
   const hasEvaluated = (myEvaluations ?? []).length > 0
@@ -138,14 +139,14 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     {
       id: 'project',
       title: 'Soumettre son premier projet',
-      description: 'Proposer un projet au comité d\'investissement',
+      description: "Proposer un projet au comité d'investissement",
       href: '/projects/new',
       completed: hasSubmittedProject,
     },
     {
       id: 'evaluate',
       title: 'Évaluer un projet',
-      description: 'Contribuer à l\'évaluation collective d\'un projet ouvert',
+      description: "Contribuer à l'évaluation collective d'un projet ouvert",
       href: '/projects?status=open',
       completed: hasEvaluated,
     },
@@ -170,7 +171,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
       popover: {
         title: '📊 Votre portefeuille en temps réel',
         description:
-          'Ces 4 indicateurs centralisent l\'état de vos projets d\'investissement. Combien sont ouverts à l\'évaluation, combien attendent votre vote, et le score moyen global. Zéro WhatsApp — tout est ici, auditable et structuré.',
+          "Ces 4 indicateurs centralisent l'état de vos projets d'investissement. Combien sont ouverts à l'évaluation, combien attendent votre vote, et le score moyen global. Zéro WhatsApp — tout est ici, auditable et structuré.",
         side: 'bottom',
         align: 'start',
       },
@@ -178,9 +179,9 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     {
       element: '[data-tour="to-evaluate"]',
       popover: {
-        title: '⭐ Votre file d\'évaluation',
+        title: "⭐ Votre file d'évaluation",
         description:
-          'Ces projets attendent votre évaluation. Le vote est aveugle — vous ne verrez pas les scores des autres membres avant que le quorum soit atteint. C\'est ce qui élimine le biais de conformité dans la décision collective.',
+          "Ces projets attendent votre évaluation. Le vote est aveugle — vous ne verrez pas les scores des autres membres avant que le quorum soit atteint. C'est ce qui élimine le biais de conformité dans la décision collective.",
         side: 'top',
         align: 'start',
       },
@@ -188,7 +189,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
   ]
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Tour guidé — segment 1 */}
       {isTour1 && (
         <TourWidget
@@ -199,174 +200,206 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
         />
       )}
 
-      {/* En-tête */}
-      <div>
-        <h1 className="text-2xl font-bold text-white">
-          Bonjour{firstName ? `, ${firstName}` : ''}
-        </h1>
-        <p className="text-gray-400 text-sm mt-1">
-          Tableau de bord du portefeuille Projets Elite
-        </p>
-      </div>
-
-      {/* Onboarding */}
-      <OnboardingWrapper steps={onboardingSteps} userId={user!.id} />
-
-      {/* KPIs */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4" data-tour="dashboard-kpis">
-        <KPICard
-          label="Projets ouverts"
-          value={openProjects.length}
-          href="/projects?status=open"
-          accent={openProjects.length > 0}
-        />
-        <KPICard
-          label="À évaluer"
-          value={toEvaluate.length}
-          href="/projects?status=open"
-          accent={toEvaluate.length > 0}
-          accentColor="blue"
-        />
-        <KPICard
-          label="Décisions (30 j)"
-          value={recentDecisions?.length ?? 0}
-          href="/decisions"
-        />
-        <KPICard
-          label="Score moyen global"
-          value={avgScore !== null ? `${avgScore.toFixed(1)} / 10` : '—'}
-          href="/projects"
-          accent={avgScore !== null && avgScore >= 7}
-          accentColor="green"
-        />
-      </div>
-
       {/* Alertes deadline */}
       {urgentProjects.length > 0 && (
-        <div className="bg-yellow-950/20 border border-yellow-900/50 rounded-xl p-4 space-y-2">
-          <p className="text-xs font-semibold text-yellow-400 uppercase tracking-wide">
-            ⚠ Évaluations à clôturer dans 72h
+        <div className="flex items-center gap-4 px-6 py-4 rounded-xl bg-amber-950/20 border border-amber-900/50 text-amber-200/90 text-sm">
+          <span className="text-amber-500 shrink-0">⚠</span>
+          <p className="font-medium">
+            {urgentProjects.length} projet{urgentProjects.length > 1 ? 's' : ''} arrive
+            {urgentProjects.length === 1 ? '' : 'nt'} à échéance dans moins de 72 h
           </p>
-          <div className="space-y-1.5">
-            {urgentProjects.map((p) => {
-              const deadline = new Date(p.evaluation_deadline!)
-              const hoursLeft = Math.round(
-                (deadline.getTime() - now.getTime()) / (1000 * 60 * 60),
-              )
-              return (
-                <div key={p.id} className="flex items-center justify-between gap-2">
-                  <Link
-                    href={`/projects/${p.id}`}
-                    className="text-sm text-white hover:text-yellow-300 transition-colors truncate"
-                  >
-                    {p.title}
-                  </Link>
-                  <span className="text-xs text-yellow-500 shrink-0">{hoursLeft}h restantes</span>
-                </div>
-              )
-            })}
-          </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Ligne principale : Onboarding + KPIs */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        {/* Onboarding */}
+        <section className="lg:col-span-4 bg-surface-container rounded-xl p-6 relative">
+          <h3 className="text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-4">
+            Premiers pas
+          </h3>
+          <OnboardingWrapper steps={onboardingSteps} userId={user!.id} />
+        </section>
+
+        {/* KPIs */}
+        <section
+          className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4"
+          data-tour="dashboard-kpis"
+        >
+          <KPICard
+            label="Projets ouverts"
+            value={openProjects.length}
+            href="/projects?status=open"
+          />
+          <KPICard
+            label="À évaluer"
+            value={toEvaluate.length}
+            href="/projects?status=open"
+            accent
+          />
+          <KPICard
+            label="Décisions (30 j)"
+            value={recentDecisions?.length ?? 0}
+            href="/decisions"
+          />
+          <KPICard
+            label="Score moyen"
+            value={avgScore !== null ? avgScore.toFixed(1) : '—'}
+            valueSuffix={avgScore !== null ? '/ 10' : undefined}
+            href="/projects"
+            accentTertiary={avgScore !== null && avgScore >= 7}
+          />
+        </section>
+      </div>
+
+      {/* Deux colonnes : Décisions récentes + Statut portefeuille */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Décisions récentes */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-gray-200">Décisions récentes</h2>
-            <Link href="/decisions" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
-              Tout voir →
+        <section className="bg-surface-container rounded-xl overflow-hidden flex flex-col">
+          <div className="p-6 flex justify-between items-center border-b border-border/10">
+            <h3 className="font-semibold text-lg text-on-surface">Décisions récentes</h3>
+            <Link
+              href="/decisions"
+              className="text-sm text-primary font-medium flex items-center gap-1 hover:underline"
+            >
+              Voir toutes →
             </Link>
           </div>
 
-          {!recentDecisions?.length ? (
-            <p className="text-sm text-gray-600">Aucune décision ce mois-ci</p>
-          ) : (
-            <div className="space-y-3">
-              {recentDecisions.map((d) => {
-                const proj = d.projects as { title: string } | null
-                return (
-                  <div key={d.id} className="flex items-center justify-between gap-2">
-                    <Link
-                      href={`/projects/${d.project_id}`}
-                      className="text-sm text-gray-300 hover:text-white transition-colors truncate"
+          <div className="flex-1 px-2 py-4">
+            {!recentDecisions?.length ? (
+              <p className="text-sm text-on-surface-variant px-4 py-6">
+                Aucune décision ce mois-ci
+              </p>
+            ) : (
+              <div className="space-y-1">
+                {recentDecisions.map((d) => {
+                  const proj = d.projects as { title: string } | null
+                  return (
+                    <div
+                      key={d.id}
+                      className="flex items-center justify-between p-4 rounded-lg hover:bg-surface-container-high transition-colors group"
                     >
-                      {proj?.title ?? 'Projet supprimé'}
-                    </Link>
-                    <span className={cn('text-xs font-semibold shrink-0', DECISION_COLORS[d.decision])}>
-                      {DECISION_LABELS[d.decision]}
-                    </span>
-                  </div>
-                )
-              })}
-            </div>
-          )}
-        </div>
+                      <div>
+                        <Link
+                          href={`/projects/${d.project_id}`}
+                          className="text-sm font-semibold text-on-surface group-hover:text-primary transition-colors block"
+                        >
+                          {proj?.title ?? 'Projet supprimé'}
+                        </Link>
+                        <p className="text-xs text-on-surface-variant mt-0.5">
+                          {new Date(d.created_at).toLocaleDateString('fr-FR', {
+                            day: '2-digit',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </p>
+                      </div>
+                      <span
+                        className={cn(
+                          'px-3 py-1 text-[0.65rem] font-bold uppercase tracking-widest rounded-full',
+                          DECISION_BADGE_CLASSES[d.decision],
+                        )}
+                      >
+                        {DECISION_LABELS[d.decision]}
+                      </span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
+          </div>
+        </section>
 
         {/* Statut du portefeuille */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-4">
-          <h2 className="text-sm font-semibold text-gray-200">Statut du portefeuille</h2>
+        <section className="bg-surface-container rounded-xl p-6 flex flex-col">
+          <h3 className="font-semibold text-lg text-on-surface mb-8">Statut du portefeuille</h3>
 
-          <div className="space-y-3">
+          <div className="space-y-8">
             <PortfolioRow
               label="Ouverts à l'évaluation"
               count={openProjects.length}
               href="/projects?status=open"
-              color="bg-blue-500"
+              colorClass="bg-primary"
               total={visibleProjects.length}
             />
             <PortfolioRow
               label="Quorum atteint — en attente de décision"
               count={closedProjects.length}
               href="/projects?status=closed"
-              color="bg-yellow-500"
+              colorClass="bg-amber-500"
               total={visibleProjects.length}
             />
             <PortfolioRow
               label="Décidés"
               count={decidedProjects.length}
               href="/projects?status=decided"
-              color="bg-green-500"
+              colorClass="bg-na-tertiary-dim"
               total={visibleProjects.length}
             />
           </div>
 
-          <div className="pt-2 border-t border-gray-800">
+          <div className="mt-auto pt-8">
             <Link
               href="/projects"
-              className="text-xs text-gray-500 hover:text-gray-300 transition-colors"
+              className="text-xs text-on-surface-variant hover:text-on-surface transition-colors"
             >
               Voir tous les projets →
             </Link>
           </div>
-        </div>
+        </section>
       </div>
 
       {/* Mes évaluations en attente */}
       {toEvaluate.length > 0 && profile?.role !== 'contributeur' && (
-        <div className="bg-gray-900 border border-blue-900/40 rounded-xl p-5 space-y-3" data-tour="to-evaluate">
-          <h2 className="text-sm font-semibold text-gray-200">
-            Projets en attente de mon évaluation ({toEvaluate.length})
-          </h2>
-          <div className="space-y-2">
-            {toEvaluate.slice(0, 5).map((p) => (
-              <div key={p.id} className="flex items-center justify-between gap-2">
-                <Link
-                  href={`/projects/${p.id}`}
-                  className="text-sm text-gray-300 hover:text-white transition-colors truncate"
-                >
-                  {p.title}
-                </Link>
-                <Link
-                  href={`/projects/${p.id}/evaluate`}
-                  className="text-xs px-3 py-1 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-colors shrink-0"
-                >
-                  Évaluer
-                </Link>
-              </div>
-            ))}
+        <section
+          className="bg-surface-container-low rounded-xl overflow-hidden"
+          data-tour="to-evaluate"
+        >
+          <div className="p-6 border-b border-border/10 flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <h3 className="font-semibold text-lg text-on-surface">À évaluer</h3>
+              <span className="px-2 py-0.5 bg-primary-container/20 text-primary text-[0.6rem] font-bold rounded uppercase tracking-wider">
+                PRIORITAIRE
+              </span>
+            </div>
           </div>
-        </div>
+
+          <div className="divide-y divide-border/10">
+            {toEvaluate.slice(0, 5).map((p) => {
+              const deadline = p.evaluation_deadline ? new Date(p.evaluation_deadline) : null
+              const hoursLeft =
+                deadline
+                  ? Math.round((deadline.getTime() - now.getTime()) / (1000 * 60 * 60))
+                  : null
+              const isUrgent = hoursLeft !== null && hoursLeft <= 72
+
+              return (
+                <div
+                  key={p.id}
+                  className="p-6 flex flex-col md:flex-row md:items-center justify-between hover:bg-surface-container-high/50 transition-all gap-4"
+                >
+                  <div className="flex-1">
+                    <h4 className="font-bold text-on-surface">{p.title}</h4>
+                  </div>
+                  <div className="flex items-center gap-6">
+                    {isUrgent && hoursLeft !== null && (
+                      <span className="px-3 py-1 bg-amber-500/10 text-amber-500 text-[0.65rem] font-bold uppercase tracking-widest rounded-full border border-amber-500/20">
+                        J-{Math.ceil(hoursLeft / 24)}
+                      </span>
+                    )}
+                    <Link
+                      href={`/projects/${p.id}/evaluate`}
+                      className="px-5 py-2 bg-primary-container text-on-primary-container text-xs font-bold rounded-lg hover:bg-primary-container/80 transition-all"
+                    >
+                      Évaluer →
+                    </Link>
+                  </div>
+                </div>
+              )
+            })}
+          </div>
+        </section>
       )}
     </div>
   )
@@ -379,34 +412,43 @@ function KPICard({
   value,
   href,
   accent = false,
-  accentColor = 'yellow',
+  accentTertiary = false,
+  valueSuffix,
 }: {
   label: string
   value: number | string
   href: string
   accent?: boolean
-  accentColor?: 'yellow' | 'blue' | 'green'
+  accentTertiary?: boolean
+  valueSuffix?: string
 }): React.JSX.Element {
-  const borderClass = accent
-    ? accentColor === 'blue'
-      ? 'border-blue-800'
-      : accentColor === 'green'
-        ? 'border-green-800'
-        : 'border-yellow-800'
-    : 'border-gray-800'
-
-  const valueClass = accent
-    ? accentColor === 'blue'
-      ? 'text-blue-400'
-      : accentColor === 'green'
-        ? 'text-green-400'
-        : 'text-yellow-400'
-    : 'text-white'
-
   return (
-    <Link href={href} className={cn('bg-gray-900 border rounded-xl p-4 block hover:border-gray-600 transition-colors', borderClass)}>
-      <p className="text-xs text-gray-500">{label}</p>
-      <p className={cn('text-2xl font-bold mt-1.5', valueClass)}>{value}</p>
+    <Link
+      href={href}
+      className={cn(
+        'bg-surface-container-low rounded-xl p-6 flex flex-col justify-between hover:bg-surface-container-high transition-colors',
+        accent && 'border border-primary/30 ring-1 ring-primary/10',
+      )}
+    >
+      <p
+        className={cn(
+          'text-[0.7rem] uppercase font-bold tracking-widest',
+          accent ? 'text-primary' : 'text-on-surface-variant',
+        )}
+      >
+        {label}
+      </p>
+      <h4
+        className={cn(
+          'text-4xl font-bold mt-4',
+          accent ? 'text-primary' : accentTertiary ? 'text-na-tertiary-dim' : 'text-on-surface',
+        )}
+      >
+        {value}
+        {valueSuffix && (
+          <span className="text-base font-normal text-on-surface-variant ml-1">{valueSuffix}</span>
+        )}
+      </h4>
     </Link>
   )
 }
@@ -415,25 +457,27 @@ function PortfolioRow({
   label,
   count,
   href,
-  color,
+  colorClass,
   total,
 }: {
   label: string
   count: number
   href: string
-  color: string
+  colorClass: string
   total: number
 }): React.JSX.Element {
   const pct = total > 0 ? (count / total) * 100 : 0
   return (
-    <Link href={href} className="block space-y-1 group">
-      <div className="flex items-center justify-between text-xs">
-        <span className="text-gray-400 group-hover:text-gray-200 transition-colors">{label}</span>
-        <span className="text-gray-500 font-mono">{count}</span>
+    <Link href={href} className="block space-y-3 group">
+      <div className="flex items-center justify-between text-sm">
+        <span className="font-medium text-on-surface group-hover:text-primary transition-colors">
+          {label}
+        </span>
+        <span className="font-bold text-on-surface">{count}</span>
       </div>
-      <div className="h-1.5 bg-gray-800 rounded-full overflow-hidden">
+      <div className="h-2 bg-surface-container-highest rounded-full overflow-hidden">
         <div
-          className={cn('h-full rounded-full transition-all', color)}
+          className={cn('h-full rounded-full transition-all', colorClass)}
           style={{ width: `${pct}%` }}
         />
       </div>

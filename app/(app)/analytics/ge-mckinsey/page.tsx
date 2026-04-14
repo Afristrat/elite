@@ -114,52 +114,52 @@ export default async function GEMcKinseyPage(): Promise<React.JSX.Element> {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-white">Matrice GE-McKinsey 9-Box</h1>
-          <p className="text-gray-400 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-on-surface">Matrice GE-McKinsey 9-Box</h1>
+          <p className="text-on-surface-variant text-sm mt-1">
             Attractivité sectorielle (MOIC cible) × Force compétitive (score comité)
           </p>
         </div>
-        <Link href="/analytics" className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+        <Link href="/analytics" className="text-xs text-primary hover:text-primary/80 transition-colors">
           ← Analytics
         </Link>
       </div>
 
       {projectList.length === 0 ? (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-          <p className="text-gray-500 text-sm">Aucun projet avec quorum disponible</p>
-          <p className="text-gray-600 text-xs mt-1">Les projets apparaissent après avoir atteint le quorum</p>
+        <div className="bg-surface-container border border-border/10 rounded-xl p-8 text-center">
+          <p className="text-muted-foreground text-sm">Aucun projet avec quorum disponible</p>
+          <p className="text-on-surface-variant/50 text-xs mt-1">Les projets apparaissent après avoir atteint le quorum</p>
         </div>
       ) : (
         <div className="space-y-5">
           {/* Légende axes */}
           <div className="grid grid-cols-2 gap-3">
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-3 space-y-1">
-              <p className="text-xs font-semibold text-gray-300">Axe Y — Attractivité sectorielle</p>
-              <div className="flex gap-3 text-xs text-gray-500">
-                <span className="text-red-400">Faible : &lt; 3×</span>
+            <div className="bg-surface-container border border-border/10 rounded-xl p-3 space-y-1">
+              <p className="text-xs font-semibold text-on-surface">Axe Y — Attractivité sectorielle</p>
+              <div className="flex gap-3 text-xs">
+                <span className="text-destructive">Faible : &lt; 3×</span>
                 <span className="text-yellow-400">Moyenne : 3–5×</span>
-                <span className="text-green-400">Élevée : &gt; 5×</span>
+                <span className="text-na-tertiary-dim">Élevée : &gt; 5×</span>
               </div>
-              <p className="text-xs text-gray-600">Basé sur le MOIC cible du projet</p>
+              <p className="text-xs text-on-surface-variant/50">Basé sur le MOIC cible du projet</p>
             </div>
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-3 space-y-1">
-              <p className="text-xs font-semibold text-gray-300">Axe X — Force compétitive</p>
-              <div className="flex gap-3 text-xs text-gray-500">
-                <span className="text-red-400">Faible : &lt; 5/10</span>
+            <div className="bg-surface-container border border-border/10 rounded-xl p-3 space-y-1">
+              <p className="text-xs font-semibold text-on-surface">Axe X — Force compétitive</p>
+              <div className="flex gap-3 text-xs">
+                <span className="text-destructive">Faible : &lt; 5/10</span>
                 <span className="text-yellow-400">Moyenne : 5–7</span>
-                <span className="text-green-400">Élevée : &gt; 7</span>
+                <span className="text-na-tertiary-dim">Élevée : &gt; 7</span>
               </div>
-              <p className="text-xs text-gray-600">Basé sur le score comité moyen</p>
+              <p className="text-xs text-on-surface-variant/50">Basé sur le score comité moyen</p>
             </div>
           </div>
 
           {/* Matrice 9-Box */}
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-5">
+          <div className="bg-surface-container border border-border/10 rounded-xl p-5">
             <div className="flex gap-2">
               {/* Étiquette Y */}
               <div className="flex flex-col justify-center pr-2">
                 <div className="flex flex-col gap-0 h-full" style={{ writingMode: 'vertical-rl', transform: 'rotate(180deg)' }}>
-                  <p className="text-xs text-gray-500 text-center">
+                  <p className="text-xs text-on-surface-variant text-center">
                     Attractivité sectorielle (↑)
                   </p>
                 </div>
@@ -173,7 +173,7 @@ export default async function GEMcKinseyPage(): Promise<React.JSX.Element> {
                     <div className="w-16 flex items-center justify-end pr-2">
                       <span className={cn(
                         'text-xs font-medium',
-                        attrIdx === 2 ? 'text-green-400' : attrIdx === 1 ? 'text-yellow-400' : 'text-red-400'
+                        attrIdx === 2 ? 'text-na-tertiary-dim' : attrIdx === 1 ? 'text-yellow-400' : 'text-destructive'
                       )}>
                         {ATTR_LABELS[attrIdx]}
                       </span>
@@ -193,10 +193,10 @@ export default async function GEMcKinseyPage(): Promise<React.JSX.Element> {
                             meta.color,
                           )}
                         >
-                          <p className="text-xs font-semibold text-gray-300 leading-tight">{meta.label}</p>
+                          <p className="text-xs font-semibold text-on-surface leading-tight">{meta.label}</p>
                           <div className="space-y-1 mt-1">
                             {cellProjects.length === 0 ? (
-                              <p className="text-xs text-gray-700 italic">—</p>
+                              <p className="text-xs text-on-surface-variant/30 italic">—</p>
                             ) : (
                               cellProjects.map((p) => (
                                 <Link
@@ -204,19 +204,19 @@ export default async function GEMcKinseyPage(): Promise<React.JSX.Element> {
                                   href={`/projects/${p.id}`}
                                   className="block group"
                                 >
-                                  <div className="bg-gray-900/60 rounded px-2 py-1 hover:bg-gray-800/80 transition-colors">
-                                    <p className="text-xs text-white font-medium leading-tight truncate group-hover:text-blue-300">
+                                  <div className="bg-surface/60 rounded px-2 py-1 hover:bg-surface-container-high/80 transition-colors">
+                                    <p className="text-xs text-on-surface font-medium leading-tight truncate group-hover:text-primary">
                                       {p.title}
                                     </p>
                                     <div className="flex items-center gap-2 mt-0.5">
                                       {p.avg_score !== null && (
-                                        <span className="text-xs text-gray-500">{p.avg_score.toFixed(1)}/10</span>
+                                        <span className="text-xs text-on-surface-variant">{p.avg_score.toFixed(1)}/10</span>
                                       )}
                                       {p.moic_target !== null && (
-                                        <span className="text-xs text-blue-500">{p.moic_target}×</span>
+                                        <span className="text-xs text-primary">{p.moic_target}×</span>
                                       )}
                                       {p.decision && (
-                                        <span className={cn('text-xs font-semibold', DECISION_COLORS[p.decision] ?? 'text-gray-400')}>
+                                        <span className={cn('text-xs font-semibold', DECISION_COLORS[p.decision] ?? 'text-on-surface-variant')}>
                                           {p.decision === 'approved' ? '✓' : p.decision === 'rejected' ? '✗' : '⏸'}
                                         </span>
                                       )}
@@ -239,21 +239,21 @@ export default async function GEMcKinseyPage(): Promise<React.JSX.Element> {
                     <div key={strIdx} className="flex-1 text-center">
                       <span className={cn(
                         'text-xs font-medium',
-                        strIdx === 2 ? 'text-green-400' : strIdx === 1 ? 'text-yellow-400' : 'text-red-400'
+                        strIdx === 2 ? 'text-na-tertiary-dim' : strIdx === 1 ? 'text-yellow-400' : 'text-destructive'
                       )}>
                         {STR_LABELS[strIdx]}
                       </span>
                     </div>
                   ))}
                 </div>
-                <p className="text-center text-xs text-gray-500 mt-0.5">Force compétitive (→)</p>
+                <p className="text-center text-xs text-on-surface-variant mt-0.5">Force compétitive (→)</p>
               </div>
             </div>
           </div>
 
           {/* Recommandations par quadrant */}
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
-            <h2 className="text-sm font-semibold text-gray-200">Recommandations stratégiques par quadrant</h2>
+          <div className="bg-surface-container border border-border/10 rounded-xl p-5 space-y-3">
+            <h2 className="text-sm font-semibold text-on-surface">Recommandations stratégiques par quadrant</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
               {Object.entries(QUADRANT_META).map(([key, meta]) => {
                 const [attrStr, strStr] = key.split('-')
@@ -261,12 +261,12 @@ export default async function GEMcKinseyPage(): Promise<React.JSX.Element> {
                 return (
                   <div key={key} className={cn('rounded-lg border p-3', meta.color)}>
                     <div className="flex items-center justify-between">
-                      <p className="text-xs font-semibold text-gray-200">{meta.label}</p>
+                      <p className="text-xs font-semibold text-on-surface">{meta.label}</p>
                       {count > 0 && (
-                        <span className="text-xs bg-gray-800 text-gray-300 px-1.5 py-0.5 rounded-full">{count}</span>
+                        <span className="text-xs bg-surface-container text-on-surface-variant px-1.5 py-0.5 rounded-full">{count}</span>
                       )}
                     </div>
-                    <p className="text-xs text-gray-500 mt-1">{meta.recommendation}</p>
+                    <p className="text-xs text-on-surface-variant mt-1">{meta.recommendation}</p>
                   </div>
                 )
               })}
@@ -275,9 +275,9 @@ export default async function GEMcKinseyPage(): Promise<React.JSX.Element> {
 
           {/* Liste projets non positionnés (sans score ou sans MOIC) */}
           {points.filter((p) => p.avg_score === null || p.moic_target === null).length > 0 && (
-            <div className="bg-gray-900 border border-gray-800 rounded-xl p-4 space-y-2">
-              <p className="text-xs font-semibold text-gray-400">Projets sans données suffisantes</p>
-              <p className="text-xs text-gray-600">Ces projets manquent de score comité ou de MOIC cible et sont positionnés par défaut.</p>
+            <div className="bg-surface-container border border-border/10 rounded-xl p-4 space-y-2">
+              <p className="text-xs font-semibold text-on-surface-variant">Projets sans données suffisantes</p>
+              <p className="text-xs text-on-surface-variant/50">Ces projets manquent de score comité ou de MOIC cible et sont positionnés par défaut.</p>
               <div className="flex flex-wrap gap-2 mt-1">
                 {points
                   .filter((p) => p.avg_score === null || p.moic_target === null)
@@ -285,7 +285,7 @@ export default async function GEMcKinseyPage(): Promise<React.JSX.Element> {
                     <Link
                       key={p.id}
                       href={`/projects/${p.id}`}
-                      className="text-xs text-gray-500 hover:text-gray-300 border border-gray-700 rounded px-2 py-1 transition-colors"
+                      className="text-xs text-on-surface-variant hover:text-on-surface border border-border/10 rounded px-2 py-1 transition-colors"
                     >
                       {p.title}
                     </Link>
@@ -294,9 +294,9 @@ export default async function GEMcKinseyPage(): Promise<React.JSX.Element> {
             </div>
           )}
 
-          <p className="text-xs text-gray-600">
-            <span className="text-gray-500 font-medium">Attractivité</span> — potentiel de rendement (MOIC cible).{' '}
-            <span className="text-gray-500 font-medium">Force compétitive</span> — qualité perçue du deal (score comité moyen).{' '}
+          <p className="text-xs text-on-surface-variant/50">
+            <span className="text-on-surface-variant font-medium">Attractivité</span> — potentiel de rendement (MOIC cible).{' '}
+            <span className="text-on-surface-variant font-medium">Force compétitive</span> — qualité perçue du deal (score comité moyen).{' '}
             Adapté du modèle GE-McKinsey pour le comité d&apos;investissement Projets Elite.
           </p>
         </div>

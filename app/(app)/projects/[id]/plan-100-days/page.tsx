@@ -81,11 +81,11 @@ export default async function Plan100DaysPage({ params }: PlanPageProps): Promis
   if (!decision) {
     return (
       <div className="space-y-4">
-        <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+        <Link href={`/projects/${id}`} className="text-xs text-on-surface-variant hover:text-on-surface transition-colors">
           ← Retour au projet
         </Link>
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-8 text-center">
-          <p className="text-gray-500 text-sm">Le 100-Day Plan est disponible après approbation du projet</p>
+        <div className="bg-surface-container border border-border/10 rounded-xl p-8 text-center">
+          <p className="text-muted-foreground text-sm">Le 100-Day Plan est disponible après approbation du projet</p>
         </div>
       </div>
     )
@@ -102,11 +102,11 @@ export default async function Plan100DaysPage({ params }: PlanPageProps): Promis
   return (
     <div className="space-y-6 max-w-3xl">
       <div>
-        <Link href={`/projects/${id}`} className="text-xs text-gray-500 hover:text-gray-300 transition-colors">
+        <Link href={`/projects/${id}`} className="text-xs text-on-surface-variant hover:text-on-surface transition-colors">
           ← Retour au projet
         </Link>
-        <h1 className="text-xl font-bold text-white mt-2">100-Day Plan — {project.title}</h1>
-        <p className="text-gray-400 text-sm mt-1">
+        <h1 className="text-xl font-bold text-on-surface mt-2">100-Day Plan — {project.title}</h1>
+        <p className="text-on-surface-variant text-sm mt-1">
           Approuvé le{' '}
           {approvalDate.toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })}
           {' · '}
@@ -117,41 +117,41 @@ export default async function Plan100DaysPage({ params }: PlanPageProps): Promis
 
       {/* Compteur */}
       <div className="grid grid-cols-3 gap-4">
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Jour actuel</p>
-          <p className="text-2xl font-bold text-white mt-1">
-            {currentDay <= 100 ? `J+${currentDay}` : `J+${currentDay}`}
+        <div className="bg-surface-container border border-border/10 rounded-xl p-4">
+          <p className="text-xs text-on-surface-variant">Jour actuel</p>
+          <p className="text-2xl font-bold text-on-surface mt-1">
+            {`J+${currentDay}`}
           </p>
         </div>
-        <div className={`border rounded-xl p-4 ${daysLeft > 30 ? 'bg-gray-900 border-gray-800' : daysLeft > 0 ? 'bg-yellow-950/20 border-yellow-900/50' : 'bg-green-950/20 border-green-900/50'}`}>
-          <p className="text-xs text-gray-500">Jours restants</p>
-          <p className={`text-2xl font-bold mt-1 ${daysLeft > 30 ? 'text-white' : daysLeft > 0 ? 'text-yellow-400' : 'text-green-400'}`}>
+        <div className={`border rounded-xl p-4 ${daysLeft > 30 ? 'bg-surface-container border-border/10' : daysLeft > 0 ? 'bg-na-secondary-container/20 border-na-secondary/30' : 'bg-na-tertiary-container/10 border-na-tertiary-dim/30'}`}>
+          <p className="text-xs text-on-surface-variant">Jours restants</p>
+          <p className={`text-2xl font-bold mt-1 ${daysLeft > 30 ? 'text-on-surface' : daysLeft > 0 ? 'text-na-secondary' : 'text-na-tertiary-dim'}`}>
             {daysLeft > 0 ? daysLeft : '✓ Terminé'}
           </p>
         </div>
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
-          <p className="text-xs text-gray-500">Progression</p>
-          <div className="mt-2 h-2 bg-gray-800 rounded-full overflow-hidden">
+        <div className="bg-surface-container border border-border/10 rounded-xl p-4">
+          <p className="text-xs text-on-surface-variant">Progression</p>
+          <div className="mt-2 h-2 bg-surface-container-high rounded-full overflow-hidden">
             <div
-              className="h-full bg-blue-500 rounded-full transition-all"
+              className="h-full bg-primary rounded-full transition-all"
               style={{ width: `${Math.min(100, (currentDay / 100) * 100)}%` }}
             />
           </div>
-          <p className="text-xs text-gray-400 mt-1">{Math.min(100, currentDay)}%</p>
+          <p className="text-xs text-on-surface-variant mt-1">{Math.min(100, currentDay)}%</p>
         </div>
       </div>
 
       {/* Hypothèses de la thèse */}
       {thesis?.hypotheses && (
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
-          <h2 className="text-sm font-semibold text-gray-200">Hypothèses à valider pendant les 100 jours</h2>
+        <div className="bg-surface-container border border-border/10 rounded-xl p-5 space-y-3">
+          <h2 className="text-sm font-semibold text-on-surface">Hypothèses à valider pendant les 100 jours</h2>
           <div className="space-y-2">
             {thesis.hypotheses.map((h, i) => (
               <div key={i} className="flex gap-3 items-start">
-                <span className="w-5 h-5 rounded-full border border-gray-700 flex items-center justify-center text-xs text-gray-600 shrink-0 mt-0.5">
+                <span className="w-5 h-5 rounded-full border border-border flex items-center justify-center text-xs text-on-surface-variant shrink-0 mt-0.5">
                   {i + 1}
                 </span>
-                <p className="text-sm text-gray-300">{h}</p>
+                <p className="text-sm text-on-surface-variant">{h}</p>
               </div>
             ))}
           </div>
@@ -173,15 +173,15 @@ export default async function Plan100DaysPage({ params }: PlanPageProps): Promis
                   Phase {phase.phase}
                 </span>
                 <span className={`text-sm font-semibold ${phase.headerColor}`}>{phase.label}</span>
-                <span className="text-xs text-gray-600 ml-auto">Jours {phase.days}</span>
-                {inPhase && <span className="text-xs text-white bg-blue-600 px-2 py-0.5 rounded-full">En cours</span>}
-                {phaseComplete && <span className="text-xs text-green-400">✓</span>}
+                <span className="text-xs text-on-surface-variant/50 ml-auto">Jours {phase.days}</span>
+                {inPhase && <span className="text-xs text-on-surface bg-primary px-2 py-0.5 rounded-full">En cours</span>}
+                {phaseComplete && <span className="text-xs text-na-tertiary-dim">✓</span>}
               </div>
 
               <ul className="space-y-2">
                 {phase.tasks.map((task, i) => (
-                  <li key={i} className="flex gap-2 text-sm text-gray-400">
-                    <span className="text-gray-700 shrink-0">—</span>
+                  <li key={i} className="flex gap-2 text-sm text-on-surface-variant">
+                    <span className="text-on-surface-variant/40 shrink-0">—</span>
                     {task}
                   </li>
                 ))}

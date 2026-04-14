@@ -92,39 +92,47 @@ export function EvaluationForm({ projectId, criteria }: EvaluationFormProps): Re
       <div className="space-y-6">
         {/* Bannière mode expert */}
         {isExpert && (
-          <div className="flex items-center justify-between bg-blue-950/20 border border-blue-800/40 rounded-xl px-4 py-2">
-            <p className="text-xs text-blue-400 font-medium">Mode Expert activé — tous les champs avancés sont visibles</p>
-            <a href="/settings/preferences" className="text-xs text-blue-500 hover:text-blue-300 transition-colors">
+          <div className="flex items-center justify-between bg-primary-container/10 border border-primary-container/30 rounded-xl px-4 py-2">
+            <p className="text-xs text-na-primary font-medium">Mode Expert activé — tous les champs avancés sont visibles</p>
+            <a href="/settings/preferences" className="text-xs text-na-primary hover:text-on-surface-variant transition-colors">
               Modifier →
             </a>
           </div>
         )}
 
         {/* Critères */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-5" data-tour="evaluation-criteria">
+        <div className="bg-surface-container rounded-xl p-8 border border-border/10 space-y-10" data-tour="evaluation-criteria">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-gray-200">Critères d&apos;évaluation</h2>
+            <h2 className="font-semibold text-on-surface flex items-center gap-2">
+              <span className="text-na-primary">◆</span>
+              Critères d&apos;évaluation
+            </h2>
             {weightedAvg !== null && (
-              <span className="text-sm font-bold text-blue-400">
-                Score pondéré : {weightedAvg.toFixed(1)} / 10
-              </span>
+              <div className="text-right">
+                <p className="text-on-surface-variant text-sm uppercase tracking-wider font-semibold">Score pondéré estimé</p>
+                <p className="text-2xl font-bold text-na-primary">
+                  {weightedAvg.toFixed(2)} <span className="text-on-surface-variant text-lg">/ 10</span>
+                </p>
+              </div>
             )}
           </div>
 
           {criteria.map((criterion) => (
-            <div key={criterion.id} className="space-y-2">
-              <div className="flex items-start justify-between gap-2">
-                <div>
-                  <p className="text-sm font-medium text-gray-300">{criterion.label}</p>
-                  {criterion.description && (
-                    <p className="text-xs text-gray-500 mt-0.5">{criterion.description}</p>
-                  )}
+            <div key={criterion.id} className="space-y-4">
+              <div className="flex justify-between items-end">
+                <div className="flex items-center gap-3">
+                  <span className="font-medium text-on-surface">{criterion.label}</span>
+                  <span className="text-xs font-bold uppercase tracking-widest text-on-surface-variant bg-surface-container-high px-2 py-1 rounded">
+                    {criterion.weight}%
+                  </span>
                 </div>
-                <span className="text-xs text-gray-600 shrink-0">
-                  Poids : {criterion.weight}%
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-on-surface-variant uppercase">Score</span>
+                </div>
               </div>
-
+              {criterion.description && (
+                <p className="text-xs text-on-surface-variant/70">{criterion.description}</p>
+              )}
               <ScoreSlider
                 value={scores[criterion.id] ?? -1}
                 onChange={(v) => handleScoreChange(criterion.id, v)}
@@ -134,10 +142,10 @@ export function EvaluationForm({ projectId, criteria }: EvaluationFormProps): Re
         </div>
 
         {/* Commentaire */}
-        <div className="bg-gray-900 border border-gray-800 rounded-xl p-5 space-y-3">
+        <div className="bg-surface-container rounded-xl p-8 border border-border/10 space-y-4">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-gray-200">Commentaire d&apos;évaluation *</h2>
-            <span className={cn('text-xs', commentaryOk ? 'text-green-500' : 'text-gray-500')}>
+            <h2 className="font-semibold text-on-surface">Commentaire d&apos;évaluation *</h2>
+            <span className={cn('text-xs font-mono', commentaryOk ? 'text-na-tertiary-dim' : 'text-on-surface-variant/50')}>
               {commentary.trim().length}/50 min {commentaryOk && '✓'}
             </span>
           </div>
@@ -153,10 +161,10 @@ export function EvaluationForm({ projectId, criteria }: EvaluationFormProps): Re
 
         {/* Red Team (optionnel — affiché par défaut en mode expert) */}
         <div data-tour="red-team-section" className={cn(
-          'rounded-xl p-5 space-y-3',
+          'rounded-xl p-8 space-y-4',
           isExpert || showRedTeam
-            ? 'bg-red-950/10 border border-red-900/40'
-            : 'bg-gray-900 border border-gray-800',
+            ? 'bg-na-error-container/10 border border-na-error-container/30'
+            : 'bg-surface-container border border-border/10',
         )}>
           <button
             type="button"
@@ -164,23 +172,30 @@ export function EvaluationForm({ projectId, criteria }: EvaluationFormProps): Re
             className="flex items-center gap-2 w-full text-left"
             disabled={isExpert}
           >
-            <span className={cn(
-              'text-sm font-semibold',
-              isExpert || showRedTeam ? 'text-red-400' : 'text-gray-200',
-            )}>
-              🔴 Red Team {isExpert ? '' : '(optionnel)'}
-            </span>
+            <div className="flex items-center gap-3">
+              {(isExpert || showRedTeam) && (
+                <div className="w-10 h-10 rounded-full bg-na-error-container/20 flex items-center justify-center">
+                  <span className="text-na-error text-sm">🔴</span>
+                </div>
+              )}
+              <span className={cn(
+                'font-bold',
+                isExpert || showRedTeam ? 'text-na-error' : 'text-on-surface',
+              )}>
+                Red Team {isExpert ? '' : '— L\'avocat du diable'}
+              </span>
+            </div>
             {!isExpert && (
-              <span className="text-xs text-gray-500 ml-auto">{showRedTeam ? 'Masquer' : 'Ajouter'}</span>
+              <span className="text-xs text-on-surface-variant ml-auto">{showRedTeam ? 'Masquer' : 'Ajouter'}</span>
             )}
             {isExpert && (
-              <span className="text-xs text-blue-500 ml-auto">Mode expert — affiché par défaut</span>
+              <span className="text-xs text-na-primary ml-auto">Mode expert — affiché par défaut</span>
             )}
           </button>
 
           {(isExpert || showRedTeam) && (
-            <div className="space-y-4 pt-2 border-t border-gray-800">
-              <p className="text-xs text-gray-500">
+            <div className="space-y-6 pt-2 border-t border-na-error/10">
+              <p className="text-xs text-on-surface-variant">
                 Exercice de contre-argumentation structurée. Imaginez que le projet soit un échec —
                 pourquoi cela s&apos;est-il produit ?
               </p>
@@ -213,15 +228,15 @@ export function EvaluationForm({ projectId, criteria }: EvaluationFormProps): Re
         </div>
 
         {/* Bouton de soumission */}
-        <div className="flex items-center justify-between">
-          <p className="text-xs text-gray-500">
+        <div className="flex items-center justify-between mt-12 pt-8 border-t border-border/10">
+          <p className="text-xs text-on-surface-variant">
             Une fois soumise, votre évaluation ne peut plus être modifiée.
           </p>
           <button
             type="button"
             onClick={() => setShowConfirm(true)}
             disabled={!allScored || !commentaryOk || isSubmitting}
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-8 py-3 bg-primary text-on-primary text-sm font-semibold rounded-xl transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? 'Soumission…' : 'Soumettre mon évaluation'}
           </button>
@@ -231,25 +246,25 @@ export function EvaluationForm({ projectId, criteria }: EvaluationFormProps): Re
       {/* Modal de confirmation */}
       {showConfirm && (
         <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50 px-4">
-          <div className="bg-gray-900 border border-gray-800 rounded-xl p-6 max-w-md w-full space-y-4">
-            <h2 className="text-lg font-bold text-white">Confirmer la soumission</h2>
-            <p className="text-sm text-gray-400">
+          <div className="bg-surface-container border border-border/10 rounded-xl p-8 max-w-md w-full space-y-6">
+            <h2 className="text-lg font-bold text-on-surface">Confirmer la soumission</h2>
+            <p className="text-sm text-on-surface-variant leading-relaxed">
               Votre évaluation avec un score pondéré de{' '}
-              <strong className="text-white">{weightedAvg?.toFixed(2)} / 10</strong> sera soumise de
+              <strong className="text-na-primary">{weightedAvg?.toFixed(2)} / 10</strong> sera soumise de
               façon définitive. Cette action est irréversible.
             </p>
             <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 px-4 py-2 border border-gray-700 text-gray-400 hover:text-gray-200 rounded-lg text-sm transition-colors"
+                className="flex-1 px-4 py-2.5 border border-border/10 text-on-surface-variant hover:text-on-surface rounded-xl text-sm transition-colors"
               >
                 Annuler
               </button>
               <button
                 type="button"
                 onClick={() => void handleSubmit()}
-                className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-sm font-medium transition-colors"
+                className="flex-1 px-4 py-2.5 bg-primary text-on-primary rounded-xl text-sm font-semibold transition-all hover:opacity-90 active:scale-95"
               >
                 Confirmer
               </button>
@@ -273,10 +288,10 @@ function ScoreSlider({
   const SCORES = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
   const getColor = (score: number): string => {
-    if (score <= 3) return 'bg-red-600'
-    if (score <= 5) return 'bg-yellow-600'
-    if (score <= 7) return 'bg-blue-600'
-    return 'bg-green-600'
+    if (score <= 3) return 'bg-na-error'
+    if (score <= 5) return 'bg-na-secondary'
+    if (score <= 7) return 'bg-na-primary'
+    return 'bg-na-tertiary-dim'
   }
 
   return (
@@ -289,17 +304,17 @@ function ScoreSlider({
           className={cn(
             'flex-1 h-8 rounded text-xs font-bold transition-all',
             value === score
-              ? cn(getColor(score), 'text-white scale-105')
+              ? cn(getColor(score), 'text-on-primary scale-105')
               : value > score
-                ? cn(getColor(value), 'opacity-30 text-white')
-                : 'bg-gray-800 text-gray-600 hover:bg-gray-700 hover:text-gray-300',
+                ? cn(getColor(value), 'opacity-30 text-on-primary')
+                : 'bg-surface-container-high text-on-surface-variant hover:bg-surface-container-highest hover:text-on-surface',
           )}
         >
           {score}
         </button>
       ))}
       {value >= 0 && (
-        <span className="ml-1 text-xs text-gray-400 w-8 text-right shrink-0">{value}/10</span>
+        <span className="ml-1 text-xs text-on-surface-variant w-8 text-right shrink-0">{value}/10</span>
       )}
     </div>
   )
@@ -321,10 +336,10 @@ function RedTeamField({
   const ok = value.trim().length >= minLength
 
   return (
-    <div className="space-y-1.5">
+    <div className="space-y-2">
       <div className="flex items-center justify-between">
-        <label className="text-xs font-medium text-gray-400">{label}</label>
-        <span className={cn('text-xs', ok ? 'text-green-500' : 'text-gray-600')}>
+        <label className="text-xs font-bold text-na-error uppercase tracking-wider">{label}</label>
+        <span className={cn('text-xs font-mono', ok ? 'text-na-tertiary-dim' : 'text-on-surface-variant/50')}>
           {value.trim().length}/{minLength} {ok && '✓'}
         </span>
       </div>

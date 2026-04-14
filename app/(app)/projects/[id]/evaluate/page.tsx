@@ -70,8 +70,8 @@ export default async function EvaluatePage({ params, searchParams }: Evaluatepag
 
   if (criteria.length === 0) {
     return (
-      <div className="bg-yellow-950/30 border border-yellow-900 rounded-xl p-6">
-        <p className="text-yellow-300 text-sm">
+      <div className="bg-na-error-container/10 border border-na-error/30 rounded-xl p-6">
+        <p className="text-na-error text-sm">
           Aucun critère d&apos;évaluation configuré. Contactez l&apos;administrateur.
         </p>
       </div>
@@ -112,7 +112,7 @@ export default async function EvaluatePage({ params, searchParams }: Evaluatepag
     : `/decisions?tour=6&${tourParams}`
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8 max-w-5xl">
       {/* Tour guidé — segment 4 */}
       {isTour4 && (
         <TourWidget
@@ -123,9 +123,13 @@ export default async function EvaluatePage({ params, searchParams }: Evaluatepag
         />
       )}
 
-      <p className="text-gray-400 text-sm">
-        Votre évaluation est anonyme jusqu&apos;au quorum. Soyez exhaustif et impartial.
-      </p>
+      {/* Notice d'anonymat */}
+      <div className="bg-primary-container/10 border border-primary-container/30 rounded-xl p-4 flex items-center gap-3">
+        <span className="text-na-primary text-lg">🔒</span>
+        <span className="text-na-primary text-sm font-medium">
+          Votre évaluation est anonyme jusqu&apos;au quorum. Soyez exhaustif et impartial.
+        </span>
+      </div>
 
       <EvaluationForm projectId={id} criteria={criteria} />
     </div>

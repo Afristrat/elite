@@ -2,6 +2,7 @@
 
 import { createClient } from '@/lib/supabase/client'
 import { useRouter } from 'next/navigation'
+import { useTheme } from 'next-themes'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { TourStarter } from '@/components/tour/tour-starter'
@@ -30,6 +31,7 @@ const ROLE_COLORS: Record<UserRole, string> = {
 
 export function Header({ fullName, avatarUrl, email, role }: HeaderProps): React.JSX.Element {
   const router = useRouter()
+  const { theme, setTheme } = useTheme()
 
   async function handleSignOut(): Promise<void> {
     const supabase = createClient()
@@ -56,6 +58,17 @@ export function Header({ fullName, avatarUrl, email, role }: HeaderProps): React
 
       {/* Zone droite */}
       <div className="flex items-center gap-6">
+        {/* Toggle dark / light */}
+        <button
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          aria-label={theme === 'dark' ? 'Passer en mode clair' : 'Passer en mode sombre'}
+          className="hidden sm:flex items-center justify-center w-8 h-8 rounded-lg border border-border/20 text-on-surface-variant hover:text-na-primary hover:border-na-primary/30 transition-colors"
+        >
+          <span className="material-symbols-outlined text-[1.1rem] leading-none" aria-hidden="true">
+            {theme === 'dark' ? 'light_mode' : 'dark_mode'}
+          </span>
+        </button>
+
         {/* Bouton Tour guidé */}
         <TourStarter
           className={cn(

@@ -27,7 +27,7 @@ export default async function AdminLayout({
   if (profile.status === 'suspended') redirect('/suspended')
 
   return (
-    <div className="flex h-screen bg-gray-950 overflow-hidden">
+    <div className="flex h-screen bg-background overflow-hidden">
       <Sidebar role={profile.role} />
 
       <div className="flex-1 flex flex-col min-w-0">

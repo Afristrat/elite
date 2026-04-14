@@ -3,52 +3,39 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
+import { NAV_ITEMS, ADMIN_ITEMS, SETTINGS_ITEMS } from '@/lib/navigation'
 import type { Database } from '@/types/database'
 
 type UserRole = Database['public']['Enums']['user_role']
-
-type NavItem = {
-  href: string
-  label: string
-  icon: string
-  roles: UserRole[]
-  tourId?: string
-}
-
-const NAV_ITEMS: NavItem[] = [
-  { href: '/dashboard',           label: 'Tableau de bord', icon: 'dashboard',         roles: ['admin', 'evaluateur', 'contributeur'] },
-  { href: '/projects',            label: 'Projets',          icon: 'folder_special',    roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-projects' },
-  { href: '/decisions',           label: 'Décisions',        icon: 'gavel',             roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-decisions' },
-  { href: '/committee-charter',   label: 'Charte',           icon: 'menu_book',         roles: ['admin', 'evaluateur', 'contributeur'], tourId: 'nav-charter' },
-  { href: '/analytics',           label: 'Analytiques',      icon: 'analytics',         roles: ['admin'], tourId: 'nav-analytics' },
-]
-
-const ADMIN_ITEMS: NavItem[] = [
-  { href: '/admin/members',     label: 'Membres',      icon: 'group',               roles: ['admin'], tourId: 'nav-admin-members' },
-  { href: '/admin/invitations', label: 'Invitations',  icon: 'mail',                roles: ['admin'] },
-  { href: '/admin/theses',      label: 'Thèses',       icon: 'lightbulb',           roles: ['admin'] },
-  { href: '/admin/settings',    label: 'Paramètres',   icon: 'settings',            roles: ['admin'] },
-]
-
-const SETTINGS_ITEMS: NavItem[] = [
-  { href: '/settings/api-keys',      label: 'Clés API',       icon: 'key',           roles: ['admin', 'evaluateur', 'contributeur'] },
-  { href: '/settings/notifications', label: 'Notifications',  icon: 'notifications', roles: ['admin', 'evaluateur', 'contributeur'] },
-  { href: '/settings/preferences',   label: 'Préférences',    icon: 'tune',          roles: ['admin', 'evaluateur', 'contributeur'] },
-]
 
 type SidebarProps = {
   role: UserRole
 }
 
+function isActive(pathname: string, href: string, exact?: boolean): boolean {
+  return exact ? pathname === href : pathname.startsWith(href)
+}
+
 export function Sidebar({ role }: SidebarProps): React.JSX.Element {
   const pathname = usePathname()
 
-  const visibleNav = NAV_ITEMS.filter((item) => item.roles.includes(role))
-  const visibleAdmin = ADMIN_ITEMS.filter((item) => item.roles.includes(role))
+  const visibleNav      = NAV_ITEMS.filter((item) => item.roles.includes(role))
+  const visibleAdmin    = ADMIN_ITEMS.filter((item) => item.roles.includes(role))
   const visibleSettings = SETTINGS_ITEMS.filter((item) => item.roles.includes(role))
 
+  const linkClass = (href: string, exact?: boolean) =>
+    cn(
+      'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
+      isActive(pathname, href, exact)
+        ? 'bg-surface-container-highest text-na-primary font-semibold'
+        : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
+    )
+
   return (
-    <aside className="hidden md:flex flex-col w-[240px] min-h-screen bg-surface-container-low border-r border-border/10 py-6 px-4 z-50">
+    <aside
+      aria-label="Barre de navigation latérale"
+      className="hidden md:flex flex-col w-[240px] min-h-screen bg-surface-container-low border-r border-border/10 py-6 px-4 z-50"
+    >
       {/* Logo */}
       <div className="mb-8 px-2">
         <h1 className="text-xl font-bold tracking-[0.05em] text-on-surface">Veille Élite</h1>
@@ -58,23 +45,24 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
       </div>
 
       {/* Navigation principale */}
-      <nav className="flex-1 space-y-1">
-        {visibleNav.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            {...(item.tourId ? { 'data-tour': item.tourId } : {})}
-            className={cn(
-              'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
-              pathname.startsWith(item.href)
-                ? 'bg-surface-container-highest text-na-primary font-semibold'
-                : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
-            )}
-          >
-            <span className="material-symbols-outlined text-[1.25rem] leading-none">{item.icon}</span>
-            {item.label}
-          </Link>
-        ))}
+      <nav aria-label="Navigation principale" className="flex-1 space-y-1">
+        {visibleNav.map((item) => {
+          const active = isActive(pathname, item.href, item.exact)
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              aria-current={active ? 'page' : undefined}
+              {...(item.tourId ? { 'data-tour': item.tourId } : {})}
+              className={linkClass(item.href, item.exact)}
+            >
+              <span className="material-symbols-outlined text-[1.25rem] leading-none" aria-hidden="true">
+                {item.icon}
+              </span>
+              {item.label}
+            </Link>
+          )
+        })}
 
         {/* Section admin */}
         {visibleAdmin.length > 0 && (
@@ -82,22 +70,23 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
             <p className="px-3 text-[0.6rem] font-bold text-on-surface-variant uppercase tracking-widest mb-1 opacity-60">
               Administration
             </p>
-            {visibleAdmin.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                {...(item.tourId ? { 'data-tour': item.tourId } : {})}
-                className={cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
-                  pathname.startsWith(item.href)
-                    ? 'bg-surface-container-highest text-na-primary font-semibold'
-                    : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
-                )}
-              >
-                <span className="material-symbols-outlined text-[1.25rem] leading-none">{item.icon}</span>
-                {item.label}
-              </Link>
-            ))}
+            {visibleAdmin.map((item) => {
+              const active = isActive(pathname, item.href, item.exact)
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? 'page' : undefined}
+                  {...(item.tourId ? { 'data-tour': item.tourId } : {})}
+                  className={linkClass(item.href, item.exact)}
+                >
+                  <span className="material-symbols-outlined text-[1.25rem] leading-none" aria-hidden="true">
+                    {item.icon}
+                  </span>
+                  {item.label}
+                </Link>
+              )
+            })}
           </div>
         )}
 
@@ -107,21 +96,22 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
             <p className="px-3 text-[0.6rem] font-bold text-on-surface-variant uppercase tracking-widest mb-1 opacity-60">
               Paramètres
             </p>
-            {visibleSettings.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  'flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition-all',
-                  pathname.startsWith(item.href)
-                    ? 'bg-surface-container-highest text-na-primary font-semibold'
-                    : 'text-on-surface-variant hover:text-on-surface hover:bg-surface-container'
-                )}
-              >
-                <span className="material-symbols-outlined text-[1.25rem] leading-none">{item.icon}</span>
-                {item.label}
-              </Link>
-            ))}
+            {visibleSettings.map((item) => {
+              const active = isActive(pathname, item.href, item.exact)
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  aria-current={active ? 'page' : undefined}
+                  className={linkClass(item.href, item.exact)}
+                >
+                  <span className="material-symbols-outlined text-[1.25rem] leading-none" aria-hidden="true">
+                    {item.icon}
+                  </span>
+                  {item.label}
+                </Link>
+              )
+            })}
           </div>
         )}
       </nav>

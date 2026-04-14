@@ -2,6 +2,14 @@ import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
 export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl
+
+  // Routes publiques — court-circuit AVANT tout appel réseau
+  // (évite un timeout Supabase sur /api/health qui casserait le healthcheck Coolify)
+  const publicPaths = ['/login', '/auth/callback', '/access-denied', '/suspended', '/invite', '/api/health', '/api/cron']
+  const isPublic = publicPaths.some((p) => pathname.startsWith(p))
+  if (isPublic) return NextResponse.next()
+
   let supabaseResponse = NextResponse.next({ request })
 
   const supabase = createServerClient(
@@ -28,14 +36,6 @@ export async function middleware(request: NextRequest) {
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
-  const { pathname } = request.nextUrl
-
-  // Routes publiques — pas de vérification
-  const publicPaths = ['/login', '/auth/callback', '/access-denied', '/suspended', '/invite', '/api/health', '/api/cron']
-  const isPublic = publicPaths.some((p) => pathname.startsWith(p))
-
-  if (isPublic) return supabaseResponse
 
   // Non authentifié → login
   if (!user) {

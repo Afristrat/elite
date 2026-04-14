@@ -1,5 +1,4 @@
 import { createServerClient } from '@supabase/ssr'
-import { cookies } from 'next/headers'
 import { NextResponse, type NextRequest } from 'next/server'
 import type { Database } from '@/types/database'
 
@@ -9,20 +8,28 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const next = searchParams.get('next') ?? '/dashboard'
 
   if (!code) {
-    return NextResponse.redirect(`${origin}/login?error=no_code`)
+    return NextResponse.redirect(new URL('/login?error=no_code', origin))
   }
 
-  const cookieStore = await cookies()
+  // Préparer la réponse de redirect en amont pour y écrire les cookies
+  const redirectSuccess = NextResponse.redirect(new URL(next, origin))
+  const redirectError = (msg: string) =>
+    NextResponse.redirect(new URL(`/login?error=${msg}`, origin))
+
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return cookieStore.getAll() },
+        getAll() {
+          return request.cookies.getAll()
+        },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          )
+          // Écrire sur les deux : request (pour les appels suivants) + response (pour le navigateur)
+          cookiesToSet.forEach(({ name, value, options }) => {
+            request.cookies.set(name, value)
+            redirectSuccess.cookies.set(name, value, options)
+          })
         },
       },
     }
@@ -31,7 +38,7 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
   const { data, error } = await supabase.auth.exchangeCodeForSession(code)
 
   if (error || !data.user) {
-    return NextResponse.redirect(`${origin}/login?error=auth_failed`)
+    return redirectError('auth_failed')
   }
 
   const email = data.user.email!
@@ -55,14 +62,14 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     if (!existingProfile) {
       await supabase.auth.signOut()
-      return NextResponse.redirect(`${origin}/access-denied`)
+      return NextResponse.redirect(new URL('/access-denied', origin))
     }
 
     if (existingProfile.status === 'suspended') {
-      return NextResponse.redirect(`${origin}/suspended`)
+      return NextResponse.redirect(new URL('/suspended', origin))
     }
 
-    return NextResponse.redirect(`${origin}${next}`)
+    return redirectSuccess
   }
 
   // Première connexion : mettre à jour le rôle et marquer l'invitation acceptée
@@ -85,5 +92,5 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     .update({ accepted_at: new Date().toISOString() })
     .eq('id', invitation.id)
 
-  return NextResponse.redirect(`${origin}${next}`)
+  return redirectSuccess
 }

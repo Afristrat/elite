@@ -19,7 +19,6 @@ ENV NEXT_PUBLIC_SUPABASE_URL=$NEXT_PUBLIC_SUPABASE_URL
 ENV NEXT_PUBLIC_SUPABASE_ANON_KEY=$NEXT_PUBLIC_SUPABASE_ANON_KEY
 ENV NEXT_PUBLIC_APP_URL=$NEXT_PUBLIC_APP_URL
 
-# Build Next.js en mode standalone
 RUN npm run build
 
 # ─── Stage 2 : Runner ─────────────────────────────────────────────────────────
@@ -29,9 +28,6 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
-# HOSTNAME=0.0.0.0 force Next.js standalone à écouter sur toutes les interfaces
-# (sans ça, Docker définit HOSTNAME = ID conteneur → crash Node.js au démarrage)
-ENV HOSTNAME=0.0.0.0
 
 # Outils système (wget requis pour le healthcheck Coolify)
 RUN apk add --no-cache wget
@@ -40,16 +36,17 @@ RUN apk add --no-cache wget
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copier uniquement les artefacts nécessaires (mode standalone)
-COPY --from=builder /app/public ./public
-COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
-COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+# Dépendances de production uniquement
+COPY --from=builder /app/package.json ./
+COPY --from=builder /app/package-lock.json ./
+RUN npm ci --omit=dev
+
+# Artefacts du build
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
+COPY --from=builder --chown=nextjs:nodejs /app/.next ./.next
 
 USER nextjs
 
 EXPOSE 3000
 
-# Healthcheck géré par Coolify (HTTP healthcheck configuré dans l'UI)
-# Le HEALTHCHECK Docker est volontairement absent pour éviter les conflits
-
-CMD ["node", "server.js"]
+CMD ["node_modules/.bin/next", "start"]

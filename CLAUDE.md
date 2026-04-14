@@ -30,6 +30,18 @@
 - **Modèle d'usage :** Outil interne — pas de revenus directs. Valeur = qualité des décisions d'investissement du groupe
 - **Métriques de succès :** Batting Average > 60%, taux de complétion évaluation > 80%, AAR remplis > 70%, zéro décision sans quorum
 
+### 📅 Types de projets & timelines post-investissement
+
+| Type | Early Check-In | AAR | Outcome Harvesting | Review annuelle |
+|---|---|---|---|---|
+| **Startup early-stage** | J+30 | J+100 (fin 100-Day Plan) | J+6 mois | J+12 mois |
+| **Growth / scale-up** | J+45 | J+100 | J+9 mois | J+18 mois |
+| **B2B / infra** | J+60 | J+90 | J+12 mois | J+24 mois |
+
+**Règle :** le type est sélectionné à la soumission du projet et détermine les CRON automatiques. Il peut être modifié par l'admin avant la décision. Par défaut : `startup-early-stage`.
+
+**Logique Early Check-In (J+30) :** signaux quantitatifs uniquement — ARR, nb users actifs, burn mensuel, runway. Pas d'appréciation qualitative (trop tôt). Formulaire simple, 5 champs max.
+
 ### 📥 Inputs
 
 | Source | Format | Validation | Description |
@@ -206,6 +218,36 @@
 
 ---
 
+#### SOP-07 : Cycle de suivi post-investissement
+
+**Déclencheur :** Décision `approved` enregistrée → CRON automatiques planifiés selon `project.type`  
+**Responsable :** Routes `/api/cron/early-checkin`, `/api/cron/aar-trigger`, `/api/cron/outcome-harvesting`
+
+**J+30 — Early Check-In :**
+1. CRON calcule les projets approved avec `decided_at` entre J+28 et J+32 (fenêtre 4 jours)
+2. Email admin : formulaire 5 champs — ARR actuel, nb users actifs, burn mensuel, runway, blocage principal
+3. Résultat sauvegardé dans `project_checkins` (table dédiée)
+4. Aucune agrégation — données quantitatives brutes uniquement
+
+**J+100 — AAR (After Action Review) :**
+1. CRON détecte projets avec `decided_at + 100j` dans les 48h
+2. Notifier tous les évaluateurs originaux : lien vers `/projects/[id]/aar`
+3. Formulaire AAR : ce qui s'est passé, écarts vs thèses, apprentissages, note rétrospective 0-10
+4. Clore le formulaire après 7 jours ou quand tous les évaluateurs ont répondu
+5. Agréger et notifier admin du rapport final
+
+**J+6 mois — Outcome Harvesting :**
+1. CRON détecte projets avec `decided_at + 180j` (startup) ou selon le type
+2. Notifier admin + fondateur (si email repo_url renseigné) : lien vers `/projects/[id]/outcomes`
+3. Formulaire : unit economics, growth rate, pivots majeurs, probabilité de succès mise à jour
+4. Alimenter le Batting Average global du portefeuille
+
+**Post-conditions :** Chaque étape loggée, données dans `project_checkins` + `aar_responses` + `outcome_reports`  
+**En cas d'échec :** Retry J+2 puis alerte admin si toujours sans réponse après 7 jours  
+**Logs :** `{ event: 'post_investment_checkin', project_id, type: 'early|aar|outcome', status }`
+
+---
+
 ### ⚠️ Cas limites et gestion d'erreurs
 
 | Situation | Détection | Comportement | Fallback | Log |
@@ -257,10 +299,16 @@
         ↓ notifications évaluateurs (détail) + contributeurs (résumé + repo)
         ↓ si approved → 100-Day Plan + jalons J-Curve
 
-6. Archivage (status: archived) [manuel ou auto après N jours]
+6. Suivi post-décision (status: decided → monitoring)
+        ↓ J+30 : Early Check-In — premiers signaux (traction, ARR, burn) — email admin
+        ↓ J+100 : AAR (aligné fin du 100-Day Plan) — rapport collectif évaluateurs
+        ↓ J+6 mois : Outcome Harvesting — bilan intermédiaire (growth, unit economics)
+        ↓ J+12 mois : Review annuelle — Batting Average impact
+
+7. Archivage (status: archived) [manuel ou auto après N jours]
         ↓ exclu des vues par défaut
         ↓ toujours consultable via filtre
-        ↓ AAR déclenché à J+90, Outcome Harvesting à J+180
+        ↓ timelines configurables par type de projet (voir "Types de projets & timelines")
 ```
 
 ### 🔄 Règles de décision
@@ -336,7 +384,9 @@ Claude Code DOIT s'arrêter et poser une question si :
 │       └── /cron
 │           ├── /evaluation-reminders
 │           ├── /portfolio-review
-│           └── /aar-trigger
+│           ├── /early-checkin          → J+30 signaux quantitatifs (par type projet)
+│           ├── /aar-trigger            → J+100 After Action Review
+│           └── /outcome-harvesting     → J+6 mois bilan intermédiaire
 ├── /actions                      → Server Actions (mutations)
 │   ├── projects.ts               → submitProject, archiveProject
 │   ├── evaluations.ts            → submitEvaluation

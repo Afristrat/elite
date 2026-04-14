@@ -4,127 +4,373 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   NOCTURNAL ARCHITECT — Design Token System "The Digital Curator"
+   Dark mode  : palette exacte du DESIGN.md (Material Design 3 dark scheme)
+   Light mode : dérivé de la même graine chromatique (M3 light scheme)
+   Police     : Inter (exclusivement), JetBrains Mono pour le code
+   ═══════════════════════════════════════════════════════════════════════════ */
+
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-sans);
-  --font-mono: var(--font-geist-mono);
-  --font-heading: var(--font-sans);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
+  /* ── Polices ────────────────────────────────────────────────────────────── */
+  --font-sans:  var(--font-inter);
+  --font-mono:  var(--font-mono);
+
+  /* ── Rayon de bordure ───────────────────────────────────────────────────── */
+  /* Base = 1rem → xl ≈ 1.5rem (signature "premium soft-touch" du design) */
+  --radius-sm:  calc(var(--radius) * 0.5);
+  --radius-md:  calc(var(--radius) * 0.75);
+  --radius-lg:  var(--radius);
+  --radius-xl:  calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+  --radius-3xl: calc(var(--radius) * 2.5);
+  --radius-4xl: calc(var(--radius) * 3);
+
+  /* ── Tokens shadcn/ui (compatibility) ───────────────────────────────────── */
+  --color-background:                var(--background);
+  --color-foreground:                var(--foreground);
+  --color-card:                      var(--card);
+  --color-card-foreground:           var(--card-foreground);
+  --color-popover:                   var(--popover);
+  --color-popover-foreground:        var(--popover-foreground);
+  --color-primary:                   var(--primary);
+  --color-primary-foreground:        var(--primary-foreground);
+  --color-secondary:                 var(--secondary);
+  --color-secondary-foreground:      var(--secondary-foreground);
+  --color-muted:                     var(--muted);
+  --color-muted-foreground:          var(--muted-foreground);
+  --color-accent:                    var(--accent);
+  --color-accent-foreground:         var(--accent-foreground);
+  --color-destructive:               var(--destructive);
+  --color-destructive-foreground:    var(--destructive-foreground);
+  --color-border:                    var(--border);
+  --color-input:                     var(--input);
+  --color-ring:                      var(--ring);
+  --color-chart-1:                   var(--chart-1);
+  --color-chart-2:                   var(--chart-2);
+  --color-chart-3:                   var(--chart-3);
+  --color-chart-4:                   var(--chart-4);
+  --color-chart-5:                   var(--chart-5);
+  --color-sidebar:                   var(--sidebar);
+  --color-sidebar-foreground:        var(--sidebar-foreground);
+  --color-sidebar-primary:           var(--sidebar-primary);
+  --color-sidebar-primary-foreground:var(--sidebar-primary-foreground);
+  --color-sidebar-accent:            var(--sidebar-accent);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --color-sidebar-border:            var(--sidebar-border);
+  --color-sidebar-ring:              var(--sidebar-ring);
+
+  /* ── Palette Nocturnal Architect — couches de surface ───────────────────── */
+  /* Utilisables directement : bg-surface, bg-surface-container, etc.         */
+  --color-surface:                    var(--na-surface);
+  --color-surface-dim:                var(--na-surface-dim);
+  --color-surface-bright:             var(--na-surface-bright);
+  --color-surface-container-lowest:   var(--na-surface-container-lowest);
+  --color-surface-container-low:      var(--na-surface-container-low);
+  --color-surface-container:          var(--na-surface-container);
+  --color-surface-container-high:     var(--na-surface-container-high);
+  --color-surface-container-highest:  var(--na-surface-container-highest);
+
+  /* ── Palette NA — texte ─────────────────────────────────────────────────── */
+  --color-on-surface:                 var(--na-on-surface);
+  --color-on-surface-variant:         var(--na-on-surface-variant);
+  --color-inverse-surface:            var(--na-inverse-surface);
+  --color-inverse-on-surface:         var(--na-inverse-on-surface);
+
+  /* ── Palette NA — couleurs rôles ────────────────────────────────────────── */
+  --color-na-primary:                 var(--na-primary);
+  --color-na-on-primary:              var(--na-on-primary);
+  --color-na-primary-container:       var(--na-primary-container);
+  --color-na-on-primary-container:    var(--na-on-primary-container);
+  --color-na-primary-dim:             var(--na-primary-dim);
+  --color-na-inverse-primary:         var(--na-inverse-primary);
+  --color-na-surface-tint:            var(--na-surface-tint);
+
+  --color-na-secondary:               var(--na-secondary);
+  --color-na-on-secondary:            var(--na-on-secondary);
+  --color-na-secondary-container:     var(--na-secondary-container);
+  --color-na-on-secondary-container:  var(--na-on-secondary-container);
+
+  --color-na-tertiary:                var(--na-tertiary);
+  --color-na-on-tertiary:             var(--na-on-tertiary);
+  --color-na-tertiary-container:      var(--na-tertiary-container);
+  --color-na-on-tertiary-container:   var(--na-on-tertiary-container);
+  --color-na-tertiary-dim:            var(--na-tertiary-dim);
+
+  --color-na-error:                   var(--na-error);
+  --color-na-on-error:                var(--na-on-error);
+  --color-na-error-container:         var(--na-error-container);
+  --color-na-on-error-container:      var(--na-on-error-container);
+  --color-na-error-dim:               var(--na-error-dim);
+
+  --color-na-outline:                 var(--na-outline);
+  --color-na-outline-variant:         var(--na-outline-variant);
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODE CLAIR — Light scheme (dérivé de la même graine chromatique M3)
+   ═══════════════════════════════════════════════════════════════════════════ */
 :root {
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --radius: 1rem;
+
+  /* ── Palette NA — light ─────────────────────────────────────────────────── */
+  --na-surface:                   #f4f7fc;
+  --na-surface-dim:               #dde3ee;
+  --na-surface-bright:            #f4f7fc;
+  --na-surface-container-lowest:  #ffffff;
+  --na-surface-container-low:     #eef1f9;
+  --na-surface-container:         #e8ecf6;
+  --na-surface-container-high:    #e1e6f3;
+  --na-surface-container-highest: #dbe0f0;
+  --na-on-surface:                #1b1d28;
+  --na-on-surface-variant:        #44516a;
+  --na-inverse-surface:           #080e1a;
+  --na-inverse-on-surface:        #dce5ff;
+
+  --na-primary:                   #0060ad;
+  --na-on-primary:                #ffffff;
+  --na-primary-container:         #d4e3ff;
+  --na-on-primary-container:      #004076;
+  --na-primary-dim:               #005ea8;
+  --na-inverse-primary:           #a4c9ff;
+  --na-surface-tint:              #0060ad;
+
+  --na-secondary:                 #5a697f;
+  --na-on-secondary:              #ffffff;
+  --na-secondary-container:       #d5e3fc;
+  --na-on-secondary-container:    #3b4a5e;
+
+  --na-tertiary:                  #006042;
+  --na-on-tertiary:               #ffffff;
+  --na-tertiary-container:        #89f8c7;
+  --na-on-tertiary-container:     #003829;
+  --na-tertiary-dim:              #005e40;
+
+  --na-error:                     #c00015;
+  --na-on-error:                  #ffffff;
+  --na-error-container:           #ffdad6;
+  --na-on-error-container:        #40000a;
+  --na-error-dim:                 #be0014;
+
+  --na-outline:                   #6a7891;
+  --na-outline-variant:           #c4cedf;
+
+  /* ── Tokens shadcn — light ──────────────────────────────────────────────── */
+  --background:          #f4f7fc;
+  --foreground:          #1b1d28;
+  --card:                #ffffff;
+  --card-foreground:     #1b1d28;
+  --popover:             #ffffff;
+  --popover-foreground:  #1b1d28;
+  --primary:             #0060ad;
+  --primary-foreground:  #ffffff;
+  --secondary:           #eef1f9;
+  --secondary-foreground:#44516a;
+  --muted:               #eef1f9;
+  --muted-foreground:    #44516a;
+  --accent:              #e1e6f3;
+  --accent-foreground:   #1b1d28;
+  --destructive:         #c00015;
+  --destructive-foreground: #ffffff;
+  --border:              #c4cedf;
+  --input:               #e8ecf6;
+  --ring:                #0060ad;
+
+  /* Charts — light */
+  --chart-1: #0060ad;
+  --chart-2: #006042;
+  --chart-3: #5a697f;
+  --chart-4: #c00015;
+  --chart-5: #7b61ff;
+
+  /* Sidebar — light */
+  --sidebar:                    #eef1f9;
+  --sidebar-foreground:         #1b1d28;
+  --sidebar-primary:            #0060ad;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent:             #e1e6f3;
+  --sidebar-accent-foreground:  #1b1d28;
+  --sidebar-border:             #c4cedf;
+  --sidebar-ring:               #0060ad;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   MODE SOMBRE — Dark scheme (palette exacte "The Nocturnal Architect")
+   Source : DESIGN.md + code.html généré par Stitch
+   ═══════════════════════════════════════════════════════════════════════════ */
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  /* ── Palette NA — dark (valeurs exactes DESIGN.md) ──────────────────────── */
+  --na-surface:                   #080e1a;
+  --na-surface-dim:               #080e1a;
+  --na-surface-bright:            #132b53;
+  --na-surface-container-lowest:  #000000;
+  --na-surface-container-low:     #0b1323;
+  --na-surface-container:         #0e192f;
+  --na-surface-container-high:    #101f3a;
+  --na-surface-container-highest: #122547;
+  --na-on-surface:                #dce5ff;
+  --na-on-surface-variant:        #99abd4;
+  --na-inverse-surface:           #f9f9ff;
+  --na-inverse-on-surface:        #4f5563;
+
+  --na-primary:                   #a4c9ff;
+  --na-on-primary:                #004178;
+  --na-primary-container:         #004883;
+  --na-on-primary-container:      #b5d2ff;
+  --na-primary-dim:               #8abbff;
+  --na-inverse-primary:           #0060ad;
+  --na-surface-tint:              #a4c9ff;
+
+  --na-secondary:                 #909fb5;
+  --na-on-secondary:              #122133;
+  --na-secondary-container:       #2e3c4f;
+  --na-on-secondary-container:    #b2c0d8;
+
+  --na-tertiary:                  #cdffe3;
+  --na-on-tertiary:               #006948;
+  --na-tertiary-container:        #6bffc1;
+  --na-on-tertiary-container:     #006042;
+  --na-tertiary-dim:              #5af0b4;
+
+  --na-error:                     #ee7d77;
+  --na-on-error:                  #490106;
+  --na-error-container:           #7f2927;
+  --na-on-error-container:        #ff9993;
+  --na-error-dim:                 #bb5551;
+
+  --na-outline:                   #64759b;
+  --na-outline-variant:           #36486b;
+
+  /* ── Tokens shadcn — dark ───────────────────────────────────────────────── */
+  --background:          #080e1a;
+  --foreground:          #dce5ff;
+  --card:                #0e192f;
+  --card-foreground:     #dce5ff;
+  --popover:             #122547;
+  --popover-foreground:  #dce5ff;
+  --primary:             #a4c9ff;
+  --primary-foreground:  #004178;
+  --secondary:           #2e3c4f;
+  --secondary-foreground:#b2c0d8;
+  --muted:               #0b1323;
+  --muted-foreground:    #99abd4;
+  --accent:              #101f3a;
+  --accent-foreground:   #dce5ff;
+  --destructive:         #ee7d77;
+  --destructive-foreground: #490106;
+  --border:              #36486b;
+  --input:               #000000;
+  --ring:                #a4c9ff;
+
+  /* Charts — dark */
+  --chart-1: #a4c9ff;
+  --chart-2: #5af0b4;
+  --chart-3: #909fb5;
+  --chart-4: #ee7d77;
+  --chart-5: #cdffe3;
+
+  /* Sidebar — dark */
+  --sidebar:                    #0b1323;
+  --sidebar-foreground:         #dce5ff;
+  --sidebar-primary:            #a4c9ff;
+  --sidebar-primary-foreground: #004178;
+  --sidebar-accent:             #101f3a;
+  --sidebar-accent-foreground:  #dce5ff;
+  --sidebar-border:             #36486b;
+  --sidebar-ring:               #a4c9ff;
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   BASE STYLES
+   ═══════════════════════════════════════════════════════════════════════════ */
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
+    font-feature-settings: "rlig" 1, "calt" 1;
   }
+
   html {
     @apply font-sans;
+  }
+
+  /* Sélection de texte — couleur de marque */
+  ::selection {
+    background-color: color-mix(in srgb, var(--primary) 25%, transparent);
+    color: var(--foreground);
+  }
+}
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   UTILITIES — Nocturnal Architect
+   ═══════════════════════════════════════════════════════════════════════════ */
+@layer utilities {
+  /* Glassmorphism — panneaux flottants (modales, dropdowns) */
+  .glass-panel {
+    background: color-mix(in srgb, var(--na-surface-container-highest) 80%, transparent);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  /* Gradient CTA — bouton primaire signature du design */
+  .gradient-primary {
+    background: linear-gradient(135deg, var(--na-primary) 0%, var(--na-primary-container) 100%);
+  }
+
+  /* Ghost border — substitut aux bordures 1px selon la règle "No-Line" */
+  .ghost-border {
+    border: 1px solid color-mix(in srgb, var(--na-outline-variant) 15%, transparent);
+  }
+
+  /* Ombre ambiante — uniquement pour les éléments flottants */
+  .ambient-shadow {
+    box-shadow: 0px 24px 48px rgba(0, 0, 0, 0.5);
+  }
+
+  /* Scrollbar masquée */
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Typographie éditorialé — échelle du design system */
+  .display-lg {
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .headline-sm {
+    font-size: 1.5rem;
+    font-weight: 600;
+    line-height: 1.3;
+    letter-spacing: 0.05em;
+  }
+
+  .title-md {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1.4;
+  }
+
+  .body-md {
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  .label-sm {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    line-height: 1.4;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 }

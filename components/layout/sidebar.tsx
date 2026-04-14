@@ -31,7 +31,9 @@ const ADMIN_ITEMS: NavItem[] = [
 ]
 
 const SETTINGS_ITEMS: NavItem[] = [
-  { href: '/settings/api-keys', label: 'Clés API', icon: 'key', roles: ['admin', 'evaluateur', 'contributeur'] },
+  { href: '/settings/api-keys',      label: 'Clés API',       icon: 'key',           roles: ['admin', 'evaluateur', 'contributeur'] },
+  { href: '/settings/notifications', label: 'Notifications',  icon: 'notifications', roles: ['admin', 'evaluateur', 'contributeur'] },
+  { href: '/settings/preferences',   label: 'Préférences',    icon: 'tune',          roles: ['admin', 'evaluateur', 'contributeur'] },
 ]
 
 type SidebarProps = {
@@ -126,15 +128,9 @@ export function Sidebar({ role }: SidebarProps): React.JSX.Element {
 
       {/* Pied de sidebar */}
       <div className="mt-auto pt-4 border-t border-border/10">
-        <div className="space-y-1">
-          <Link
-            href="/help"
-            className="flex items-center gap-3 px-3 py-2 text-on-surface-variant hover:text-on-surface text-xs transition-all rounded-lg"
-          >
-            <span className="material-symbols-outlined text-sm leading-none">help</span>
-            Aide
-          </Link>
-        </div>
+        <p className="px-3 text-[0.55rem] text-on-surface-variant uppercase tracking-widest opacity-40 select-none">
+          v0.1.0 — Veille Élite
+        </p>
       </div>
     </aside>
   )

@@ -21,7 +21,9 @@ export default async function AppLayout({
     .eq('id', user.id)
     .single()
 
-  if (!profile) redirect('/login')
+  // Ne jamais rediriger vers /login ici — créerait une boucle infinie
+  // (login détecte un user authentifié et redirige vers /dashboard)
+  if (!profile) redirect('/access-denied')
   if (profile.status === 'suspended') redirect('/suspended')
 
   return (

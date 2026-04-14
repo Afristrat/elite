@@ -80,10 +80,20 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     .maybeSingle()
 
   if (existingProfile) {
+    // Membre existant qui accepte une nouvelle invitation — mise à jour du rôle
     await supabase
       .from('profiles')
       .update({ role: invitation.role })
       .eq('id', data.user.id)
+  } else {
+    // Première connexion — créer le profil depuis les données Google OAuth
+    await supabase.from('profiles').insert({
+      id: data.user.id,
+      email,
+      full_name: (data.user.user_metadata?.full_name as string | undefined) ?? null,
+      avatar_url: (data.user.user_metadata?.avatar_url as string | undefined) ?? null,
+      role: invitation.role,
+    })
   }
 
   // Marquer l'invitation comme acceptée

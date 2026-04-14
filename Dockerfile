@@ -30,6 +30,9 @@ WORKDIR /app
 ENV NODE_ENV=production
 ENV PORT=3000
 
+# Outils système (wget requis pour le healthcheck Coolify)
+RUN apk add --no-cache wget
+
 # Utilisateur non-root pour sécurité
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs

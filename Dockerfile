@@ -46,7 +46,7 @@ USER nextjs
 
 EXPOSE 3000
 
-HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
-  CMD wget -qO- http://localhost:3000/api/health || exit 1
+# Healthcheck géré par Coolify (HTTP healthcheck configuré dans l'UI)
+# Le HEALTHCHECK Docker est volontairement absent pour éviter les conflits
 
 CMD ["node", "server.js"]

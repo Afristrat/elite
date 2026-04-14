@@ -29,6 +29,9 @@ WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3000
+# HOSTNAME=0.0.0.0 force Next.js standalone à écouter sur toutes les interfaces
+# (sans ça, Docker définit HOSTNAME = ID conteneur → crash Node.js au démarrage)
+ENV HOSTNAME=0.0.0.0
 
 # Outils système (wget requis pour le healthcheck Coolify)
 RUN apk add --no-cache wget

@@ -3,18 +3,22 @@ import { NextResponse, type NextRequest } from 'next/server'
 import type { Database } from '@/types/database'
 
 export async function GET(request: NextRequest): Promise<NextResponse> {
-  const { searchParams, origin } = new URL(request.url)
+  const { searchParams } = new URL(request.url)
   const code = searchParams.get('code')
   const next = searchParams.get('next') ?? '/dashboard'
 
+  // Derrière un reverse proxy (Coolify/Traefik), request.url contient l'URL interne
+  // (localhost:3000) — on utilise NEXT_PUBLIC_APP_URL comme base fiable.
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL!
+
   if (!code) {
-    return NextResponse.redirect(new URL('/login?error=no_code', origin))
+    return NextResponse.redirect(new URL('/login?error=no_code', appUrl))
   }
 
   // Préparer la réponse de redirect en amont pour y écrire les cookies
-  const redirectSuccess = NextResponse.redirect(new URL(next, origin))
+  const redirectSuccess = NextResponse.redirect(new URL(next, appUrl))
   const redirectError = (msg: string) =>
-    NextResponse.redirect(new URL(`/login?error=${msg}`, origin))
+    NextResponse.redirect(new URL(`/login?error=${msg}`, appUrl))
 
   const supabase = createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

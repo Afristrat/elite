@@ -70,7 +70,7 @@ export default async function LoginPage(): Promise<React.JSX.Element> {
         {/* Mention branding */}
         <div className="mt-8 text-center">
           <span className="text-[10px] text-on-surface-variant/40 font-medium tracking-[0.2em] uppercase">
-            The Nocturnal Architect © 2024
+            The Nocturnal Architect © 2026
           </span>
         </div>
       </main>
